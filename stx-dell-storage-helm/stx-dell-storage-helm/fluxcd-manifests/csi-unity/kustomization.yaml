@@ -1,0 +1,18 @@
+#
+# Copyright (c) 2023 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+namespace: dell-storage
+resources:
+  - helmrelease.yaml
+secretGenerator:
+  - name: csi-unity-static-overrides
+    files:
+      - csi-unity-static-overrides.yaml
+  - name: csi-unity-system-overrides
+    files:
+      - csi-unity-system-overrides.yaml
+generatorOptions:
+  disableNameSuffixHash: true

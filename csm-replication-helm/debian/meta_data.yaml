@@ -1,0 +1,14 @@
+---
+debname: csm-replication-helm
+debver: 1.4-0
+dl_path:
+  name: csm-replication-1.4.0.tar.gz
+  url: https://github.com/dell/csm-replication/archive/v1.4.0.tar.gz
+  sha256sum: ba3f90bc8936213115a0c181d9f193916143a109d264b232c33e0491b620d83b
+src_files:
+  - csm-replication-helm/files/Makefile
+revision:
+  dist: $STX_DIST
+  GITREVCOUNT:
+    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    SRC_DIR: ${MY_REPO}/stx/app-dell-storage/csm-replication-helm

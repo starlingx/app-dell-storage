@@ -1,0 +1,28 @@
+From 3f39fa1828adaed869bde71dfa5c36e196ac11ae Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Tue, 16 May 2023 09:09:12 -0300
+Subject: [PATCH] csm-application-mobility: fix pull image error
+
+This patch consists of adding imagePullSecrets with name
+default-registry-key only in ServiceAccounts.
+It's necessary because without it the system can't use the
+images from the registry local.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ .../v1_serviceaccount_app-mobility-controller-manager.yaml      | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/charts/csm-application-mobility/templates/v1_serviceaccount_app-mobility-controller-manager.yaml b/charts/csm-application-mobility/templates/v1_serviceaccount_app-mobility-controller-manager.yaml
+index a9c5206..2d82da1 100644
+--- a/charts/csm-application-mobility/templates/v1_serviceaccount_app-mobility-controller-manager.yaml
++++ b/charts/csm-application-mobility/templates/v1_serviceaccount_app-mobility-controller-manager.yaml
+@@ -3,3 +3,5 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-controller-manager
+   namespace: {{ include "custom.namespace" . }}
++imagePullSecrets:
++  - name: default-registry-key
+-- 
+2.25.1

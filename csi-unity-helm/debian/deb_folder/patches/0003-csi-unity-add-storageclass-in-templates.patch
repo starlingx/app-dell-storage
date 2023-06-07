@@ -1,0 +1,74 @@
+From 72e2fe6e83f2442c701d3d0dee6bbd0d37a8e383 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Thu, 6 Apr 2023 08:41:07 -0300
+Subject: [PATCH] csi-unity: add storageclass in templates
+
+This patch consists of adding a storage classes in the helm chart templates directory.
+It's needed because this helm chart needs a storage classes that should be
+created manually.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csi-unity/templates/storageclass.yaml | 50 ++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+ create mode 100644 helm/csi-unity/templates/storageclass.yaml
+
+diff --git a/helm/csi-unity/templates/storageclass.yaml b/helm/csi-unity/templates/storageclass.yaml
+new file mode 100644
+index 0000000..fc80870
+--- /dev/null
++++ b/helm/csi-unity/templates/storageclass.yaml
+@@ -0,0 +1,50 @@
++{{- range $sc := .Values.storageClasses }}
++---
++apiVersion: storage.k8s.io/v1
++kind: StorageClass
++metadata:
++{{- if or $sc.name (and $sc.arrayId $sc.protocol)}}
++  name: {{ $sc.name | default ( print "unity-" $sc.arrayId "-" $sc.protocol | lower ) }}
++{{- else if $sc.arrayId }}
++  name: {{ print "unity-" $sc.arrayId "-nfs" | lower }}
++{{- end }}
++provisioner: {{ $sc.provisioner | default ( print "csi-unity.dellemc.com" ) }}
++reclaimPolicy: {{ $sc.reclaimPolicy | default "Delete" }}
++allowVolumeExpansion: {{ $sc.allowVolumeExpansion | default "true" }}
++volumeBindingMode: {{ $sc.volumeBindingMode | default "Immediate" }}
++parameters:
++  protocol: {{ $sc.protocol | default "NFS" }}
++{{- if $sc.arrayId }}
++  arrayId: {{ $sc.arrayId }}
++{{- end }}
++{{- if $sc.storagePool }}
++  storagePool: {{ $sc.storagePool }}
++{{- end }}
++  thinProvisioned: "{{- $sc.thinProvisioned | default true }}"
++  isDataReductionEnabled: "{{- $sc.isDataReductionEnabled | default true }}"
++{{- if $sc.tieringPolicy }}
++  tieringPolicy: "{{ $sc.tieringPolicy }}"
++{{- end }}
++{{- if and ($sc.nasServer) (eq $sc.protocol "NFS") }}
++  nasServer: {{ $sc.nasServer }}
++{{- end }}
++{{- if $sc.hostIOLimitName }}
++  hostIOLimitName: "{{ $sc.hostIOLimitName }}"
++{{- end }}
++  hostIoSize: "{{ $sc.hostIoSize | default 8192 }}"
++{{- if $sc.fstype }}
++  csi.storage.k8s.io/fstype: {{ $sc.fstype | lower | default "nfs" }}
++{{- end }}
++{{- if $sc.allowedTopologies }}
++allowedTopologies:
++  {{ $sc.allowedTopologies | toYaml | nindent 4 }}
++{{- end }}
++{{- if eq $sc.protocol "NFS" }}
++mountOptions: {{ $sc.mountOptions | default "['hard']" }}
++{{- else if $sc.protocol }}
++mountOptions: {{ $sc.mountOptions | default "[]" }}
++{{- else }}
++mountOptions: {{ $sc.mountOptions | default "['hard']" }}
++{{- end }}
++---
++{{- end }}
+-- 
+2.25.1

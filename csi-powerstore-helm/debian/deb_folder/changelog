@@ -1,0 +1,5 @@
+csi-powerstore-helm (2.6-0) unstable; urgency=medium
+
+  * Initial release.
+
+ --  Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>  Thu, 30 Mar 2023 15:15:00 +0000

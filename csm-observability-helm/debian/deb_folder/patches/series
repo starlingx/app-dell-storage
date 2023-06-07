@@ -1,0 +1,5 @@
+0001-csm-observability-remove-cert-manager-dependency.patch
+0002-csm-observability-fix-pull-image-error.patch
+0003-csm-observability-change-powerstore-secret-name.patch
+0004-csm-observability-remove-unnecessary-images.patch
+0005-csm-observability-add-label-app.starlingx.io-component.patch

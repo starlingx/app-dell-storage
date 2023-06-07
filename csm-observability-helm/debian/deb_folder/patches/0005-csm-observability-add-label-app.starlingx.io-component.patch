@@ -1,0 +1,91 @@
+From 842f311821cddd59bff71b64126a3fd9c1b3d8de Mon Sep 17 00:00:00 2001
+From: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+Date: Tue, 27 Jun 2023 12:21:10 -0300
+Subject: [PATCH] csm-observability: add label app.starlingx.io/component
+
+This patch consists of adding the app.starlingx.io/component label in all pods.
+
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+---
+ .../karavi-observability/templates/karavi-metrics-powerflex.yaml | 1 +
+ .../karavi-observability/templates/karavi-metrics-powermax.yaml  | 1 +
+ .../templates/karavi-metrics-powerscale.yaml                     | 1 +
+ .../templates/karavi-metrics-powerstore.yaml                     | 1 +
+ charts/karavi-observability/templates/karavi-topology.yaml       | 1 +
+ charts/karavi-observability/templates/otel-collector.yaml        | 1 +
+ 6 files changed, 6 insertions(+)
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml b/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
+index 177b3d1..8b2baf3 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
+@@ -46,6 +46,7 @@ spec:
+       labels:
+         app.kubernetes.io/name: karavi-metrics-powerflex
+         app.kubernetes.io/instance: {{ .Release.Name }}
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       serviceAccount: {{ .Release.Name }}-metrics-powerflex-controller
+       containers:
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
+index 31891ab..acc9b35 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
+@@ -46,6 +46,7 @@ spec:
+       labels:
+         app.kubernetes.io/name: karavi-metrics-powermax
+         app.kubernetes.io/instance: {{ .Release.Name }}
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       serviceAccount: {{ .Release.Name }}-metrics-powermax-controller
+       containers:
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml b/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml
+index 510e946..56a43c1 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml
+@@ -46,6 +46,7 @@ spec:
+       labels:
+         app.kubernetes.io/name: karavi-metrics-powerscale
+         app.kubernetes.io/instance: {{ .Release.Name }}
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       serviceAccount: {{ .Release.Name }}-metrics-powerscale-controller
+       containers:
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml b/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml
+index 8fcd046..0b593b7 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml
+@@ -40,6 +40,7 @@ spec:
+       labels:
+         app.kubernetes.io/name: karavi-metrics-powerstore
+         app.kubernetes.io/instance: {{ .Release.Name }}
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       serviceAccount: {{ .Release.Name }}-metrics-powerstore-controller
+       containers:
+diff --git a/charts/karavi-observability/templates/karavi-topology.yaml b/charts/karavi-observability/templates/karavi-topology.yaml
+index 68b4b19..0056dc9 100644
+--- a/charts/karavi-observability/templates/karavi-topology.yaml
++++ b/charts/karavi-observability/templates/karavi-topology.yaml
+@@ -40,6 +40,7 @@ spec:
+       labels:
+         app.kubernetes.io/name: karavi-topology
+         app.kubernetes.io/instance: {{ .Release.Name }}
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       volumes:
+         - name: karavi-topology-secret-volume
+diff --git a/charts/karavi-observability/templates/otel-collector.yaml b/charts/karavi-observability/templates/otel-collector.yaml
+index 316b88e..e9d1bc6 100644
+--- a/charts/karavi-observability/templates/otel-collector.yaml
++++ b/charts/karavi-observability/templates/otel-collector.yaml
+@@ -73,6 +73,7 @@ spec:
+       labels:
+         app.kubernetes.io/name: otel-collector
+         app.kubernetes.io/instance: {{ .Release.Name }}
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       serviceAccount: otel-collector
+       volumes:
+-- 
+2.25.1

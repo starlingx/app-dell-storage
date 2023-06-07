@@ -1,0 +1,43 @@
+From ef603b1c87bd827dac112f19c7eaaab0b2978cd3 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 2 Jun 2023 12:03:20 -0300
+Subject: [PATCH] csm-replication: add default values for templates
+
+This patch consists of adding the default values in the values.yaml of
+the helm chart.
+It's necessary because the images in templates were in unexpected format
+for the system and because templates need default values to be able
+to build the package.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csm-replication/values.yaml | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/helm/csm-replication/values.yaml b/helm/csm-replication/values.yaml
+index d0022b4..27c2e64 100644
+--- a/helm/csm-replication/values.yaml
++++ b/helm/csm-replication/values.yaml
+@@ -9,7 +9,8 @@ image: dellemc/dell-replication-controller:v1.4.0
+ 
+ # image: Defines controller's init container image. This shouldn't be changed
+ # Allowed values: string
+-initImage: dellemc/dell-replication-init:v1.0.0
++containerInit:
++  image: dellemc/dell-replication-init:v1.0.0
+ 
+ # logLevel: Defines initial log level for controller. This can be changed in runtime
+ # Allowed values: "debug", "info", "warn", "error", "panic"
+@@ -39,3 +40,9 @@ retryIntervalMax: 5m
+ #  - ip: "10.10.10.11"
+ #    hostnames:
+ #      - "foo.baz"
++
++config:
++  clusterId: ""
++
++replicationGroup:
++  create: false
+-- 
+2.25.1

@@ -1,0 +1,45 @@
+From fad53c21edbdf1574ff8b210beee115b22b9d556 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 14 Apr 2023 13:26:41 -0300
+Subject: [PATCH] csi-unity: fix pull image error
+
+This patch consists of adding imagePullSecrets with name
+default-registry-key only in ServiceAccounts.
+It's necessary because without it the system can't use the
+images from the registry local.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csi-unity/templates/controller.yaml | 2 ++
+ helm/csi-unity/templates/node.yaml       | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/helm/csi-unity/templates/controller.yaml b/helm/csi-unity/templates/controller.yaml
+index 7c534c4..70dd4ee 100644
+--- a/helm/csi-unity/templates/controller.yaml
++++ b/helm/csi-unity/templates/controller.yaml
+@@ -4,6 +4,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-controller
+   namespace: {{ .Release.Namespace }}
++imagePullSecrets:
++  - name: default-registry-key
+ ---
+ kind: ClusterRole
+ apiVersion: rbac.authorization.k8s.io/v1
+diff --git a/helm/csi-unity/templates/node.yaml b/helm/csi-unity/templates/node.yaml
+index df9378e..d68b64c 100644
+--- a/helm/csi-unity/templates/node.yaml
++++ b/helm/csi-unity/templates/node.yaml
+@@ -4,6 +4,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-node
+   namespace: {{ .Release.Namespace }}
++imagePullSecrets:
++  - name: default-registry-key
+ ---
+ kind: ClusterRole
+ apiVersion: rbac.authorization.k8s.io/v1
+--
+2.25.1

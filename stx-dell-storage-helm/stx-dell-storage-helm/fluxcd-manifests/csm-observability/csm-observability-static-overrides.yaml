@@ -1,0 +1,26 @@
+#
+# Copyright (c) 2023 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+app.starlingx.io/component: platform
+
+karaviMetricsPowerstore:
+  enabled: true
+  image: dellemc/csm-metrics-powerstore:v1.5.0
+karaviMetricsPowerflex:
+  enabled: false
+karaviMetricsPowerscale:
+  enabled: false
+karaviMetricsPowermax:
+  enabled: false
+karaviTopology:
+  enabled: true
+  image: dellemc/csm-topology:v1.5.0
+otelCollector:
+  image: otel/opentelemetry-collector:0.42.0
+  nginxProxy:
+    image: nginxinc/nginx-unprivileged:1.20
+cert-manager:
+  enabled: false

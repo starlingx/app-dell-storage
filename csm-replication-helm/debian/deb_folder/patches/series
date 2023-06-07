@@ -1,0 +1,8 @@
+0001-csm-replication-add-default-values-for-templates.patch
+0002-csm-replication-change-namespace-from-templates.patch
+0003-csm-replication-fix-pull-image-error.patch
+0004-csm-replication-change-image-path-for-templates.patch
+0005-csm-replication-support-setting-config-values.patch
+0006-csm-replication-fix-helm-lint-error.patch
+0007-csm-replication-add-label-app.starlingx.io-component.patch
+0008-csm-replication-add-replicationgroup-in-templates.patch

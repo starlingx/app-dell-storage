@@ -1,0 +1,44 @@
+#
+# Copyright (c) 2023 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+csm:
+  resiliency: false
+
+app.starlingx.io/component: platform
+
+controller:
+  attacher:
+    image: k8s.gcr.io/sig-storage/csi-attacher:v4.2.0
+  healthMonitor:
+    image: gcr.io/k8s-staging-sig-storage/csi-external-health-monitor-controller:v0.8.0
+  provisioner:
+    image: k8s.gcr.io/sig-storage/csi-provisioner:v3.4.1
+  resizer:
+    image: k8s.gcr.io/sig-storage/csi-resizer:v1.7.0
+  snapshot:
+    image: k8s.gcr.io/sig-storage/csi-snapshotter:v6.2.1
+    snapNamePrefix: csi-unity-snap
+  volumeNamePrefix: csi-unity-vol
+  tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: "Exists"
+    effect: "NoSchedule"
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+node:
+  registrar:
+    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.6.3
+  nodeNamePrefix: csi-unity-node
+  tolerations:
+  - operator: "Exists"
+
+driver:
+  image: dellemc/csi-unity:v2.6.0
+
+podmon:
+  image: dellemc/podmon:v1.5.0

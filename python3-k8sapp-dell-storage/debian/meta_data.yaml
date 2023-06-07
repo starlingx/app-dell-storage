@@ -1,0 +1,9 @@
+---
+debname: python3-k8sapp-dell-storage
+debver: 1.0-1
+src_path: k8sapp_dell_storage
+revision:
+  dist: $STX_DIST
+  GITREVCOUNT:
+    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    SRC_DIR: ${MY_REPO}/stx/app-dell-storage

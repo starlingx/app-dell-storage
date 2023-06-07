@@ -1,0 +1,29 @@
+From 81e1ac8fcb997f8deb46bfc63574fee7a6964c90 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Wed, 7 Jun 2023 09:23:30 -0300
+Subject: [PATCH] csm-replication: change image path for templates
+
+This patch consists of changing the format to use the image path
+following the expected format used by kube_app.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csm-replication/templates/controller.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/helm/csm-replication/templates/controller.yaml b/helm/csm-replication/templates/controller.yaml
+index 6d90677..93bb999 100644
+--- a/helm/csm-replication/templates/controller.yaml
++++ b/helm/csm-replication/templates/controller.yaml
+@@ -273,7 +273,7 @@ spec:
+       initContainers:
+       - name: init-rg-migration
+         imagePullPolicy: Always
+-        image: {{ .Values.initImage }}
++        image: {{ .Values.containerInit.image }}
+         command:
+         - /upgrade/migrate_rg.sh
+       containers:
+-- 
+2.25.1

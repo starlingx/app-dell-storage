@@ -1,0 +1,29 @@
+From 437c02961287ebad6c1f10e0091003f467108a08 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 19 May 2023 12:11:57 -0300
+Subject: [PATCH] velero: fix pull velero image error
+
+This patch consists of adding imagePullSecrets with name
+default-registry-key only in ServiceAccounts.
+It's necessary because without it the system can't use the
+images from the registry local.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ .../charts/velero/templates/serviceaccount-server.yaml          | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/charts/csm-application-mobility/charts/velero/templates/serviceaccount-server.yaml b/charts/csm-application-mobility/charts/velero/templates/serviceaccount-server.yaml
+index c295364..03980ff 100644
+--- a/charts/csm-application-mobility/charts/velero/templates/serviceaccount-server.yaml
++++ b/charts/csm-application-mobility/charts/velero/templates/serviceaccount-server.yaml
+@@ -16,4 +16,6 @@ metadata:
+ {{- with .Values.serviceAccount.server.labels }}
+   {{- toYaml . | nindent 4 }}
+ {{- end }}
++imagePullSecrets:
++  - name: default-registry-key
+ {{- end }}
+-- 
+2.25.1

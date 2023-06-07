@@ -1,0 +1,173 @@
+From 3552dc6b6c607ceab07d7c07c1df9aa083e96109 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Thu, 15 Jun 2023 08:58:51 -0300
+Subject: [PATCH] csi-unity: enabling csm-resiliency
+
+This patch consists of changing the format of the values in templates and
+changing the values.yaml for the user be able to enable csm-resiliency.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csi-unity/templates/controller.yaml      |  8 ++--
+ .../templates/driver-config-params.yaml       |  2 +-
+ helm/csi-unity/templates/node.yaml            |  8 ++--
+ helm/csi-unity/values.yaml                    | 43 ++++++++++---------
+ 4 files changed, 32 insertions(+), 29 deletions(-)
+
+diff --git a/helm/csi-unity/templates/controller.yaml b/helm/csi-unity/templates/controller.yaml
+index ec856fc..8898988 100644
+--- a/helm/csi-unity/templates/controller.yaml
++++ b/helm/csi-unity/templates/controller.yaml
+@@ -19,7 +19,7 @@ rules:
+     verbs: ["list", "watch", "create", "update", "patch"]
+   - apiGroups: [""]
+     resources: ["nodes"]
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "patch"]
+ {{- else }}
+     verbs: ["get", "list", "watch"]
+@@ -35,7 +35,7 @@ rules:
+     verbs: ["get", "list", "watch"]
+   - apiGroups: ["storage.k8s.io"]
+     resources: ["volumeattachments"]
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "update", "patch", "delete"]
+ {{- else }}
+     verbs: ["get", "list", "watch", "update","patch"]
+@@ -51,7 +51,7 @@ rules:
+     verbs: ["get", "list", "watch"]
+   - apiGroups: [""]
+     resources: ["pods"]
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "update", "delete"]
+ {{- else }}
+     verbs: ["get", "list", "watch"]
+@@ -139,7 +139,7 @@ spec:
+       {{- toYaml .Values.controller.tolerations | nindent 6 }}
+       {{- end }}
+       containers:
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+         - name: podmon
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           image: {{ .Values.podmon.image }}
+diff --git a/helm/csi-unity/templates/driver-config-params.yaml b/helm/csi-unity/templates/driver-config-params.yaml
+index 2bbf894..d8b2d56 100644
+--- a/helm/csi-unity/templates/driver-config-params.yaml
++++ b/helm/csi-unity/templates/driver-config-params.yaml
+@@ -10,7 +10,7 @@ data:
+     MAX_UNITY_VOLUMES_PER_NODE: "{{ .Values.maxUnityVolumesPerNode }}"
+     SYNC_NODE_INFO_TIME_INTERVAL: "{{ .Values.syncNodeInfoInterval }}"
+     TENANT_NAME: "{{ .Values.tenantName }}"
+-    {{ if .Values.podmon.enabled }}
++    {{ if .Values.csm.resiliency }}
+     PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
+     PODMON_CONTROLLER_LOG_FORMAT: "TEXT"
+     PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
+diff --git a/helm/csi-unity/templates/node.yaml b/helm/csi-unity/templates/node.yaml
+index 671e690..872f6d8 100644
+--- a/helm/csi-unity/templates/node.yaml
++++ b/helm/csi-unity/templates/node.yaml
+@@ -36,7 +36,7 @@ rules:
+     resourceNames: [ "privileged" ]
+     resources: [ "securitycontextconstraints" ]
+     verbs: [ "use" ]
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+   - apiGroups: [ "" ]
+     resources: [ "pods" ]
+     verbs: [ "get", "list", "watch", "update", "delete" ]
+@@ -74,7 +74,7 @@ spec:
+     metadata:
+       labels:
+         app: {{ .Release.Name }}-node
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+         driver.dellemc.com: dell-storage
+ {{- end }}
+     spec:
+@@ -91,7 +91,7 @@ spec:
+       hostNetwork: true
+       dnsPolicy: {{ .Values.node.dnsPolicy }}
+       containers:
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+         - name: podmon
+           securityContext:
+             privileged: true
+@@ -265,7 +265,7 @@ spec:
+         - name: unity-secret
+           secret:
+               secretName: {{ .Release.Name }}-creds
+-{{- if .Values.podmon.enabled }}
++{{- if .Values.csm.resiliency }}
+         - name: usr-bin
+           hostPath:
+             path: /usr/bin
+diff --git a/helm/csi-unity/values.yaml b/helm/csi-unity/values.yaml
+index 8a54909..6b68af0 100644
+--- a/helm/csi-unity/values.yaml
++++ b/helm/csi-unity/values.yaml
+@@ -1,6 +1,9 @@
+ ## K8S/DRIVER ATTRIBUTES
+ ########################
+ 
++csm:
++  resiliency: false
++
+ # version: version of this values file
+ # Note: Do not change this value
+ # Examples : "v2.6.0" , "nightly"
+@@ -205,26 +208,26 @@ podmon:
+   # default value : None
+   # Example : "podman:latest", "pod:latest"
+   image: dellemc/podmon:v1.5.0
+-#  controller:
+-#    args:
+-#      - "--csisock=unix:/var/run/csi/csi.sock"
+-#      - "--labelvalue=csi-unity"
+-#      - "--driverPath=csi-unity.dellemc.com"
+-#      - "--mode=controller"
+-#      - "--skipArrayConnectionValidation=false"
+-#      - "--driver-config-params=/unity-config/driver-config-params.yaml"
+-#      - "--driverPodLabelValue=dell-storage"
+-#      - "--ignoreVolumelessPods=false"
+-#  node:
+-#    args:
+-#      - "--csisock=unix:/var/lib/kubelet/plugins/unity.emc.dell.com/csi_sock"
+-#      - "--labelvalue=csi-unity"
+-#      - "--driverPath=csi-unity.dellemc.com"
+-#      - "--mode=node"
+-#      - "--leaderelection=false"
+-#      - "--driver-config-params=/unity-config/driver-config-params.yaml"
+-#      - "--driverPodLabelValue=dell-storage"
+-#      - "--ignoreVolumelessPods=false"
++  controller:
++    args:
++      - "--csisock=unix:/var/run/csi/csi.sock"
++      - "--labelvalue=csi-unity"
++      - "--driverPath=csi-unity.dellemc.com"
++      - "--mode=controller"
++      - "--skipArrayConnectionValidation=false"
++      - "--driver-config-params=/unity-config/driver-config-params.yaml"
++      - "--driverPodLabelValue=dell-storage"
++      - "--ignoreVolumelessPods=false"
++  node:
++    args:
++      - "--csisock=unix:/var/lib/kubelet/plugins/unity.emc.dell.com/csi_sock"
++      - "--labelvalue=csi-unity"
++      - "--driverPath=csi-unity.dellemc.com"
++      - "--mode=node"
++      - "--leaderelection=false"
++      - "--driver-config-params=/unity-config/driver-config-params.yaml"
++      - "--driverPodLabelValue=dell-storage"
++      - "--ignoreVolumelessPods=false"
+ 
+ storageClasses:
+ 
+-- 
+2.25.1

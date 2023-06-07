@@ -1,0 +1,39 @@
+From d50feca9077e5edb57dcc9a5c672194a2d675228 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Tue, 27 Jun 2023 12:20:55 -0300
+Subject: [PATCH] csm-application-mobility: add label app.starlingx.io/component
+
+This patch consists of changing the strategy from the Deployment resource and
+add the app.starlingx.io/component label in all pods.
+The strategy was needed changing because in the reapply the old replicasets
+were not being deleted. The default value was rollingUpdate.
+In this case, it doesn't effect functionality.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ .../apps_v1_deployment_app-mobility-controller-manager.yaml    | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/charts/csm-application-mobility/templates/apps_v1_deployment_app-mobility-controller-manager.yaml b/charts/csm-application-mobility/templates/apps_v1_deployment_app-mobility-controller-manager.yaml
+index b353fe2..5150fac 100644
+--- a/charts/csm-application-mobility/templates/apps_v1_deployment_app-mobility-controller-manager.yaml
++++ b/charts/csm-application-mobility/templates/apps_v1_deployment_app-mobility-controller-manager.yaml
+@@ -10,12 +10,15 @@ spec:
+   selector:
+     matchLabels:
+       control-plane: controller-manager
++  strategy:
++    type: Recreate
+   template:
+     metadata:
+       annotations:
+         kubectl.kubernetes.io/default-container: manager
+       labels:
+         control-plane: controller-manager
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       containers:
+       - args:
+-- 
+2.25.1

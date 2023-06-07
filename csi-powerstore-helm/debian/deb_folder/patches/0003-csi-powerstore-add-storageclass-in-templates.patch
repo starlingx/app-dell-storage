@@ -1,0 +1,65 @@
+From 343ab50e5af6de9c9164ff7757992548360c415d Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Mon, 29 May 2023 12:37:17 -0300
+Subject: [PATCH] csi-powerstore: add storageclass in templates
+
+This patch consists of adding a storage classes in the helm chart templates directory.
+It's needed because this helm chart needs a storage classes that should be
+created manually.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ .../templates/storageclass.yaml               | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+ create mode 100644 helm/csi-powerstore/templates/storageclass.yaml
+
+diff --git a/helm/csi-powerstore/templates/storageclass.yaml b/helm/csi-powerstore/templates/storageclass.yaml
+new file mode 100644
+index 0000000..b66ce0c
+--- /dev/null
++++ b/helm/csi-powerstore/templates/storageclass.yaml
+@@ -0,0 +1,41 @@
++{{- range $sc := .Values.storageClasses }}
++apiVersion: storage.k8s.io/v1
++kind: StorageClass
++metadata:
++{{- if or $sc.name $sc.fstype }}
++  name: {{ $sc.name | default ( print "csi-powerstore-" $sc.fstype | lower ) }}
++{{- else }}
++  name: "csi-powerstore-nfs"
++{{- end }}
++provisioner: {{ $sc.provisioner | default ( print "csi-powerstore.dellemc.com" ) }}
++parameters:
++  arrayID: "{{ $sc.arrayID }}"
++  {{- if $sc.fstype }}
++  csi.storage.k8s.io/fstype: {{ $sc.fstype | lower | default "nfs" }}
++  {{- end }}
++  nasName: "{{ $sc.nasName }}"
++  allowRoot: "{{ $sc.allowRoot | default "false" }}"
++  {{- if and $sc.replication $.Values.csm.replication }}
++  replication.storage.dell.com/isReplicationEnabled: "true"
++  replication.storage.dell.com/remoteStorageClassName: "{{ $sc.replication.remoteStorageClassName | default print "csi-powerstore-replication" }}"
++  {{- if  $sc.replication.remoteClusterID }}
++  replication.storage.dell.com/remoteClusterID: "{{ $sc.replication.remoteClusterID }}"
++  {{- end }}
++  {{- if  $sc.replication.remoteSystem }}
++  replication.storage.dell.com/remoteSystem: "{{ $sc.replication.remoteSystem }}"
++  {{- end }}
++  {{- if  $sc.replication.rpo }}
++  replication.storage.dell.com/rpo: {{ $sc.replication.rpo | default "Five_Minutes" }}
++  {{- end }}
++  replication.storage.dell.com/ignoreNamespaces: "{{ $sc.replication.ignoreNamespaces | default false }}"
++  replication.storage.dell.com/volumeGroupPrefix: {{ $sc.replication.volumeGroupPrefix | default "csi-powerstore" }}
++  {{- end }}
++reclaimPolicy: {{ $sc.reclaimPolicy | default "Delete" }}
++allowVolumeExpansion: {{ $sc.allowVolumeExpansion | default "true" }}
++volumeBindingMode: {{ $sc.volumeBindingMode | default "Immediate" }}
++{{- if $sc.allowedTopologies }}
++allowedTopologies:
++  {{ $sc.allowedTopologies | toYaml | nindent 4 }}
++{{- end }}
++---
++{{- end }}
+-- 
+2.25.1

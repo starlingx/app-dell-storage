@@ -1,0 +1,18 @@
+#
+# Copyright (c) 2023 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+namespace: dell-storage
+resources:
+  - helmrelease.yaml
+secretGenerator:
+  - name: csm-replication-static-overrides
+    files:
+      - csm-replication-static-overrides.yaml
+  - name: csm-replication-system-overrides
+    files:
+      - csm-replication-system-overrides.yaml
+generatorOptions:
+  disableNameSuffixHash: true

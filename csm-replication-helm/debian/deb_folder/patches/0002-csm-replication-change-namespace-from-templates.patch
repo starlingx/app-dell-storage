@@ -1,0 +1,86 @@
+From e2931f66cfe436960118e40fd6aaec8ae8c475dc Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Wed, 7 Jun 2023 09:40:42 -0300
+Subject: [PATCH] csm-replication: change namespace from templates
+
+This patch consists of changing the hard-coded namespace value for
+using the release namespace.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csm-replication/templates/controller.yaml | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/helm/csm-replication/templates/controller.yaml b/helm/csm-replication/templates/controller.yaml
+index d8b850d..23a9496 100644
+--- a/helm/csm-replication/templates/controller.yaml
++++ b/helm/csm-replication/templates/controller.yaml
+@@ -2,7 +2,7 @@ apiVersion: v1
+ kind: ServiceAccount
+ metadata:
+   name: dell-replication-controller-sa
+-  namespace: dell-replication-controller
++  namespace: {{ .Release.Namespace }}
+ secrets:
+ - name: replication-secret
+ ---
+@@ -179,10 +179,10 @@ apiVersion: v1
+ kind: Secret
+ metadata:
+   name: replication-secret
+-  namespace: dell-replication-controller
++  namespace: {{ .Release.Namespace }}
+   annotations:
+     kubernetes.io/service-account.name: dell-replication-controller-sa
+-    kubernetes.io/service-account.namespace: dell-replication-controller
++    kubernetes.io/service-account.namespace: {{ .Release.Namespace }}
+ type: kubernetes.io/service-account-token
+ ---
+ apiVersion: rbac.authorization.k8s.io/v1
+@@ -196,7 +196,7 @@ roleRef:
+ subjects:
+ - kind: ServiceAccount
+   name: dell-replication-controller-sa
+-  namespace: dell-replication-controller
++  namespace: {{ .Release.Namespace }}
+ ---
+ apiVersion: rbac.authorization.k8s.io/v1
+ kind: ClusterRoleBinding
+@@ -209,14 +209,14 @@ roleRef:
+ subjects:
+ - kind: ServiceAccount
+   name: dell-replication-controller-sa
+-  namespace: dell-replication-controller
++  namespace: {{ .Release.Namespace }}
+ ---
+ {{- $secret := (lookup "v1" "ConfigMap" "dell-replication-controller" "dell-replication-controller-config").data -}}
+ apiVersion: v1
+ kind: ConfigMap
+ metadata:
+   name: dell-replication-controller-config
+-  namespace: dell-replication-controller
++  namespace: {{ .Release.Namespace }}
+ {{ if $secret -}}
+ data:
+  {{- range $key, $value := $secret }}
+@@ -236,7 +236,7 @@ metadata:
+   labels:
+     control-plane: controller-manager
+   name: dell-replication-controller-manager-metrics-service
+-  namespace: dell-replication-controller
++  namespace: {{ .Release.Namespace }}
+ spec:
+   ports:
+   - name: https
+@@ -251,7 +251,7 @@ metadata:
+   labels:
+     control-plane: controller-manager
+   name: dell-replication-controller-manager
+-  namespace: dell-replication-controller
++  namespace: {{ .Release.Namespace }}
+ spec:
+   replicas: {{ .Values.replicas }}
+   selector:
+-- 
+2.25.1

@@ -1,0 +1,35 @@
+From 8e85e2b310b3de14be982af38f46ab087e6cdd8a Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 28 Apr 2023 14:18:33 -0300
+Subject: [PATCH] csm-replication: support setting config values
+
+This patch consists of changing the config.yaml that is hard-coded
+on the controller template for support the dynamic values.
+Before, we needed change the configmap manually before deploy.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csm-replication/templates/controller.yaml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/helm/csm-replication/templates/controller.yaml b/helm/csm-replication/templates/controller.yaml
+index 93bb999..026fd12 100644
+--- a/helm/csm-replication/templates/controller.yaml
++++ b/helm/csm-replication/templates/controller.yaml
+@@ -228,8 +228,12 @@ data:
+ {{ else -}}
+ data:
+   config.yaml: |
+-    clusterId: ""
++    clusterId: {{ .Values.config.clusterId }}
++    {{- if .Values.config.targets }}
++    targets: {{- .Values.config.targets | toYaml | nindent 4 }}
++    {{- else }}
+     targets: []
++    {{- end }}
+     CSI_LOG_LEVEL: {{ .Values.logLevel }}
+ {{ end }}
+ ---
+-- 
+2.25.1

@@ -1,0 +1,14 @@
+---
+debname: csi-unity-helm
+debver: 2.6-0
+dl_path:
+  name: csi-unity-2.6.0.tar.gz
+  url: https://github.com/dell/csi-unity/archive/v2.6.0.tar.gz
+  sha256sum: 6096c0b62c3cb5764de5a00bf26627b74812c6caea68d3465604cc61b4b41fac
+src_files:
+  - csi-unity-helm/files/Makefile
+revision:
+  dist: $STX_DIST
+  GITREVCOUNT:
+    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    SRC_DIR: ${MY_REPO}/stx/app-dell-storage/csi-unity-helm

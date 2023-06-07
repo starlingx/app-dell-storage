@@ -1,0 +1,18 @@
+app_name: @APP_NAME@
+app_version: @APP_VERSION@
+helm_repo: @HELM_REPO@
+maintain_user_overrides: true
+maintain_attributes: true
+
+disabled_charts:
+- csi-unity
+- csm-application-mobility
+- csm-observability
+- csm-replication
+
+upgrades:
+  auto_update: true
+
+behavior:
+  platform_managed_app: yes
+  desired_state: uploaded

@@ -1,0 +1,31 @@
+From fac0f5c1c336824cd30edb109f2b51b9745bf517 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Thu, 27 Apr 2023 12:17:45 -0300
+Subject: [PATCH] csm-replication: fix pull image error
+
+This patch consists of adding imagePullSecrets with name
+default-registry-key only in ServiceAccounts.
+It's necessary because without it the system can't use the
+images from the registry local.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+---
+ helm/csm-replication/templates/controller.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/helm/csm-replication/templates/controller.yaml b/helm/csm-replication/templates/controller.yaml
+index 0703f19..1f3bd1f 100644
+--- a/helm/csm-replication/templates/controller.yaml
++++ b/helm/csm-replication/templates/controller.yaml
+@@ -4,6 +4,8 @@ kind: ServiceAccount
+ metadata:
+   name: dell-replication-controller-sa
+   namespace: {{ .Release.Namespace }}
++imagePullSecrets:
++  - name: default-registry-key
+ secrets:
+ - name: replication-secret
+ ---
+--
+2.25.1

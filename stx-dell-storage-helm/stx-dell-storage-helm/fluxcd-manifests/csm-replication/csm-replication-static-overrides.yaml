@@ -1,0 +1,11 @@
+#
+# Copyright (c) 2023 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+app.starlingx.io/component: platform
+
+image: dellemc/dell-replication-controller:v1.4.0
+containerInit:
+  image: dellemc/dell-replication-init:v1.0.0

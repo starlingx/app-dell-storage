@@ -1,0 +1,14 @@
+---
+debname: csi-powerstore-helm
+debver: 2.6-0
+dl_path:
+  name: csi-powerstore-2.6.0.tar.gz
+  url: https://github.com/dell/csi-powerstore/archive/v2.6.0.tar.gz
+  sha256sum: 3130a9ba894935e8b4dba8124e0adf5b39601ce7cf5070dde7aa7ade35c57d12
+src_files:
+  - csi-powerstore-helm/files/Makefile
+revision:
+  dist: $STX_DIST
+  GITREVCOUNT:
+    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    SRC_DIR: ${MY_REPO}/stx/app-dell-storage/csi-powerstore-helm

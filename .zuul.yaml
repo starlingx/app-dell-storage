@@ -3,101 +3,47 @@
     check:
       jobs:
         - openstack-tox-linters
+        - k8sapp-dell-storage-tox-py39
+        - k8sapp-dell-storage-tox-pylint
     gate:
       jobs:
         - openstack-tox-linters
-    post:
-      jobs:
-        - stx-app-dell-storage-upload-git-mirror
+        - k8sapp-dell-storage-tox-py39
+        - k8sapp-dell-storage-tox-pylint
 
 - job:
-    name: stx-app-dell-storage-upload-git-mirror
-    parent: upload-git-mirror
-    description: >
-      Mirrors opendev.org/starlingx/app-dell-storage to
-      github.com/starlingx/app-dell-storage
+    name: k8sapp-dell-storage-tox-py39
+    parent: openstack-tox-py39
+    description: |
+            Run py39 test for k8sapp_dell_storage
+    nodeset: debian-bullseye
+    required-projects:
+      - starlingx/config
+      - starlingx/fault
+      - starlingx/update
+      - starlingx/utilities
+      - starlingx/root
+    files:
+      - python3-k8sapp-dell-storage/*
     vars:
-      git_mirror_repository: starlingx/app-dell-storage
-    secrets:
-      - name: git_mirror_credentials
-        secret: stx-app-dell-storage-github-secret
-        pass-to-parent: true
+      tox_extra_args: -c python3-k8sapp-dell-storage/k8sapp_dell_storage/tox.ini
+      tox_constraints_file: '{{ ansible_user_dir }}/src/opendev.org/starlingx/root/build-tools/requirements/debian/upper-constraints.txt'
 
-- secret:
-    name: stx-app-dell-storage-github-secret
-    data:
-      user: git
-      host: github.com
-      # yamllint disable-line rule:line-length
-      host_key: github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
-      ssh_key: !encrypted/pkcs1-oaep
-        - jhwFjDofZyEeURAtopcsutyAJulUM3+GXsc/QgSI0jMrTNXgfvWwSZvHV4mQ77ozx2sHH
-          cWdSvAYS8qk2kwiIB2NFty+vKD/PoWYIhdcZHxWe2BgIBuLEVxBu5CnaWtDszWHznefUX
-          fOJfSUcbon0TUYrBLCbqIJWD+IJnPssbmDb0nfgn2kUIyZKS/4lGw3+vyNW/y3VQseOaQ
-          erRwmhZu/nU7h/1twJFlnuEN3josO5KPNIFHIXuzLP/T8TUqAykhgnTv5IG+ZkmlgJCc9
-          UbIfYBiudchQ2XDv38aFdWv9FsbAz/YFeEQl5eCRYwpGk23HyElj1g6177YP5cdHdoYXk
-          ix/DDB1jA27eNNXMUtCvaIhmtks4mnwjKdGmXI3PPNGrCrbwHMoKzTh8gnnMJ1oVkTS5/
-          DWtXBLU4bY38Ohhsa1L/QFekHB0jydcPiU2SyGozP1S78zpedDMn3i2Ut3jnZ0VS6yaeL
-          XzEOYQ37aunqFG0oj9pSJ/hfGxcOXLXblZfe9twgtg+zcHKEg1q/6J9kevnJNXEPyWEJ/
-          qhuJS6BfTVJ6BjBa9Rh1wW+6XY2PchbwA8KbqBIwlbzrutw4d57xGeaV6GXeCRc35ptu+
-          bUffk5khbSQd76u7UmfExIitMnsm6gbDBxruihjPMIqU8GQwaQM4WoIh6IQXIM=
-        - K4G7UgOOe/dxgV0tFieu/QUFhLfKQEDh3qw05QYtRmuRXkj6xWUt3J+vgJ5YAw6LErDXc
-          /w0DOExh+Aw2GXLlqYXrhcfPHx8NufNiyz8vCrOsoV9Rj7CQoMOrBcKevT4GoikM3PRk+
-          phahWBzdWlpQOg4ouu/myhxY/1cE7zyA46VeUR2ezSlZoPbkG0fjEJmTDzGnnWEeG/oyM
-          NjDDIkyNihPCJR5oYbphjYFPA6AgPZg2rGrSvx1HPHdw0Obh0+ExljhmgSqWIMQNfQNOj
-          b3HlJV5hdgId5SsOhqrtrhWQGDMYSh3Ou6A13Kpbeoju18X0cHYNjPR6R7bv6CbFka/sO
-          sm1C5JUaQva4y7kZkMOHQxbsmCwq6pGZVz9SJwAGSdz7ola5rpxBXdUDhUs5mbSk+BeBa
-          5dKWEkd3R6/LOh+Ohefr0l/NcrcJIEb1MU0oMDxMe06jB1Xdj5w3JZ+T9z7yKiFYGsbhm
-          tg5euJMZ8EP6DIF++fnIoWW8YEpDFZ9dzA9gDjY1A+o9JNXOUJGXTupnLMi4PyBKEWp0t
-          Y9la5ywfYekj2NE61FzTN4r8KKks+qqNLNIlBZ4z92KN+VBn4A/slL9uLdjDcMZM6Rn8d
-          Yuxasg1A5mNfZuXTKEoa7B8fa46HqZxYZ/KI2nSAdvEpHIG3nRLgyj1suk1jvM=
-        - KD6OlWoDGHcPfjMTYqMgBzt32MJoBTpQQFE4uLEZY7cJSi6xb0Va3clZoDv8u7mgw+i2j
-          53c35iUTuU00L0/9KWQaNBFWrTXrThULItKXk0BJCTYeTl5+ruFlkmSPKO4xm+Hug97mF
-          jAZv6aJPReSCQBl/fGE4hwIIHcBUeMwehcNkHkBjAOFCqBUdoewqBo7TVYYApKAn1fkXx
-          qiM7MZsI7ERHmYyyhtNCbFaP3lm2+Eqrooz+yjkWvCIS40fRQNvLvgDmGhYnif+NBzLAr
-          0UavVAiyH4U10cFpHdPvaVYE8EVf2t0JiU3odrRY8DSGfhrFOsxx5cFkHKRMGTjHhOQ4R
-          vJEhRtgsXNfPABJNsIOPkWLfPAXNt8I7aMDpM5AyZ3uy+el5WyDXIWsfHnqoVJWgzHJpb
-          Tl/B6tFK6JyMyzXoF4g1hXu4vRmsFrBnk7fqGf09ExUYn2REUqckUjc0j7dtt06n405Xb
-          H5oCjaTdL5KqC7OHtc2HG4mW5FFZP7iwV+7OkphE/szBSkRUqiYQPrMa6muwXp9sLT+oV
-          NgfRU8YAvtDniEC0Jx5EWmU6O5oWDs3jtwe3Yob3mPOFVf9JltxgvSdLKHqhC7v3GD1k8
-          L1Tp6hYDG3oi/lEovoOEf0nH6LAraX9YNAIQmsHEjLNSm8MAmm7vWW1ZL6meH8=
-        - S1vIeJ7mqrzd7vUt5OShMPzj6/oYHkw//0A+soxQZGt769pQbqPBYBSxFiDfgl/5Iz3IV
-          2GXCsq9skLqu4Hw6NjPKufB4wW6uYkDKaQjNyE2HIj4vHtK0LMtw4UHhxHgvdrvGVwbOP
-          WtxSI8lmTyl6qVUPIe0mSHJzEcINT0jPuZcbQ8EnQYmr20/cVvY9nWaybC4vmnaTHFYR8
-          m9NawZMRqYwKtJC7t6bNQt7WXfW/690EQr3+D/A0VAZlQ04MPDZ4AYsf9/Dtx0Aih0NXo
-          0AnTAISTzM5phgaR/qRzZ7B7M7uG6h/brKil1jRpO5UpbnJ661ibj/5WiJPsYGjnfa/Dw
-          uF0e+UmGWdumBjZY5V1VKt6kH5RfCE1ttbamt8/s1QHiIPmTiq8GzF3tFa22a28GSKxNl
-          LhFjCfnX0W+8j2Or57wVV649cJw48Nij1SvCO1dOIPH0AKKF13QTWh+kMunSXKEodaMZH
-          hmubF5bs7DzutHC5kScvNihWjHfmJnkCW9wXt8ZVBzyNqcvrYFPxNItnB9q5l8xZd5lJs
-          JFp++hsNYnpFMRV6zbT0cYgf0jRyAFlUs6jJl6KhQgKswxV36DaOA+X0pkBpwJXC7187r
-          o/BBLVzgAjiSYXhgB45LPI1POWZMDXD7NLku2pSO98aCvmHdOHMNrp4PwWoT7A=
-        - VIHbwn9a9gzrcN6pLgb3Cxt9x87CojHSj2DC3QIvvcQkv554o0EXZ1W8EykOizNyzUca4
-          CBbBZJlkNmR8o4+G2IoZ9fd4rYfsgFyBX6dVbVYOwzUoawoTTa0YnGLJYdX1z4kUaVCs0
-          9LA2X7Lq4XplkK0cFEa+l6iYaUTco42uaVv6bh0opA3DeqR39pv/btiIf6VvI7V8Se4+1
-          rL6J3qc0hvwr3QDq8XVoXMvQbgb3p40Dq7kpRLOg86HtZ+JdY/KwFA+q6tfvNnuGPM0g6
-          YkIlKCeqNpWxewvm6y+Id3XEO4jI/WwPbbyTp9xqdluRKtDZRMGXVSlsAuFCiCsFMC2ef
-          lNlA5WjC9oBWTyDWC2g7a9/67LBJVgZIFRutig/GQbGSQINNRhZZ7DIZyxy+6LBPDSEub
-          kaYbBPywhX8uxAE7Xn7+j9+ak4on2KMYoIcT/P7aoMi4kX2p2gWUWxIfugVYDCQ4oRlOx
-          BoaSt9wVYlQC6JUSiCEmmiXNs6miLZE1dcyl/duOuOQzH4U+ro/x3Ri5fd0HLUDSNBPze
-          DFm3iCmrXJMF4Go5yPM/UCtjtRS/Ln/yxmHccNqurL0ROrrVEmlJ4aJAYFyDCVHr9eXoS
-          fY533WE/jWwpUmY5Ahr0PWMeIBKfx7Cje9J+WWXiflQfOq7ggipP7nFacZBNiU=
-        - iCB/xKlw0ipSlzFzfxVnU6q3dFxs6GJhUlTey3gBmyZ99puw7s8gLGSdlxl/lSEHDfO2w
-          6ioAi7EJzntIp1ch/JbYsZayczhvUZjnSHdQr8blR2XaxI4EA/JlsBpBzuowKcE8LvKAg
-          pGGjeQ/n+5ecBpKSSELqpLy7RHlAv/cqGL4oyJg1lErqwEttmkMNIbNRlO7H0GuVMAHjU
-          ReiA/fygPgq8U8MMD6J3oDA4p6pT45tZeTjfacFFymCTrSGVI9dSAYPswonsCSuzG3Dxc
-          2cLZ1D5ZMoVw7Tk3+FZqg1df+LnhkAUvntKP98ES+Icwf4cw6HrLiqIG2575yHyLinW0W
-          X+4uOLFTDqE/lhypluGD2i//x0BsAsJ+iqF/ac0GMzxp996SLyoTOMrYNP4/CNqxHPW+T
-          nNXFUgfWOVHb2edVDisDmlviT21t3G33jXrt8X5epnbLU/y/dyuU9KWdG4UfqqHVWamKc
-          vU9XVNRHfwq0SF7t1zKYAs3LEI7lW4hYHgz4xMBIqiM8gUsCdeh4M/xhiBWBaYHG6Q/ax
-          MSLNjudPg+T5N+2DpqiOS76O0Fbx7nefPtV/I/VyfTMT7SW4ZX8slSBRCTmR+wGcgBbu1
-          SgT19LMkuo3CxWWobBKSSSF9JbJquGZKdSmQjKlbAQhxZlukpljdqxW4XrKP8A=
-        - o9ik/siGydKWn149s3r3qbRA2y8EqHhZh93Y6FU4rmjogKARxs66OOVGHIn5AB2J6x/Jx
-          hGnz0eXmv1or+tJV80sfAzxP2csLQu8plQKsTHF2tAnQvQ1jwmOlt9V9WNic1Txaabsz/
-          FzRgM02A14RFrVxWOh8+c9Q+18fXnLRk/3lJFJa2M5FIcSDrqNWoTbCMz7uLPfRtp7GRn
-          r+nWkjBv4hQmz3ZP9sr75uSFtcfQ6AnbrAjJGkcvMha5uDO7FuQcfw2qeEs/OmKy/v4ij
-          /pd6KIGiN1KdG7L+St9UyYOvRWe9p7J1apFSLXtcSD97sNwXPXYhidmeKxs6L3GFaAOXb
-          TEyRbV5OCUwnEsgXz7JXA3Hn5AP0bXoLm1SYYd1VzwMYc96nOFljdFKoHlBSDYwvHTtHu
-          fZtQB+E/Y4CQP/CK+yTWjSFkC0Vuc/IdKuVUymyh7mkEZckWF3UFZiYY1ncMvMJdWT7eE
-          wQgV3X9PQgdf2xTTvTlgVQwdzCQ7IsidgX+nfQvJRslpfngfByQ4UZhMptD93B38XtUlZ
-          TG+2EiDQRFgUeuy2j+PuREsQl+VNEtBoNm9/3lz1SokYHPUZi97XkwX+nACetdQl7A51N
-          bLntQcm9C8TnXjzHsnCGGNgyK+Xzyb1uNK703Yl9BWp5jAEsrA7LeZwdEmnbxU=
+- job:
+    name: k8sapp-dell-storage-tox-pylint
+    parent: tox
+    description: |
+            Run pylint test for k8sapp_dell_storage
+    nodeset: debian-bullseye
+    required-projects:
+      - starlingx/config
+      - starlingx/fault
+      - starlingx/update
+      - starlingx/utilities
+      - starlingx/root
+    files:
+      - python3-k8sapp-dell-storage/*
+    vars:
+      tox_envlist: pylint
+      tox_extra_args: -c python3-k8sapp-dell-storage/k8sapp_dell_storage/tox.ini
+      tox_constraints_file: '{{ ansible_user_dir }}/src/opendev.org/starlingx/root/build-tools/requirements/debian/upper-constraints.txt'

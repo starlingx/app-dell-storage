@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+
+export ROOT = debian/tmp
+export APP_FOLDER = $(ROOT)/usr/lib/helm
+export VELERO_NAME_TGZ = velero-2.29.8.tgz
+export VELERO_DIR = charts/csm-application-mobility/charts
+
+%:
+	dh $@
+
+override_dh_auto_build:
+
+	# including velero as a subchart
+	mkdir -p $(VELERO_DIR)
+	tar xzf $(VELERO_NAME_TGZ) -C $(VELERO_DIR)
+
+	# patching velero
+	patch --no-backup-if-mismatch --fuzz=0 -p1 < 0001-velero-fix-pull-velero-image-error.patch
+	patch --no-backup-if-mismatch --fuzz=0 -p1 < 0002-velero-add-label-app.starlingx.io-component.patch
+
+	# building csm
+	cp Makefile charts
+	cd charts && make csm-application-mobility
+
+override_dh_auto_install:
+	# Install the app tar file.
+	install -d -m 755 $(APP_FOLDER)
+	install -p -D -m 755 charts/csm-application-mobility*.tgz $(APP_FOLDER)
+
+override_dh_auto_test:
