@@ -5,39 +5,17 @@
 #
 
 from sysinv.common import exception
-from sysinv.helm import base
 
 from k8sapp_dell_storage.common import constants as app_constants
+from k8sapp_dell_storage.helm import storage
 
 
-class CSMObservabilityHelm(base.FluxCDBaseHelm):
+class CSMObservabilityHelm(storage.StorageBaseHelm):
     """ Class to encapsulate helm operations for the CSM chart. """
 
     CHART = app_constants.HELM_CHART_CSM_OBSERVABILITY
-
     HELM_RELEASE = app_constants.FLUXCD_HELMRELEASE_CSM_OBSERVABILITY
-
-    SUPPORTED_NAMESPACES = base.BaseHelm.SUPPORTED_NAMESPACES + \
-        [app_constants.HELM_NS_DELL_STORAGE]
-    SUPPORTED_APP_NAMESPACES = {
-        app_constants.HELM_APP_DELL_STORAGE: SUPPORTED_NAMESPACES,
-    }
-
     SERVICE_NAME = app_constants.HELM_APP_DELL_STORAGE
-
-    def execute_manifest_updates(self, operator):
-        # On application load, this chart is disabled in the metadata.
-        # Insert as needed.
-        if self._is_enabled(operator.APP, self.CHART,
-                                app_constants.HELM_NS_DELL_STORAGE):
-            operator.chart_group_chart_insert(
-                operator.CHART_GROUPS_LUT[self.CHART],
-                operator.CHARTS_LUT[self.CHART])
-
-    def execute_kustomize_updates(self, operator):
-        if not self._is_enabled(operator.APP, self.CHART,
-                                app_constants.HELM_NS_DELL_STORAGE):
-            operator.helm_release_resource_delete(self.HELM_RELEASE)
 
     def get_overrides(self, namespace=None):
 
