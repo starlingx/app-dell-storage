@@ -1,10 +1,10 @@
 ---
 debname: csi-unity-helm
-debver: 2.6-0
+debver: 2.7-0
 dl_path:
-  name: csi-unity-2.6.0.tar.gz
-  url: https://github.com/dell/csi-unity/archive/v2.6.0.tar.gz
-  sha256sum: 6096c0b62c3cb5764de5a00bf26627b74812c6caea68d3465604cc61b4b41fac
+  name: csi-unity-2.7.0.tar.gz
+  url: https://github.com/dell/csi-unity/archive/v2.7.0.tar.gz
+  sha256sum: b28b2b9a82aab5aa391a904c2141fc0dacc69efb8e2f17ca8789e4307d440f82
 src_files:
   - csi-unity-helm/files/Makefile
 revision:

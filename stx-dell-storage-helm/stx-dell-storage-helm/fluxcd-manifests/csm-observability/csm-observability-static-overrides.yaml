@@ -8,7 +8,7 @@ app.starlingx.io/component: platform
 
 karaviMetricsPowerstore:
   enabled: true
-  image: dellemc/csm-metrics-powerstore:v1.5.0
+  image: docker.io/dellemc/csm-metrics-powerstore:v1.5.0
 karaviMetricsPowerflex:
   enabled: false
 karaviMetricsPowerscale:
@@ -17,10 +17,10 @@ karaviMetricsPowermax:
   enabled: false
 karaviTopology:
   enabled: true
-  image: dellemc/csm-topology:v1.5.0
+  image: docker.io/dellemc/csm-topology:v1.5.0
 otelCollector:
-  image: otel/opentelemetry-collector:0.42.0
+  image: docker.io/otel/opentelemetry-collector:0.42.0
   nginxProxy:
-    image: nginxinc/nginx-unprivileged:1.20
+    image: docker.io/nginxinc/nginx-unprivileged:1.20
 cert-manager:
   enabled: false

@@ -1,25 +1,24 @@
-From 343ab50e5af6de9c9164ff7757992548360c415d Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Mon, 29 May 2023 12:37:17 -0300
+From 7f01cd3a57085883ed3696655b5d5c49beee26f9 Mon Sep 17 00:00:00 2001
+From: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+Date: Wed, 13 Sep 2023 14:55:39 -0300
 Subject: [PATCH] csi-powerstore: add storageclass in templates
 
 This patch consists of adding a storage classes in the helm chart templates directory.
 It's needed because this helm chart needs a storage classes that should be
 created manually.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
 ---
- .../templates/storageclass.yaml               | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ .../templates/storageclass.yaml               | 43 +++++++++++++++++++
+ 1 file changed, 43 insertions(+)
  create mode 100644 helm/csi-powerstore/templates/storageclass.yaml
 
 diff --git a/helm/csi-powerstore/templates/storageclass.yaml b/helm/csi-powerstore/templates/storageclass.yaml
 new file mode 100644
-index 0000000..b66ce0c
+index 0000000..2bce0cd
 --- /dev/null
 +++ b/helm/csi-powerstore/templates/storageclass.yaml
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,43 @@
 +{{- range $sc := .Values.storageClasses }}
 +apiVersion: storage.k8s.io/v1
 +kind: StorageClass
@@ -35,7 +34,9 @@ index 0000000..b66ce0c
 +  {{- if $sc.fstype }}
 +  csi.storage.k8s.io/fstype: {{ $sc.fstype | lower | default "nfs" }}
 +  {{- end }}
++  {{- if $sc.nasName }}
 +  nasName: "{{ $sc.nasName }}"
++  {{- end }}
 +  allowRoot: "{{ $sc.allowRoot | default "false" }}"
 +  {{- if and $sc.replication $.Values.csm.replication }}
 +  replication.storage.dell.com/isReplicationEnabled: "true"

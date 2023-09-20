@@ -1,3 +1,9 @@
+csi-unity-helm (2.7-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>  Fri, 15 Sep 2023 14:21:00 +0000
+
 csi-unity-helm (2.6-0) unstable; urgency=medium
 
   * Initial release.

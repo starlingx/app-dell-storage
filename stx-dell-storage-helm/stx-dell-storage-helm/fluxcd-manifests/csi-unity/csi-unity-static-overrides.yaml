@@ -11,15 +11,15 @@ app.starlingx.io/component: platform
 
 controller:
   attacher:
-    image: k8s.gcr.io/sig-storage/csi-attacher:v4.2.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.3.0
   healthMonitor:
-    image: gcr.io/k8s-staging-sig-storage/csi-external-health-monitor-controller:v0.8.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.9.0
   provisioner:
-    image: k8s.gcr.io/sig-storage/csi-provisioner:v3.4.1
+    image: registry.k8s.io/sig-storage/csi-provisioner:v3.5.0
   resizer:
-    image: k8s.gcr.io/sig-storage/csi-resizer:v1.7.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.8.0
   snapshot:
-    image: k8s.gcr.io/sig-storage/csi-snapshotter:v6.2.1
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2
     snapNamePrefix: csi-unity-snap
   volumeNamePrefix: csi-unity-vol
   tolerations:
@@ -32,13 +32,13 @@ controller:
 
 node:
   registrar:
-    image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.6.3
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0
   nodeNamePrefix: csi-unity-node
   tolerations:
   - operator: "Exists"
 
 driver:
-  image: dellemc/csi-unity:v2.6.0
+  image: docker.io/dellemc/csi-unity:v2.7.0
 
 podmon:
-  image: dellemc/podmon:v1.5.0
+  image: docker.io/dellemc/podmon:v1.6.0

@@ -7,7 +7,7 @@
 app.starlingx.io/component: platform
 
 controller:
-  image: dellemc/csm-application-mobility-controller:v0.3.0
+  image: docker.io/dellemc/csm-application-mobility-controller:v0.3.0
 
 licenseName: csm-application-mobility-license
 
@@ -22,11 +22,11 @@ velero:
   credentials:
     name: velero-cloud-credentials
   image:
-    repository: velero/velero
+    repository: docker.io/velero/velero
     tag: v1.8.1
   initContainers:
   - name: dell-custom-velero-plugin
-    image: dellemc/csm-application-mobility-velero-plugin:v0.3.0
+    image: docker.io/dellemc/csm-application-mobility-velero-plugin:v0.3.0
     volumeMounts:
     - mountPath: /target
       name: plugins

@@ -1,22 +1,21 @@
-From 28a21b6fe89bccee4c5e3d8bc9cfd5f773a9d01c Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Thu, 1 Jun 2023 10:49:55 -0300
+From 3e281f2609bcde8bc807aa94842739ebfbf49bed Mon Sep 17 00:00:00 2001
+From: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+Date: Wed, 13 Sep 2023 16:53:35 -0300
 Subject: [PATCH] csi-powerstore: enabling csm-resiliency
 
 This patch consists of changing the format of the values in templates and
 changing the values.yaml for the user be able to enable csm-resiliency.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
 ---
  helm/csi-powerstore/templates/controller.yaml | 12 ++---
  .../templates/driver-config-params.yaml       |  2 +-
  helm/csi-powerstore/templates/node.yaml       | 12 ++---
- helm/csi-powerstore/values.yaml               | 50 ++++++++++---------
- 4 files changed, 39 insertions(+), 37 deletions(-)
+ helm/csi-powerstore/values.yaml               | 51 ++++++++++---------
+ 4 files changed, 40 insertions(+), 37 deletions(-)
 
 diff --git a/helm/csi-powerstore/templates/controller.yaml b/helm/csi-powerstore/templates/controller.yaml
-index 622a3c9..b9a7a92 100644
+index cd1ce8d..0d04bf4 100644
 --- a/helm/csi-powerstore/templates/controller.yaml
 +++ b/helm/csi-powerstore/templates/controller.yaml
 @@ -40,7 +40,7 @@ rules:
@@ -67,7 +66,7 @@ index 622a3c9..b9a7a92 100644
                  {{- if contains "--arrayConnectivityPollRate" $value }}
              - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
 diff --git a/helm/csi-powerstore/templates/driver-config-params.yaml b/helm/csi-powerstore/templates/driver-config-params.yaml
-index 06bad1e..2699580 100644
+index 0efc954..6ea59e9 100644
 --- a/helm/csi-powerstore/templates/driver-config-params.yaml
 +++ b/helm/csi-powerstore/templates/driver-config-params.yaml
 @@ -25,7 +25,7 @@ data:
@@ -80,7 +79,7 @@ index 06bad1e..2699580 100644
      PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
      PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
 diff --git a/helm/csi-powerstore/templates/node.yaml b/helm/csi-powerstore/templates/node.yaml
-index c06ef03..3efa533 100644
+index 51d5b8f..93ae034 100644
 --- a/helm/csi-powerstore/templates/node.yaml
 +++ b/helm/csi-powerstore/templates/node.yaml
 @@ -57,7 +57,7 @@ rules:
@@ -131,25 +130,26 @@ index c06ef03..3efa533 100644
            hostPath:
              path: /usr/bin
 diff --git a/helm/csi-powerstore/values.yaml b/helm/csi-powerstore/values.yaml
-index 05e1c71..ba94604 100644
+index 25b0404..15f95cf 100644
 --- a/helm/csi-powerstore/values.yaml
 +++ b/helm/csi-powerstore/values.yaml
-@@ -14,6 +14,9 @@
+@@ -14,6 +14,10 @@
  #
  #
  
++# CSM Control
 +csm:
 +  resiliency: false
 +
  ## K8S/DRIVER ATTRIBUTES
  ########################
  
-@@ -328,31 +331,30 @@ storageCapacity:
+@@ -351,31 +355,30 @@ storageCapacity:
  
  # Enable this feature only after contact support for additional information
  podmon:
 -  enabled: false
-   image: dellemc/podmon:v1.5.0
+   image: dellemc/podmon:v1.6.0
 -  #controller:
 -  #  args:
 -  #    - "--csisock=unix:/var/run/csi/csi.sock"
@@ -197,7 +197,7 @@ index 05e1c71..ba94604 100644
 +      - "--driverPodLabelValue=dell-storage"
 +      - "--ignoreVolumelessPods=false"
  
- driver:
-   image: dellemc/csi-powerstore:v2.6.0
+ storageClasses:
+ 
 -- 
 2.25.1

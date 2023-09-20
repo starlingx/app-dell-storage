@@ -6,6 +6,6 @@
 
 app.starlingx.io/component: platform
 
-image: dellemc/dell-replication-controller:v1.4.0
+image: docker.io/dellemc/dell-replication-controller:v1.5.0
 containerInit:
-  image: dellemc/dell-replication-init:v1.0.0
+  image: docker.io/dellemc/dell-replication-init:v1.0.1
