@@ -5,11 +5,13 @@
         - openstack-tox-linters
         - k8sapp-dell-storage-tox-py39
         - k8sapp-dell-storage-tox-pylint
+        - k8sapp-dell-storage-tox-metadata
     gate:
       jobs:
         - openstack-tox-linters
         - k8sapp-dell-storage-tox-py39
         - k8sapp-dell-storage-tox-pylint
+        - k8sapp-dell-storage-tox-metadata
 
 - job:
     name: k8sapp-dell-storage-tox-py39
@@ -26,6 +28,25 @@
     files:
       - python3-k8sapp-dell-storage/*
     vars:
+      tox_extra_args: -c python3-k8sapp-dell-storage/k8sapp_dell_storage/tox.ini
+      tox_constraints_file: '{{ ansible_user_dir }}/src/opendev.org/starlingx/root/build-tools/requirements/debian/upper-constraints.txt'
+
+- job:
+    name: k8sapp-dell-storage-tox-metadata
+    parent: tox
+    description: |
+            Run metadata test for k8sapp_dell_storage
+    nodeset: debian-bullseye
+    required-projects:
+      - starlingx/config
+      - starlingx/fault
+      - starlingx/update
+      - starlingx/utilities
+      - starlingx/root
+    files:
+      - python3-k8sapp-dell-storage/*
+    vars:
+      tox_envlist: metadata
       tox_extra_args: -c python3-k8sapp-dell-storage/k8sapp_dell_storage/tox.ini
       tox_constraints_file: '{{ ansible_user_dir }}/src/opendev.org/starlingx/root/build-tools/requirements/debian/upper-constraints.txt'
 
