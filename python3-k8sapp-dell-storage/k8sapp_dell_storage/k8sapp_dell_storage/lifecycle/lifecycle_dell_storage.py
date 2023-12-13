@@ -86,5 +86,5 @@ class DellStorageAppLifecycleOperator(lifecycle_base.AppLifecycleOperator):
                     "name": i.name,
                     "user_overrides": i.user_overrides,
                     "system_overrides": i.system_overrides
-                  } for i in overrides if i.system_overrides['enabled'] is True ]
+                  } for i in overrides if i.system_overrides['enabled'] is True]
         return charts
