@@ -45,8 +45,6 @@
       - starlingx/update
       - starlingx/utilities
       - starlingx/root
-    files:
-      - python3-k8sapp-dell-storage/*
     vars:
       tox_envlist: metadata
       tox_extra_args: -c python3-k8sapp-dell-storage/k8sapp_dell_storage/tox.ini
