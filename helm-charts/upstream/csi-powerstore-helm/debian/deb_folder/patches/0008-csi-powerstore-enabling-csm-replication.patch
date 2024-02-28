@@ -1,0 +1,59 @@
+From 02373eaca6451efd9e93531c958a36d98af535cd Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Mon, 26 Feb 2024 12:04:04 -0300
+Subject: [PATCH] csi-powerstore: enabling csm-replication
+
+This patch consists of changing the format of the values in templates and
+changing the values.yaml for the user be able to enable csm-replication.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+---
+ charts/csi-powerstore/templates/controller.yaml | 6 +++---
+ charts/csi-powerstore/values.yaml               | 1 +
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
+index c2007d7..e827b7f 100644
+--- a/charts/csi-powerstore/templates/controller.yaml
++++ b/charts/csi-powerstore/templates/controller.yaml
+@@ -116,7 +116,7 @@ rules:
+     verbs: ["update", "patch"]
+   # below for dell-csi-replicator
+   {{- if hasKey .Values.controller "replication" }}
+-  {{- if eq .Values.controller.replication.enabled true}}
++  {{- if or .Values.csm.replication .Values.controller.replication.enabled }}
+   - apiGroups: ["replication.storage.dell.com"]
+     resources: ["dellcsireplicationgroups"]
+     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+@@ -322,7 +322,7 @@ spec:
+         {{- end }}
+         {{- end }}
+         {{- if hasKey .Values.controller "replication" }}
+-        {{- if eq .Values.controller.replication.enabled true}}
++        {{- if or .Values.csm.replication .Values.controller.replication.enabled }}
+         - name: dell-csi-replicator
+           image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+@@ -426,7 +426,7 @@ spec:
+             - name: X_CSI_PODMON_API_PORT
+               value: "{{ .Values.podmonAPIPort }}"
+             {{- if hasKey .Values.controller "replication" }}
+-            {{- if eq .Values.controller.replication.enabled true}}
++            {{- if or .Values.csm.replication .Values.controller.replication.enabled }}
+             - name: X_CSI_REPLICATION_CONTEXT_PREFIX
+               value: {{ .Values.controller.replication.replicationContextPrefix | default "powerstore"}}
+             - name: X_CSI_REPLICATION_PREFIX
+diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
+index fd9daf2..fb9d20b 100644
+--- a/charts/csi-powerstore/values.yaml
++++ b/charts/csi-powerstore/values.yaml
+@@ -16,6 +16,7 @@
+ 
+ # CSM Control
+ csm:
++  replication: false
+   resiliency: false
+ 
+ ## K8S/DRIVER ATTRIBUTES
+-- 
+2.34.1

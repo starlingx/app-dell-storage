@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2023 Wind River Systems, Inc.
+# Copyright (c) 2023-2024 Wind River Systems, Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,23 +12,24 @@ app.starlingx.io/component: platform
 
 controller:
   metadataretriever:
-    image: docker.io/dellemc/csi-metadata-retriever:v1.4.0
+    image: docker.io/dellemc/csi-metadata-retriever:v1.6.1
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.3.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.4.2
   healthMonitor:
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.9.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
   provisioner:
-    image: registry.k8s.io/sig-storage/csi-provisioner:v3.5.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v3.6.2
   replication:
-    image: docker.io/dellemc/dell-csi-replicator:v1.5.0
+    image: docker.io/dellemc/dell-csi-replicator:v1.7.1
   resizer:
-    image: registry.k8s.io/sig-storage/csi-resizer:v1.8.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.9.2
   vgsnapshot:
-    image: docker.io/dellemc/csi-volumegroup-snapshotter:v1.2.0
+    image: docker.io/dellemc/csi-volumegroup-snapshotter:v1.4.0
   snapshot:
-    image: registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.2
     snapNamePrefix: csi-powerstore-snap
   volumeNamePrefix: csi-powerstore-vol
+  nodeSelector: { "node-role.kubernetes.io/control-plane": "" }
   tolerations:
   - key: "node-role.kubernetes.io/master"
     operator: "Exists"
@@ -39,18 +40,17 @@ controller:
 
 node:
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.1
+  nodeSelector: { "kubernetes.io/os": "linux" }
   tolerations:
   - operator: "Exists"
 
 driver:
-  image: docker.io/dellemc/csi-powerstore:v2.7.0
+  image: docker.io/dellemc/csi-powerstore:v2.9.1
 
 podmon:
-  image: docker.io/dellemc/podmon:v1.6.0
+  image: docker.io/dellemc/podmon:v1.8.1
 
 secret:
-  create: true
-  arrays:
 
 storageClasses:

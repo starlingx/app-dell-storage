@@ -1,0 +1,15 @@
+---
+debname: csi-powerstore-helm
+debver: 2.9-1
+dl_path:
+  name: csi-powerstore-2.9.1.tar.gz
+  url: https://github.com/dell/helm-charts/archive/csi-powerstore-2.9.1.tar.gz
+  sha256sum: c0c53bd6c18b435c9c0a1d1b0803d83cdea7d7238b276efa8f6686c61bc55a18
+src_files:
+  - csi-powerstore-helm/files/Makefile
+revision:
+  dist: $STX_DIST
+  stx_patch: 0
+  GITREVCOUNT:
+    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    SRC_DIR: ${MY_REPO}/stx/app-dell-storage/helm-charts/upstream/csi-powerstore-helm

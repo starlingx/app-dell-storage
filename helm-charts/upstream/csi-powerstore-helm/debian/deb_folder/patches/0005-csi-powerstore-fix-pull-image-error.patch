@@ -1,0 +1,44 @@
+From 6d60351cffc161790124e9bca957692bed1e4dea Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Mon, 26 Feb 2024 11:37:21 -0300
+Subject: [PATCH] csi-powerstore: fix pull image error
+
+This patch consists of adding imagePullSecrets with name
+default-registry-key only in ServiceAccounts.
+It's necessary because without it the system can't use the
+images from the registry local.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+---
+ charts/csi-powerstore/templates/controller.yaml | 2 ++
+ charts/csi-powerstore/templates/node.yaml       | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
+index 22b45f9..274e4ee 100644
+--- a/charts/csi-powerstore/templates/controller.yaml
++++ b/charts/csi-powerstore/templates/controller.yaml
+@@ -19,6 +19,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-controller
+   namespace: {{ .Release.Namespace }}
++imagePullSecrets:
++  - name: default-registry-key
+ 
+ ---
+ 
+diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
+index 47cd54e..f4c1c12 100644
+--- a/charts/csi-powerstore/templates/node.yaml
++++ b/charts/csi-powerstore/templates/node.yaml
+@@ -19,6 +19,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-node
+   namespace: {{ .Release.Namespace }}
++imagePullSecrets:
++  - name: default-registry-key
+ 
+ ---
+ 
+-- 
+2.34.1
