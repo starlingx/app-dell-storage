@@ -1,24 +1,24 @@
-From 5198026fcd3bb735102cca77f83bbd60d8ee0c20 Mon Sep 17 00:00:00 2001
-From: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
-Date: Thu, 14 Sep 2023 16:28:07 -0300
+From b46c2ecc33b1166c9becde0b9b904ce2f86380fe Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Fri, 1 Mar 2024 12:54:34 -0300
 Subject: [PATCH] csi-unity: add storageclass in templates
 
-This patch consists of adding a storage classes in the helm chart templates directory.
-It's needed because this helm chart needs a storage classes that should be
-created manually.
+This patch consists of adding a storage classes in the helm chart
+templates directory.
+It's needed because this helm chart needs a storage classes that should
+be created manually.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
 ---
- helm/csi-unity/templates/storageclass.yaml | 50 ++++++++++++++++++++++
+ charts/csi-unity/templates/storageclass.yaml | 50 ++++++++++++++++++++
  1 file changed, 50 insertions(+)
- create mode 100644 helm/csi-unity/templates/storageclass.yaml
+ create mode 100644 charts/csi-unity/templates/storageclass.yaml
 
-diff --git a/helm/csi-unity/templates/storageclass.yaml b/helm/csi-unity/templates/storageclass.yaml
+diff --git a/charts/csi-unity/templates/storageclass.yaml b/charts/csi-unity/templates/storageclass.yaml
 new file mode 100644
-index 0000000..fc80870
+index 0000000..a0b858b
 --- /dev/null
-+++ b/helm/csi-unity/templates/storageclass.yaml
++++ b/charts/csi-unity/templates/storageclass.yaml
 @@ -0,0 +1,50 @@
 +{{- range $sc := .Values.storageClasses }}
 +---
@@ -70,5 +70,5 @@ index 0000000..fc80870
 +{{- end }}
 +---
 +{{- end }}
--- 
+--
 2.25.1

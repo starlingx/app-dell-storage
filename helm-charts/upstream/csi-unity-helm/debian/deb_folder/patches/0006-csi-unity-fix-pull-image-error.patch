@@ -1,6 +1,6 @@
-From 8ce8abf545ed55ea8228ab6d0537145150e22aa5 Mon Sep 17 00:00:00 2001
-From: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
-Date: Thu, 14 Sep 2023 16:46:22 -0300
+From 5333d525effd485849145255ae5f37529651dd28 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Fri, 1 Mar 2024 13:15:50 -0300
 Subject: [PATCH] csi-unity: fix pull image error
 
 This patch consists of adding imagePullSecrets with name
@@ -8,16 +8,16 @@ default-registry-key only in ServiceAccounts.
 It's necessary because without it the system can't use the
 images from the registry local.
 
-Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
 ---
- helm/csi-unity/templates/controller.yaml | 2 ++
- helm/csi-unity/templates/node.yaml       | 2 ++
+ charts/csi-unity/templates/controller.yaml | 2 ++
+ charts/csi-unity/templates/node.yaml       | 2 ++
  2 files changed, 4 insertions(+)
 
-diff --git a/helm/csi-unity/templates/controller.yaml b/helm/csi-unity/templates/controller.yaml
-index d1bafbc..ec856fc 100644
---- a/helm/csi-unity/templates/controller.yaml
-+++ b/helm/csi-unity/templates/controller.yaml
+diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
+index 21f704c..22051d6 100644
+--- a/charts/csi-unity/templates/controller.yaml
++++ b/charts/csi-unity/templates/controller.yaml
 @@ -3,6 +3,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-controller
@@ -27,10 +27,10 @@ index d1bafbc..ec856fc 100644
  ---
  kind: ClusterRole
  apiVersion: rbac.authorization.k8s.io/v1
-diff --git a/helm/csi-unity/templates/node.yaml b/helm/csi-unity/templates/node.yaml
-index 319d2dd..671e690 100644
---- a/helm/csi-unity/templates/node.yaml
-+++ b/helm/csi-unity/templates/node.yaml
+diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
+index 7d8cf73..280c628 100644
+--- a/charts/csi-unity/templates/node.yaml
++++ b/charts/csi-unity/templates/node.yaml
 @@ -3,6 +3,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-node
@@ -40,5 +40,5 @@ index 319d2dd..671e690 100644
  ---
  kind: ClusterRole
  apiVersion: rbac.authorization.k8s.io/v1
--- 
+--
 2.25.1

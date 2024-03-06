@@ -1,9 +1,8 @@
-0001-csi-unity-add-apiVersion.patch
-0002-csi-unity-add-secret-in-templates.patch
+0001-csi-unity-add-secret-in-templates.patch
+0002-csi-unity-add-secretcert-in-templates.patch
 0003-csi-unity-add-storageclass-in-templates.patch
 0004-csi-unity-add-default-values-for-templates.patch
 0005-csi-unity-fix-image-path-for-templates.patch
 0006-csi-unity-fix-pull-image-error.patch
-0007-csi-unity-add-secretcert-in-templates.patch
-0008-csi-unity-enabling-csm-resiliency.patch
-0009-csi-unity-add-label-app.starlingx.io-component.patch
+0007-csi-unity-enabling-csm-resiliency.patch
+0008-csi-unity-add-label-app.starlingx.io-component.patch

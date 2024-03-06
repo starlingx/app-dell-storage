@@ -1,0 +1,49 @@
+From 4de4a10f9b237c487872e266b1c53ec68598a245 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Fri, 1 Mar 2024 13:22:55 -0300
+Subject: [PATCH] csi-unity: add label app.starlingx.io/component
+
+This patch consists of changing the strategy from the Deployment
+resource and add the app.starlingx.io/component label in all pods.
+The strategy was needed changing because in the reapply the old
+replicasets were not being deleted. The default value was rollingUpdate.
+In this case, it doesn't effect functionality.
+
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+---
+ charts/csi-unity/templates/controller.yaml | 3 +++
+ charts/csi-unity/templates/node.yaml       | 1 +
+ 2 files changed, 4 insertions(+)
+
+diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
+index e846612..2643121 100644
+--- a/charts/csi-unity/templates/controller.yaml
++++ b/charts/csi-unity/templates/controller.yaml
+@@ -126,10 +126,13 @@ spec:
+   selector:
+     matchLabels:
+       app: {{ .Release.Name }}-controller
++  strategy:
++    type: Recreate
+   template:
+     metadata:
+       labels:
+         app: {{ .Release.Name }}-controller
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     spec:
+       serviceAccountName: {{ .Release.Name }}-controller
+       affinity:
+diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
+index 333326c..534d319 100644
+--- a/charts/csi-unity/templates/node.yaml
++++ b/charts/csi-unity/templates/node.yaml
+@@ -74,6 +74,7 @@ spec:
+     metadata:
+       labels:
+         app: {{ .Release.Name }}-node
++        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+ {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         driver.dellemc.com: dell-storage
+ {{- end }}
+--
+2.25.1
