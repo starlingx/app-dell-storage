@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2023 Wind River Systems, Inc.
+# Copyright (c) 2023-2024 Wind River Systems, Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -23,7 +23,7 @@ velero:
     name: velero-cloud-credentials
   image:
     repository: docker.io/velero/velero
-    tag: v1.8.1
+    tag: v1.13.0
   initContainers:
   - name: dell-custom-velero-plugin
     image: docker.io/dellemc/csm-application-mobility-velero-plugin:v0.3.0
