@@ -1,6 +1,6 @@
-From 415a9de635b0ec5aabc37d18d40c0ec57e60facf Mon Sep 17 00:00:00 2001
-From: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
-Date: Mon, 8 May 2023 11:07:33 -0300
+From bd29029532ca1ba71861541b3a11a474259685d2 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Wed, 6 Mar 2024 17:36:06 -0300
 Subject: [PATCH] csm-observability: fix pull image error
 
 This patch consists of adding imagePullSecrets with name
@@ -8,95 +8,89 @@ default-registry-key only in ServiceAccounts.
 It's necessary because without it the system can't use the
 images from the registry local.
 
-Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
 ---
- .../karavi-metrics-powerflex-service-account.yaml     |  3 ++-
- .../karavi-metrics-powermax-service-account.yaml      |  3 ++-
- .../karavi-metrics-powerscale-service-account.yaml    |  3 ++-
- .../karavi-metrics-powerstore-service-account.yaml    |  3 ++-
- .../templates/karavi-topology-service-account.yaml    |  3 ++-
+ .../karavi-metrics-powerflex-service-account.yaml     |  2 ++
+ .../karavi-metrics-powermax-service-account.yaml      |  2 ++
+ .../karavi-metrics-powerscale-service-account.yaml    |  2 ++
+ .../karavi-metrics-powerstore-service-account.yaml    |  2 ++
+ .../templates/karavi-topology-service-account.yaml    |  2 ++
  .../templates/otel-collector.yaml                     | 11 +++++++++++
- 6 files changed, 21 insertions(+), 5 deletions(-)
+ 6 files changed, 21 insertions(+)
 
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml
-index fabcc2c..35df65e 100644
+index 0168734..b42616e 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml
-@@ -6,7 +6,8 @@ kind: ServiceAccount
+@@ -5,6 +5,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-metrics-powerflex-controller
    namespace: {{ include "custom.namespace" . }}
--
 +imagePullSecrets:
 +  - name: default-registry-key
+
  ---
- 
- apiVersion: rbac.authorization.k8s.io/v1
+
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml
-index 089ed25..4a66651 100644
+index 6f50d61..95ad526 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml
-@@ -6,7 +6,8 @@ kind: ServiceAccount
+@@ -5,6 +5,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-metrics-powermax-controller
    namespace: {{ include "custom.namespace" . }}
--
 +imagePullSecrets:
 +  - name: default-registry-key
+
  ---
- 
- apiVersion: rbac.authorization.k8s.io/v1
+
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml
-index b0b8999..e03e8b5 100644
+index 5998d87..e3f2c75 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml
-@@ -6,7 +6,8 @@ kind: ServiceAccount
+@@ -5,6 +5,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-metrics-powerscale-controller
    namespace: {{ include "custom.namespace" . }}
--
 +imagePullSecrets:
 +  - name: default-registry-key
+
  ---
- 
- apiVersion: rbac.authorization.k8s.io/v1
+
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml
-index 7cf2a37..ecd0f05 100644
+index ab16d67..5e0bdfc 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml
-@@ -6,7 +6,8 @@ kind: ServiceAccount
+@@ -5,6 +5,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-metrics-powerstore-controller
    namespace: {{ include "custom.namespace" . }}
--
 +imagePullSecrets:
 +  - name: default-registry-key
+
  ---
- 
- apiVersion: rbac.authorization.k8s.io/v1
+
 diff --git a/charts/karavi-observability/templates/karavi-topology-service-account.yaml b/charts/karavi-observability/templates/karavi-topology-service-account.yaml
-index cb1f4cf..9f33672 100644
+index 71e3ad0..f27e584 100644
 --- a/charts/karavi-observability/templates/karavi-topology-service-account.yaml
 +++ b/charts/karavi-observability/templates/karavi-topology-service-account.yaml
-@@ -6,7 +6,8 @@ kind: ServiceAccount
+@@ -5,6 +5,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-topology-controller
    namespace: {{ include "custom.namespace" . }}
--
 +imagePullSecrets:
 +  - name: default-registry-key
+
  ---
- 
- apiVersion: rbac.authorization.k8s.io/v1
+
 diff --git a/charts/karavi-observability/templates/otel-collector.yaml b/charts/karavi-observability/templates/otel-collector.yaml
-index 3cd1a69..badbc98 100644
+index 093bf92..316b88e 100644
 --- a/charts/karavi-observability/templates/otel-collector.yaml
 +++ b/charts/karavi-observability/templates/otel-collector.yaml
-@@ -21,6 +21,16 @@ metadata:
- 
+@@ -20,6 +20,16 @@ metadata:
+
  ---
- 
+
 +apiVersion: v1
 +kind: ServiceAccount
 +metadata:
@@ -110,7 +104,7 @@ index 3cd1a69..badbc98 100644
  apiVersion: v1
  kind: Service
  metadata:
-@@ -65,6 +75,7 @@ spec:
+@@ -64,6 +74,7 @@ spec:
          app.kubernetes.io/name: otel-collector
          app.kubernetes.io/instance: {{ .Release.Name }}
      spec:
@@ -118,5 +112,5 @@ index 3cd1a69..badbc98 100644
        volumes:
        - name: tls-secret
          secret:
--- 
+--
 2.25.1
