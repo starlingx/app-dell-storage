@@ -8,7 +8,7 @@ export CHART_VERSION = $(CHART_BASE_VERSION)+STX.$(PATCH_VERSION)
 
 export ROOT = debian/tmp
 export APP_FOLDER = $(ROOT)/usr/lib/helm
-export VELERO_NAME_TGZ = velero-2.29.8.tgz
+export VELERO_NAME_TGZ = velero-6.0.0.tgz
 export VELERO_DIR = charts/csm-application-mobility/charts
 
 %:

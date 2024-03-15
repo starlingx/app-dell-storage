@@ -1,27 +1,39 @@
-From 8578670b927b5b395c9dc60c3d3a20cbf6778241 Mon Sep 17 00:00:00 2001
-From: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
-Date: Tue, 27 Jun 2023 18:38:53 -0300
+From ab9c01de772e77943c29fe11c2b462682dc65ea7 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Mon, 4 Mar 2024 11:35:43 -0300
 Subject: [PATCH] velero: add label app.starlingx.io/component
 
 This patch consists of adding the app.starlingx.io/component label in all pods.
 
-Signed-off-by: Hediberto Cavalcante da Silva <hediberto.cavalcantedasilva@windriver.com>
 Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
  .../charts/velero/templates/deployment.yaml                      | 1 +
- 1 file changed, 1 insertion(+)
+ .../charts/velero/templates/node-agent-daemonset.yaml            | 1 +
+ 2 files changed, 2 insertions(+)
 
 diff --git a/charts/csm-application-mobility/charts/velero/templates/deployment.yaml b/charts/csm-application-mobility/charts/velero/templates/deployment.yaml
-index cf60d07..2a8fcb8 100644
+index 0468cba..b0df376 100644
 --- a/charts/csm-application-mobility/charts/velero/templates/deployment.yaml
 +++ b/charts/csm-application-mobility/charts/velero/templates/deployment.yaml
-@@ -30,6 +30,7 @@ spec:
-     metadata:
-       labels:
-         name: velero
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
-         app.kubernetes.io/name: {{ include "velero.name" . }}
-         app.kubernetes.io/instance: {{ .Release.Name }}
-         app.kubernetes.io/managed-by: {{ .Release.Service }}
+@@ -10,6 +10,7 @@ metadata:
+     {{- toYaml . | nindent 4 }}
+   {{- end }}
+   labels:
++    app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     app.kubernetes.io/name: {{ include "velero.name" . }}
+     app.kubernetes.io/instance: {{ .Release.Name }}
+     app.kubernetes.io/managed-by: {{ .Release.Service }}
+diff --git a/charts/csm-application-mobility/charts/velero/templates/node-agent-daemonset.yaml b/charts/csm-application-mobility/charts/velero/templates/node-agent-daemonset.yaml
+index 104f955..cc99292 100644
+--- a/charts/csm-application-mobility/charts/velero/templates/node-agent-daemonset.yaml
++++ b/charts/csm-application-mobility/charts/velero/templates/node-agent-daemonset.yaml
+@@ -11,6 +11,7 @@ metadata:
+     {{- toYaml . | nindent 4 }}
+   {{- end }}
+   labels:
++    app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
+     app.kubernetes.io/name: {{ include "velero.name" . }}
+     app.kubernetes.io/instance: {{ .Release.Name }}
+     app.kubernetes.io/managed-by: {{ .Release.Service }}
 -- 
-2.25.1
+2.34.1
