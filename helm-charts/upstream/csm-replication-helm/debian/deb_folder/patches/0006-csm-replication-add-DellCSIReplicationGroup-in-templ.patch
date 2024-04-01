@@ -1,0 +1,45 @@
+From 3522001fd50c68ddff1750873c05fc227064b280 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Tue, 26 Mar 2024 15:53:39 -0300
+Subject: [PATCH] csm-replication: add DellCSIReplicationGroup in templates
+
+This patch consists of adding a DellCSIReplicationGroup in the helm
+chart templates directory. It's needed because this helm chart needs
+that DellCSIReplicationGroup should be created manually.
+
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+---
+ .../templates/replicationgroup.yaml           | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 charts/csm-replication/templates/replicationgroup.yaml
+
+diff --git a/charts/csm-replication/templates/replicationgroup.yaml b/charts/csm-replication/templates/replicationgroup.yaml
+new file mode 100644
+index 0000000..57f4318
+--- /dev/null
++++ b/charts/csm-replication/templates/replicationgroup.yaml
+@@ -0,0 +1,22 @@
++{{- if .Values.replicationGroup.create }}
++kind: DellCSIReplicationGroup
++apiVersion: replication.storage.dell.com/v1
++metadata:
++  name: {{ .Values.replicationGroup.name | default ( print "rg-" .Values.config.clusterId | lower ) }}
++  namespace: {{ .Release.Namespace }}
++spec:
++  driverName: {{ .Values.replicationGroup.driverName }}
++  action: {{ .Values.replicationGroup.action }}
++{{- if.Values.replicationGroup.protectionGroupAttributes }}
++  protectionGroupAttributes: {{- .Values.replicationGroup.protectionGroupAttributes | toYaml | nindent 4 }}
++{{- end }}
++  protectionGroupId: {{ .Values.replicationGroup.protectionGroupId }}
++  remoteClusterId: {{ .Values.replicationGroup.remoteClusterId }}
++{{- if.Values.replicationGroup.remoteProtectionGroupAttributes }}
++  remoteProtectionGroupAttributes: {{- .Values.replicationGroup.remoteProtectionGroupAttributes | toYaml | nindent 4 }}
++{{- end }}
++  remoteProtectionGroupId: {{ .Values.replicationGroup.remoteProtectionGroupId }}
++{{- if.Values.replicationGroup.requestParametersClass }}
++  requestParametersClass: {{ .Values.replicationGroup.requestParametersClass }}
++{{- end }}
++{{- end }}
+-- 
+2.25.1

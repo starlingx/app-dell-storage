@@ -14,12 +14,12 @@ export APP_FOLDER = $(ROOT)/usr/lib/helm
 
 override_dh_auto_build:
 
-	cp Makefile helm
-	cd helm && make CHART_VERSION=$(CHART_VERSION) csm-replication
+	cp Makefile charts
+	cd charts && make CHART_VERSION=$(CHART_VERSION) csm-replication
 
 override_dh_auto_install:
 	# Install the app tar file.
 	install -d -m 755 $(APP_FOLDER)
-	install -p -D -m 755 helm/csm-replication*.tgz $(APP_FOLDER)
+	install -p -D -m 755 charts/csm-replication*.tgz $(APP_FOLDER)
 
 override_dh_auto_test:

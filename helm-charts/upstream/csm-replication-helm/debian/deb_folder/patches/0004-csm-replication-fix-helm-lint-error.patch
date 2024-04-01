@@ -1,0 +1,28 @@
+From 9a4ff4712ddc6a5b0d2e43a26ae1161366d503bc Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Tue, 26 Mar 2024 15:49:41 -0300
+Subject: [PATCH] csm-replication: fix helm lint error
+
+This patch consists of removing the dashes, because it didn't pass
+by currently helm lint version in the system.
+
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+---
+ charts/csm-replication/templates/controller.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/charts/csm-replication/templates/controller.yaml b/charts/csm-replication/templates/controller.yaml
+index cb795ce..25c0c4b 100644
+--- a/charts/csm-replication/templates/controller.yaml
++++ b/charts/csm-replication/templates/controller.yaml
+@@ -210,7 +210,7 @@ subjects:
+   name: dell-replication-controller-sa
+   namespace: {{ .Release.Namespace }}
+ ---
+-{{- $secret := (lookup "v1" "ConfigMap" "{{ .Release.Namespace }}" "dell-replication-controller-config").data -}}
++{{ $secret := (lookup "v1" "ConfigMap" "{{ .Release.Namespace }}" "dell-replication-controller-config").data }}
+ apiVersion: v1
+ kind: ConfigMap
+ metadata:
+-- 
+2.25.1
