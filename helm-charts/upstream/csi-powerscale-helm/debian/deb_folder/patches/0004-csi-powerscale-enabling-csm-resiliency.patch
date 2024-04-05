@@ -1,0 +1,155 @@
+From 04ffa2133487838b18452430574e22effb7e7db6 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Tue, 2 Apr 2024 13:36:27 -0300
+Subject: [PATCH] csi-powerscale: enabling csm-resiliency
+
+This patch consists of changing the format of the values in templates and
+changing the values.yaml for the user be able to enable csm-resiliency.
+
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+---
+ charts/csi-isilon/templates/controller.yaml          | 12 ++++++------
+ .../csi-isilon/templates/driver-config-params.yaml   |  2 +-
+ charts/csi-isilon/templates/node.yaml                | 10 +++++-----
+ charts/csi-isilon/templates/validation.yaml          |  2 +-
+ charts/csi-isilon/values.yaml                        |  4 ++++
+ 5 files changed, 17 insertions(+), 13 deletions(-)
+
+diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
+index 709ed86..2348353 100644
+--- a/charts/csi-isilon/templates/controller.yaml
++++ b/charts/csi-isilon/templates/controller.yaml
+@@ -17,7 +17,7 @@ rules:
+   - apiGroups: [""]
+     resources: ["nodes"]
+   {{- if hasKey .Values "podmon" }}
+-  {{- if eq .Values.podmon.enabled true }}
++  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "patch"]
+   {{- else }}
+     verbs: ["get", "list", "watch"]
+@@ -32,7 +32,7 @@ rules:
+   - apiGroups: [""]
+     resources: ["pods"]
+   {{- if hasKey .Values "podmon" }}
+-  {{- if eq .Values.podmon.enabled true }}
++  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "update", "delete"]
+   {{- else }}
+     verbs: ["get", "list", "watch"]
+@@ -44,7 +44,7 @@ rules:
+   - apiGroups: ["storage.k8s.io"]
+     resources: ["volumeattachments"]
+   {{- if hasKey .Values "podmon" }}
+-  {{- if eq .Values.podmon.enabled true }}
++  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "update", "patch", "delete"]
+   {{- else }}
+     verbs: ["get", "list", "watch", "update", "patch"]
+@@ -194,7 +194,7 @@ spec:
+         {{- $driverSockPath := printf "/var/run/csi/%s" $driverSock }}
+         {{- if not $encrypted }}
+         {{- if hasKey .Values "podmon" }}
+-        {{- if eq .Values.podmon.enabled true }}
++        {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: podmon
+           image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+@@ -446,10 +446,10 @@ spec:
+             - name: X_CSI_ISI_NO_PROBE_ON_START
+               value: "{{ .Values.noProbeOnStart }}"
+             - name: X_CSI_PODMON_ENABLED
+-              value: "{{ .Values.podmon.enabled }}"
++              value: "{{ or .Values.podmon.enabled .Values.csm.resiliency }}"
+             - name: X_CSI_PODMON_API_PORT
+               value: "{{ .Values.podmonAPIPort }}"
+-            {{- if eq .Values.podmon.enabled true }}
++            {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+               {{- range $key, $value := .Values.podmon.controller.args }}
+                 {{- if contains "--arrayConnectivityPollRate" $value }}
+             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
+diff --git a/charts/csi-isilon/templates/driver-config-params.yaml b/charts/csi-isilon/templates/driver-config-params.yaml
+index 98671fe..317726b 100644
+--- a/charts/csi-isilon/templates/driver-config-params.yaml
++++ b/charts/csi-isilon/templates/driver-config-params.yaml
+@@ -6,7 +6,7 @@ metadata:
+ data:
+   driver-config-params.yaml: |
+     CSI_LOG_LEVEL: "{{ .Values.logLevel }}"
+-    {{ if .Values.podmon.enabled }}
++    {{ if or .Values.podmon.enabled .Values.csm.resiliency }}
+     PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
+     PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
+     PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
+diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
+index 81edf67..fde6b0a 100644
+--- a/charts/csi-isilon/templates/node.yaml
++++ b/charts/csi-isilon/templates/node.yaml
+@@ -37,7 +37,7 @@ rules:
+     resources: [ "securitycontextconstraints" ]
+     verbs: [ "use" ]
+   {{- if hasKey .Values "podmon" }}
+-  {{- if eq .Values.podmon.enabled true }}
++  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+   - apiGroups: [""]
+     resources: ["pods"]
+     verbs: ["get", "list", "watch", "update", "delete"]
+@@ -108,7 +108,7 @@ spec:
+         {{- $csiSidecarSuffix = "-sec" }}
+         {{- end }}
+       {{- if hasKey .Values "podmon" }}
+-      {{- if eq .Values.podmon.enabled true }}
++      {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: podmon
+           securityContext:
+             privileged: true
+@@ -215,10 +215,10 @@ spec:
+             - name: X_CSI_HEALTH_MONITOR_ENABLED
+               value: "{{ .Values.node.healthMonitor.enabled }}"
+             - name: X_CSI_PODMON_ENABLED
+-              value: "{{ .Values.podmon.enabled }}"
++              value: "{{ or .Values.podmon.enabled .Values.csm.resiliency }}"
+             - name: X_CSI_PODMON_API_PORT
+               value: "{{ .Values.podmonAPIPort }}"
+-            {{- if eq .Values.podmon.enabled true }}
++            {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+               {{- range $key, $value := .Values.podmon.node.args }}
+                 {{- if contains "--arrayConnectivityPollRate" $value }}
+             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
+@@ -417,7 +417,7 @@ spec:
+         {{ end }}
+         {{ end }}
+         {{- if hasKey .Values "podmon" }}
+-        {{- if eq .Values.podmon.enabled true }}
++        {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: usr-bin
+           hostPath:
+             path: /usr/bin
+diff --git a/charts/csi-isilon/templates/validation.yaml b/charts/csi-isilon/templates/validation.yaml
+index ddfe4f6..37b06ee 100644
+--- a/charts/csi-isilon/templates/validation.yaml
++++ b/charts/csi-isilon/templates/validation.yaml
+@@ -8,7 +8,7 @@
+ {{- if .Values.controller.healthMonitor.enabled }}
+ {{- fail "Encryption cannot be enabled in tandem with Health Monitor. Please adjust your values.yaml to disable one or the other" }}
+ {{- end }}
+-{{- if .Values.podmon.enabled }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+ {{- fail "Encryption cannot be enabled in tandem with Pods Monitor. Please adjust your values.yaml to disable one or the other" }}
+ {{- end }}
+ {{- if ne (.Values.controller.controllerCount | toString | atoi ) 1 }}
+diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
+index d0b8cbf..9891e30 100644
+--- a/charts/csi-isilon/values.yaml
++++ b/charts/csi-isilon/values.yaml
+@@ -1,3 +1,7 @@
++# CSM Control
++csm:
++  resiliency: false
++
+ ## K8S/DRIVER ATTRIBUTES
+ ########################
+ # version: version of this values file
+-- 
+2.34.1
+

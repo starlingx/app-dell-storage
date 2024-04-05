@@ -1,0 +1,5 @@
+csi-powerscale-helm (2.10-0) unstable; urgency=medium
+
+  * Initial release.
+
+ --  Guilherme Rodrigues Costa <guilherme.costa@windriver.com>  Tue, 02 Apr 2024 16:45:00 +0000

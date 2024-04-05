@@ -1,0 +1,169 @@
+From 1abde45dabd309d4bdb6f35eb25f9d3f3351c198 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Tue, 2 Apr 2024 13:29:47 -0300
+Subject: [PATCH] csi-powerscale: fix image path for templates
+
+This patch consists of changing the format to use the image path directly
+following the expected format used by kube_app.
+
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+---
+ charts/csi-isilon/templates/controller.yaml | 22 ++++++++++-----------
+ charts/csi-isilon/templates/node.yaml       | 10 +++++-----
+ 2 files changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
+index 67f0730..53d5611 100644
+--- a/charts/csi-isilon/templates/controller.yaml
++++ b/charts/csi-isilon/templates/controller.yaml
+@@ -194,7 +194,7 @@ spec:
+         {{- if hasKey .Values "podmon" }}
+         {{- if eq .Values.podmon.enabled true }}
+         - name: podmon
+-          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
++          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             {{- toYaml .Values.podmon.controller.args | nindent 12 }}
+@@ -221,7 +221,7 @@ spec:
+         {{- if hasKey .Values.controller "replication" }}
+         {{- if eq .Values.controller.replication.enabled true}}
+         - name: dell-csi-replicator
+-          image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication }}
++          image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--csi-address={{ $driverSockPath }}"
+@@ -248,7 +248,7 @@ spec:
+         {{- if hasKey .Values.controller "resizer" }}
+         {{- if eq .Values.controller.resizer.enabled true }}
+         - name: resizer{{ $csiSidecarSuffix }}
+-          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer }}
++          image: {{ required "Must provide the CSI resizer container image." .Values.controller.resizer.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--csi-address={{ $driverSockPath }}"
+@@ -272,7 +272,7 @@ spec:
+         {{ end }}
+         {{ end }}
+         - name: csi-metadata-retriever {{ $csiSidecarSuffix }}
+-          image: {{ required "Must provide the CSI metadata retriever container image." .Values.images.metadataretriever }}
++          image: {{ required "Must provide the CSI metadata retriever container image." .Values.controller.metadataretriever.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--csi-address={{ $driverSockPath }}"
+@@ -286,7 +286,7 @@ spec:
+             - name: socket-dir
+               mountPath: /var/run/csi
+         - name: attacher{{ $csiSidecarSuffix }}
+-          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher }}
++          image: {{ required "Must provide the CSI attacher container image." .Values.controller.attacher.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--csi-address={{ $driverSockPath }}"
+@@ -311,7 +311,7 @@ spec:
+         {{- if hasKey .Values.controller "healthMonitor" }}
+         {{- if eq .Values.controller.healthMonitor.enabled true }}
+         - name: external-health-monitor-controller
+-          image: {{ required "Must provide the CSI external-health-monitor-controller container image." .Values.images.healthmonitor }}
++          image: {{ required "Must provide the CSI external-health-monitor-controller container image." .Values.controller.healthMonitor.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--csi-address={{ $driverSockPath }}"
+@@ -339,7 +339,7 @@ spec:
+         {{end}}
+         {{- end }}
+         - name: provisioner{{ $csiSidecarSuffix }}
+-          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner }}
++          image: {{ required "Must provide the CSI provisioner container image." .Values.controller.provisioner.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--csi-address={{ $driverSockPath }}"
+@@ -381,7 +381,7 @@ spec:
+         {{- if eq .Values.controller.snapshot.enabled true }}
+         - name: snapshotter{{ $csiSidecarSuffix }}
+           #image: quay.io/k8scsi/csi-snapshotter:v1.0.0
+-          image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter }}
++          image: {{ required "Must provide the CSI snapshotter container image." .Values.controller.snapshot.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--csi-address={{ $driverSockPath }}"
+@@ -407,7 +407,7 @@ spec:
+         {{end}}
+         {{- if not $encrypted }}
+         - name: driver
+-          image: {{ required "Must provide the Isilon driver image repository." .Values.images.driver }}
++          image: {{ required "Must provide the Isilon driver image repository." .Values.driver.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           command: [ "/csi-isilon" ]
+           args:
+@@ -495,7 +495,7 @@ spec:
+         {{- if eq .Values.authorization.enabled true }}
+         - name: karavi-authorization-proxy
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization }}
++          image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
+           env:
+             - name: PROXY_HOST
+               value: "{{ .Values.authorization.proxyHost }}"
+@@ -525,7 +525,7 @@ spec:
+         {{- end }}
+         {{- if $encrypted }}
+         - name: driver-sec
+-          image: {{ .Values.images.encryption }}
++          image: {{ .Values.encryption.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - --name={{ .Values.encryption.pluginName }}
+diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
+index d84a505..f7292aa 100644
+--- a/charts/csi-isilon/templates/node.yaml
++++ b/charts/csi-isilon/templates/node.yaml
+@@ -113,7 +113,7 @@ spec:
+             capabilities:
+               add: ["SYS_ADMIN"]
+             allowPrivilegeEscalation: true
+-          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
++          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             {{- toYaml .Values.podmon.node.args | nindent 12 }}
+@@ -167,7 +167,7 @@ spec:
+             capabilities:
+               add: ["SYS_ADMIN"]
+             allowPrivilegeEscalation: true
+-          image: {{ required "Must provide the Isilon driver image repository." .Values.images.driver }}
++          image: {{ required "Must provide the Isilon driver image repository." .Values.driver.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           env:
+             - name: CSI_ENDPOINT
+@@ -251,7 +251,7 @@ spec:
+               mountPath: /csi-isilon-config-params
+         {{- end }}
+         - name: registrar{{ $csiSidecarSuffix }}
+-          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar }}
++          image: {{ required "Must provide the CSI node registrar container image." .Values.node.registrar.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             - "--v=5"
+@@ -273,7 +273,7 @@ spec:
+         {{- if eq .Values.authorization.enabled true }}
+         - name: karavi-authorization-proxy
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization }}
++          image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
+           env:
+             - name: PROXY_HOST
+               value: "{{ .Values.authorization.proxyHost }}"
+@@ -303,7 +303,7 @@ spec:
+         {{- end }}
+         {{- if $encrypted }}
+         - name: driver-sec
+-          image: {{ .Values.images.encryption }}
++          image: {{ .Values.encryption.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           securityContext:
+             privileged: true
+-- 
+2.34.1
+

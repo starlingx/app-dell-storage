@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2023 Wind River Systems, Inc.
+# Copyright (c) 2023-2024 Wind River Systems, Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,7 @@ HELM_APP_DELL_STORAGE = 'dell-storage'
 
 # Helm: Supported charts:
 HELM_CHART_CSI_POWERSTORE = 'csi-powerstore'
+HELM_CHART_CSI_POWERSCALE = 'csi-powerscale'
 HELM_CHART_CSI_UNITY = 'csi-unity'
 HELM_CHART_CSM_REPLICATION = 'csm-replication'
 HELM_CHART_CSM_OBSERVABILITY = 'csm-observability'
@@ -17,6 +18,7 @@ HELM_CHART_CSM_APPLICATION_MOBILITY = 'csm-application-mobility'
 
 # FluxCD
 FLUXCD_HELMRELEASE_CSI_POWERSTORE = 'csi-powerstore'
+FLUXCD_HELMRELEASE_CSI_POWERSCALE = 'csi-powerscale'
 FLUXCD_HELMRELEASE_CSI_UNITY = 'csi-unity'
 FLUXCD_HELMRELEASE_CSM_REPLICATION = 'csm-replication'
 FLUXCD_HELMRELEASE_CSM_OBSERVABILITY = 'csm-observability'

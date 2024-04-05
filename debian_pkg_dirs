@@ -1,4 +1,5 @@
 helm-charts/upstream/csi-powerstore-helm
+helm-charts/upstream/csi-powerscale-helm
 helm-charts/upstream/csi-unity-helm
 helm-charts/upstream/csm-replication-helm
 helm-charts/upstream/csm-observability-helm

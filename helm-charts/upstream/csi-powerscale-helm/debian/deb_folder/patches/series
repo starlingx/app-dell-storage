@@ -1,0 +1,13 @@
+0001-csi-powerscale-add-default-values-for-templates.patch
+0002-csi-powerscale-fix-image-path-for-templates.patch
+0003-csi-powerscale-fix-pull-image-error.patch
+0004-csi-powerscale-enabling-csm-resiliency.patch
+0005-csi-powerscale-enabling-csm-replication.patch
+0006-csi-powerscale-add-label-app.starlingx.io-component.patch
+0007-csi-powerscale-add-secret-in-templates.patch
+0008-csi-powerscale-add-secretcert-in-templates.patch
+0009-csi-powerscale-add-proxy-secret-in-templates.patch
+0010-csi-powerscale-add-storageclass-in-templates.patch
+0011-csi-powerscale-add-snapshotclass-in-templates.patch
+0012-csi-powerscale-enabling-csm-authorization.patch
+0013-csi-powerscale-add-proxy-authz-token-template.patch

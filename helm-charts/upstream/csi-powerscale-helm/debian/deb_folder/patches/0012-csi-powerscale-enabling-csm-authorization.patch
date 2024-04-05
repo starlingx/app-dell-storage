@@ -1,0 +1,154 @@
+From 5f28ad46a653e5144ae6eb1904af7bdc5f814ab9 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Mon, 8 Apr 2024 16:26:11 -0300
+Subject: [PATCH] csi-powerscale: enabling csm-authorization
+
+This patch consists of:
+- change the format of the values in templates and changing the
+  values.yaml for the user be able to enable csm-authorization.
+- Change some authorization secrets to use the release name as prefix.
+- Adds authorization-config template to create the secret used by
+  the csm-observability/csm-authorization
+
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+---
+ .../templates/authorization-config.yaml       | 20 +++++++++++++++++++
+ charts/csi-isilon/templates/controller.yaml   |  8 ++++----
+ charts/csi-isilon/templates/node.yaml         |  8 ++++----
+ .../templates/proxy-server-secret.yaml        |  2 +-
+ charts/csi-isilon/templates/validation.yaml   |  2 +-
+ charts/csi-isilon/values.yaml                 |  1 +
+ 6 files changed, 31 insertions(+), 10 deletions(-)
+ create mode 100644 charts/csi-isilon/templates/authorization-config.yaml
+
+diff --git a/charts/csi-isilon/templates/authorization-config.yaml b/charts/csi-isilon/templates/authorization-config.yaml
+new file mode 100644
+index 0000000..ec6702d
+--- /dev/null
++++ b/charts/csi-isilon/templates/authorization-config.yaml
+@@ -0,0 +1,20 @@
++{{- if or .Values.authorization.enabled .Values.csm.authorization }}
++{{- if .Values.secret }}
++apiVersion: v1
++kind: Secret
++metadata:
++  name: {{ .Release.Name }}-authorization-config
++  namespace: {{ .Release.Namespace }}
++stringData:
++  config: |
++    {{- range .Values.secret.arrays }}
++    - username: {{ .username }}
++      password: {{ .password }}
++      intendedEndpoint: {{ .endpoint }}
++      endpoint: {{ .authorizationEndpoint | default "https://localhost:9400" }}
++      systemID: {{ .clusterName }}
++      skipCertificateValidation: {{ .skipCertificateValidation | default true }}
++      isDefault: {{ .isDefault | default false }}
++    {{- end }}
++{{- end }}
++{{- end }}
+diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
+index 539fbd6..b99b023 100644
+--- a/charts/csi-isilon/templates/controller.yaml
++++ b/charts/csi-isilon/templates/controller.yaml
+@@ -136,7 +136,7 @@ metadata:
+   name: {{ .Release.Name }}-controller
+   namespace: {{ .Release.Namespace }}
+   {{- if hasKey .Values "authorization" }}
+-  {{- if eq .Values.authorization.enabled true }}
++  {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+   annotations:
+     com.dell.karavi-authorization-proxy: "true"
+   {{ end }}
+@@ -493,7 +493,7 @@ spec:
+         {{- end }}
+         {{- if not $encrypted }}
+         {{- if hasKey .Values "authorization" }}
+-        {{- if eq .Values.authorization.enabled true }}
++        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-proxy
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
+@@ -570,10 +570,10 @@ spec:
+           configMap:
+              name: {{ .Release.Name }}-config-params
+         {{- if hasKey .Values "authorization" }}
+-        {{- if eq .Values.authorization.enabled true }}
++        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-config
+           secret:
+-            secretName: karavi-authorization-config
++            secretName: {{ .Release.Name }}-authorization-config
+         - name: proxy-server-root-certificate
+           secret:
+             secretName: {{ .Release.Name }}-proxy-server-root-certificate
+diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
+index 8e675ca..3ff94ac 100644
+--- a/charts/csi-isilon/templates/node.yaml
++++ b/charts/csi-isilon/templates/node.yaml
+@@ -66,7 +66,7 @@ metadata:
+   name: {{ .Release.Name }}-node
+   namespace: {{ .Release.Namespace }}
+   {{- if hasKey .Values "authorization" }}
+-  {{- if eq .Values.authorization.enabled true }}
++  {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+   annotations:
+     com.dell.karavi-authorization-proxy: "true"
+   {{ end }}
+@@ -273,7 +273,7 @@ spec:
+               mountPath: /csi
+         {{- if not $encrypted }}
+         {{- if hasKey .Values "authorization" }}
+-        {{- if eq .Values.authorization.enabled true }}
++        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-proxy
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
+@@ -408,10 +408,10 @@ spec:
+           configMap:
+              name: {{ .Release.Name }}-config-params
+         {{- if hasKey .Values "authorization" }}
+-        {{- if eq .Values.authorization.enabled true }}
++        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-config
+           secret:
+-            secretName: karavi-authorization-config
++            secretName: {{ .Release.Name }}-authorization-config
+         - name: proxy-server-root-certificate
+           secret:
+             secretName: {{ .Release.Name }}-proxy-server-root-certificate
+diff --git a/charts/csi-isilon/templates/proxy-server-secret.yaml b/charts/csi-isilon/templates/proxy-server-secret.yaml
+index 13de2d7..d2d893b 100644
+--- a/charts/csi-isilon/templates/proxy-server-secret.yaml
++++ b/charts/csi-isilon/templates/proxy-server-secret.yaml
+@@ -1,4 +1,4 @@
+-{{- if .Values.authorization.enabled  }}
++{{- if or .Values.authorization.enabled .Values.csm.authorization }}
+ apiVersion: v1
+ kind: Secret
+ metadata:
+diff --git a/charts/csi-isilon/templates/validation.yaml b/charts/csi-isilon/templates/validation.yaml
+index cf41b56..420c050 100644
+--- a/charts/csi-isilon/templates/validation.yaml
++++ b/charts/csi-isilon/templates/validation.yaml
+@@ -1,5 +1,5 @@
+ {{- if .Values.encryption.enabled }}
+-{{- if .Values.authorization.enabled }}
++{{- if or .Values.authorization.enabled .Values.csm.authorization}}
+ {{- fail "Encryption cannot be enabled in tandem with Authorization. Please adjust your values.yaml to disable one or the other" }}
+ {{- end }}
+ {{- if or .Values.controller.replication.enabled .Values.csm.replication }}
+diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
+index 76dec14..7e32f47 100644
+--- a/charts/csi-isilon/values.yaml
++++ b/charts/csi-isilon/values.yaml
+@@ -1,5 +1,6 @@
+ # CSM Control
+ csm:
++  authorization: false
+   replication: false
+   resiliency: false
+ 
+-- 
+2.34.1
+
