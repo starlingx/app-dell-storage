@@ -1,0 +1,113 @@
+From e9f70e1e10c012db79d9e535def45e41f0fff24e Mon Sep 17 00:00:00 2001
+From: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+Date: Wed, 10 Apr 2024 10:28:31 -0300
+Subject: [PATCH] csi-powerflex: add storageclass in templates
+
+This patch consists of adding a storage classes in the helm chart templates directory.
+It's needed because this helm chart needs a storage classes that should be
+created manually.
+
+Signed-off-by: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+---
+ .../csi-vxflexos/templates/storageclass.yaml  | 93 +++++++++++++++++++
+ 1 file changed, 93 insertions(+)
+ create mode 100644 charts/csi-vxflexos/templates/storageclass.yaml
+
+diff --git a/charts/csi-vxflexos/templates/storageclass.yaml b/charts/csi-vxflexos/templates/storageclass.yaml
+new file mode 100644
+index 0000000..f152526
+--- /dev/null
++++ b/charts/csi-vxflexos/templates/storageclass.yaml
+@@ -0,0 +1,90 @@
++{{- range $sc := .Values.storageClasses }}
++apiVersion: storage.k8s.io/v1
++kind: StorageClass
++metadata:
++{{- if or $sc.name $sc.fstype }}
++  name: {{ $sc.name | default ( print "csi-powerflex-" $sc.fstype | lower ) }}
++{{- else }}
++  name: "csi-powerflex-nfs"
++{{- end }}
++provisioner: {{ $sc.provisioner | default ( print "csi-vxflexos.dellemc.com" ) }}
++reclaimPolicy: {{ $sc.reclaimPolicy | default "Delete" }}
++allowVolumeExpansion: {{ $sc.allowVolumeExpansion | default "true" }}
++parameters:
++  {{- if $sc.systemID }}
++  systemID: {{ $sc.systemID }}
++  {{- end }}
++  {{- if $sc.storagepool }}
++  storagepool: {{ $sc.storagepool }}
++  {{- end }}
++  {{- if $sc.protectiondomain }}
++  protectiondomain: {{ $sc.protectiondomain }}
++  {{- end }}
++  {{- if $sc.fstype }}
++  csi.storage.k8s.io/fstype: {{ $sc.fstype }}
++  {{- end }}
++  {{- if $sc.nasName }}
++  nasName: {{ $sc.nasName }}
++  {{- end }}
++  {{- if $sc.path }}
++  path: {{ $sc.path }}
++  {{- end }}
++  {{- if $sc.softLimit }}
++  softLimit: {{ $sc.softLimit }}
++  {{- end }}
++  {{- if $sc.gracePeriod }}
++  gracePeriod: {{ $sc.gracePeriod }}
++  {{- end }}
++  {{- if $sc.bandwidthLimitInKbps }}
++  bandwidthLimitInKbps: {{ $sc.bandwidthLimitInKbps }}
++  {{- end }}
++  {{- if $sc.iopsLimit }}
++  iopsLimit: {{ $sc.iopsLimit }}
++  {{- end }}
++  {{- if $sc.mkfsFormatOption }}
++  mkfsFormatOption: {{ $sc.mkfsFormatOption }}
++  {{- end }}
++
++  {{- if and $sc.replication ( or $.Values.controller.replication.enabled $.Values.csm.replication ) }}
++  {{ $prefix := $.Values.controller.replication.replicationPrefix -}}
++  {{ printf "%s/isReplicationEnabled" $prefix }}: "true"
++  {{- if  $sc.replication.remoteClusterID }}
++  {{ printf "%s/remoteClusterID" $prefix }}: "{{ $sc.replication.remoteClusterID }}"
++  {{- end }}
++  {{- if  $sc.replication.remoteSystem }}
++  {{ printf "%s/remoteSystem" $prefix }}: "{{ $sc.replication.remoteSystem }}"
++  {{- end }}
++  {{- if  $sc.replication.remoteStoragePool }}
++  {{ printf "%s/remoteStoragePool" $prefix }}: "{{ $sc.replication.remoteStoragePool }}"
++  {{- end }}
++  {{- if  $sc.replication.consistencyGroupName }}
++  {{ printf "%s/consistencyGroupName" $prefix }}: "{{ $sc.replication.consistencyGroupName }}"
++  {{- end }}
++  {{- if  $sc.replication.protectionDomain }}
++  {{ printf "%s/protectionDomain" $prefix }}: "{{ $sc.replication.protectionDomain }}"
++  {{- end }}
++  {{- if $sc.replication.remotePVRetentionPolicy }}
++  {{ printf "%s/remotePVRetentionPolicy" $prefix }}: "{{ $sc.replication.remotePVRetentionPolicy | default "Delete"}}"
++  {{- end }}
++  {{- if $sc.replication.remoteRGRetentionPolicy }}
++  {{ printf "%s/remoteRGRetentionPolicy" $prefix }}: "{{ $sc.replication.remoteRGRetentionPolicy | default "Delete"}}"
++  {{- end }}
++  {{- if $sc.replication.remoteStorageClassName }}
++  {{ printf "%s/remoteStorageClassName" $prefix }}: "{{ $sc.replication.remoteStorageClassName | default "csi-powerflex-replication"}}"
++  {{- end }}
++  {{- if $sc.replication.rpo }}
++  {{ printf "%s/rpo" $prefix }}: {{ $sc.replication.rpo | default 60 }}
++  {{- end }}
++  {{- if $sc.replication.volumeGroupPrefix }}
++  {{ printf "%s/volumeGroupPrefix" $prefix }}: "{{ $sc.replication.volumeGroupPrefix | default "csi-powerflex"}}"
++  {{- end }}
++
++  {{- end }}
++
++volumeBindingMode: {{ $sc.volumeBindingMode | default "Immediate" }}
++{{- if $sc.allowedTopologies }}
++allowedTopologies:
++  {{ $sc.allowedTopologies | toYaml | nindent 4 }}
++{{- end }}
++---
++{{- end }}
+--
+2.25.1

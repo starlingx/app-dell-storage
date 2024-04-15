@@ -9,6 +9,7 @@ kind: Kustomization
 namespace: dell-storage
 resources:
   - base
+  - csi-powerflex
   - csi-powerstore
   - csi-powerscale
   - csi-unity

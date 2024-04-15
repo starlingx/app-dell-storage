@@ -1,0 +1,12 @@
+0001-csi-powerflex-add-default-values-for-templates.patch
+0002-csi-powerflex-add-secret-in-templates.patch
+0003-csi-powerflex-add-storageclass-in-templates.patch
+0004-csi-powerflex-fix-image-path-for-templates.patch
+0005-csi-powerflex-fix-pull-image-error.patch
+0006-csi-powerflex-enabling-csm-resiliency.patch
+0007-csi-powerflex-enabling-csm-replication.patch
+0008-csi-powerflex-enabling-csm-authorization.patch
+0009-csi-powerflex-add-label-app.starlingx.io-component.patch
+0010-csi-powerflex-add-snapshotclass-in-templates.patch
+0011-csi-powerflex-add-proxy-secret-in-templates.patch
+0012-csi-powerflex-add-proxy-authz-token-template.patch

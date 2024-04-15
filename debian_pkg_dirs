@@ -1,3 +1,4 @@
+helm-charts/upstream/csi-powerflex-helm
 helm-charts/upstream/csi-powerstore-helm
 helm-charts/upstream/csi-powerscale-helm
 helm-charts/upstream/csi-unity-helm

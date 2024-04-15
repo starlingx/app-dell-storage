@@ -5,6 +5,7 @@ maintain_user_overrides: true
 maintain_attributes: true
 
 disabled_charts:
+- csi-powerflex
 - csi-unity
 - csi-powerscale
 - csm-application-mobility

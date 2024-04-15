@@ -1,0 +1,171 @@
+From cf97461a22af8c8c02050710f490bf74ee581c3b Mon Sep 17 00:00:00 2001
+From: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+Date: Wed, 17 Apr 2024 08:50:01 -0300
+Subject: [PATCH] csi-powerflex: add default values for templates
+
+This patch consists of adding the default values in the values.yaml of
+the helm chart.
+It's necessary because the images in templates were in unexpected format
+for the system and because templates need default values to be able
+to build the package.
+
+Signed-off-by: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+---
+ charts/csi-vxflexos/values.yaml | 83 ++++++++++++++++++++++++++-------
+ 1 file changed, 66 insertions(+), 17 deletions(-)
+
+diff --git a/charts/csi-vxflexos/values.yaml b/charts/csi-vxflexos/values.yaml
+index 64fd16c..7b7be14 100644
+--- a/charts/csi-vxflexos/values.yaml
++++ b/charts/csi-vxflexos/values.yaml
+@@ -1,5 +1,6 @@
+ ---
+ # k8s/driver attributes
++driverName: "csi-vxflexos.dellemc.com"
+
+ # "version" is used to verify the values file matches driver version
+ # Not recommend to change
+@@ -8,23 +9,11 @@ version: v2.10.0
+ # "images" defines every container images used for the driver and its sidecars.
+ #  To use your own images, or a private registry, change the values here.
+
+-images:
+-  # "driver" defines the container image, used for the driver container.
+-  driver: dellemc/csi-vxflexos:v2.10.0
+-  # "powerflexSdc" defines the SDC image for init container.
+-  powerflexSdc: dellemc/sdc:4.5.1
+-  # CSI sidecars
+-  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
+-  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
+-  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
+-  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
+-  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
+-  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+-  # CSM sidecars
+-  replication: dellemc/dell-csi-replicator:v1.8.0
+-  vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.5.0
+-  podmon: dellemc/podmon:v1.9.0
+-  authorization: dellemc/csm-authorization-sidecar:v1.10.0
++driver:
++  # image: Image to use for driver sidecar. This shouldn't be changed
++  # Allowed values: string
++  # Default value: docker.io/dellemc/csi-vxflexos:v2.10.0
++  image: docker.io/dellemc/csi-vxflexos:v2.10.0
+
+ # Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
+ # If user does not use certificate, set to 0
+@@ -115,6 +104,18 @@ maxVxflexosVolumesPerNode: 0
+ # "controller" allows to configure controller specific parameters
+ controller:
+
++  attacher:
++    # image: Image to use for attacher sidecar. This shouldn't be changed
++    # Allowed values: string
++    # Default value: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
++    image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
++
++  provisioner:
++    # image: Image to use for provisioner sidecar. This shouldn't be changed
++    # Allowed values: string
++    # Default value: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
++    image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
++
+   # replication: allows to configure replication
+   # Replication CRDs must be installed before installing driver
+   replication:
+@@ -125,6 +126,11 @@ controller:
+     # Default value: false
+     enabled: false
+
++    # image: Image to use for dell-csi-replicator sidecar. This shouldn't be changed
++    # Allowed values: string
++    # Default value: docker.io/dellemc/dell-csi-replicator:v1.8.0
++    image: docker.io/dellemc/dell-csi-replicator:v1.8.0
++
+     # replicationContextPrefix: prefix to use for naming of resources created by replication feature
+     # Allowed values: string
+     # Default value: powerflex
+@@ -143,6 +149,11 @@ controller:
+     # Default value: None
+     enabled: false
+
++    # image: Image to use for csi-external-health-monitor-controller sidecar. This shouldn't be changed
++    # Allowed values: string
++    # Default value: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
++    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
++
+     # interval: Interval of monitoring volume health condition
+     # Allowed values: Number followed by unit (s,m,h)
+     # Examples: 60s, 5m, 1h
+@@ -167,6 +178,13 @@ controller:
+     # Default value: None
+     enabled: true
+
++    # image: Image to use for snapshotter sidecar. This shouldn't be changed
++    # Allowed values: string
++    # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
++
++    deletionPolicy: Delete
++
+   resizer:
+     # enabled: Enable/Disable volume expansion feature
+     # Allowed values:
+@@ -174,6 +192,10 @@ controller:
+     #   false: disable volume snapshot feature(do not install resizer sidecar)
+     # Default value: None
+     enabled: true
++    # image: Image to use for resizer sidecar. This shouldn't be changed
++    # Allowed values: string
++    # Default value: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
++    image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
+   
+   #"controller.nodeSelector" defines what nodes would be selected for pods of controller deployment
+   # Leave as blank to use all nodes
+@@ -207,6 +229,18 @@ node:
+     # Default value: None
+     enabled: false
+
++  powerflexSdc:
++    # image: Image to use for powerflexSdc. This shouldn't be changed
++    # Allowed values: string
++    # Default value: docker.io/dellemc/sdc:4.5.1
++    image: docker.io/dellemc/sdc:4.5.1
++
++  registrar:
++    # image: Image to use for registrar sidecar. This shouldn't be changed
++    # Allowed values: string
++    # Default value: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
++    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
++
+   # "node.nodeSelector" defines what nodes would be selected for pods of node daemonset
+   # Leave as blank to use all nodes
+   # Allowed values: map of key-value pairs
+@@ -315,6 +349,11 @@ monitor:
+ vgsnapshotter:
+   enabled: false
+
++  # image: Image to use for vg-snapshotter sidecar. This shouldn't be changed
++  # Allowed values: string
++  # Default value: docker.io/dellemc/csi-volumegroup-snapshotter:v1.5.0
++  image: docker.io/dellemc/csi-volumegroup-snapshotter:v1.5.0
++
+ # Podmon is an optional feature under development and tech preview.
+ # Enable this feature only after contact support for additional information
+ podmon:
+@@ -359,3 +398,13 @@ authorization:
+   #   "false" - TLS certificate will be verified 
+   # Default value: "true" 
+   skipCertificateValidation: true
++
++
++  # image: Image to use for authorization sidecar. This shouldn't be changed
++  # Allowed values: string
++  # Default value: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
++  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
++
++storageClasses:
++
++secret:
+--
+2.25.1

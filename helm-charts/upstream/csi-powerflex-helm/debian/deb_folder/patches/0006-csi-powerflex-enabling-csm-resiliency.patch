@@ -1,0 +1,124 @@
+From 73f8a1a1769f940dd7c7a1dff19f50432c54263a Mon Sep 17 00:00:00 2001
+From: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+Date: Wed, 10 Apr 2024 10:30:34 -0300
+Subject: [PATCH] csi-powerflex: enabling csm-resiliency
+
+This patch consists of changing the format of the values in templates and
+changing the values.yaml for the user be able to enable csm-resiliency.
+
+Signed-off-by: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+---
+ charts/csi-vxflexos/templates/controller.yaml           | 8 ++++----
+ charts/csi-vxflexos/templates/driver-config-params.yaml | 2 +-
+ charts/csi-vxflexos/templates/node.yaml                 | 8 ++++----
+ charts/csi-vxflexos/values.yaml                         | 4 ++++
+ 4 files changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/charts/csi-vxflexos/templates/controller.yaml b/charts/csi-vxflexos/templates/controller.yaml
+index 33acd5a..a08a99c 100644
+--- a/charts/csi-vxflexos/templates/controller.yaml
++++ b/charts/csi-vxflexos/templates/controller.yaml
+@@ -20,7 +20,7 @@ rules:
+   - apiGroups: [""]
+     resources: ["nodes"]
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "patch"]
+ {{- else }}
+     verbs: ["get", "list", "watch"]
+@@ -41,7 +41,7 @@ rules:
+   - apiGroups: ["storage.k8s.io"]
+     resources: ["volumeattachments"]
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "update", "patch", "delete"]
+ {{- else }}
+     verbs: ["get", "list", "watch", "update", "patch"]
+@@ -59,7 +59,7 @@ rules:
+   - apiGroups: [""]
+     resources: ["pods"]
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "update", "delete"]
+ {{- else }}
+     verbs: ["get", "list", "watch"]
+@@ -194,7 +194,7 @@ spec:
+       {{- end }}
+       containers:
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: podmon
+           image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+diff --git a/charts/csi-vxflexos/templates/driver-config-params.yaml b/charts/csi-vxflexos/templates/driver-config-params.yaml
+index 0129cac..98c2858 100644
+--- a/charts/csi-vxflexos/templates/driver-config-params.yaml
++++ b/charts/csi-vxflexos/templates/driver-config-params.yaml
+@@ -7,7 +7,7 @@ data:
+   driver-config-params.yaml: |
+     CSI_LOG_LEVEL: "{{ .Values.logLevel }}"
+     CSI_LOG_FORMAT: "{{ .Values.logFormat }}"
+-    {{ if .Values.podmon.enabled }}
++    {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
+     PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
+     PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
+diff --git a/charts/csi-vxflexos/templates/node.yaml b/charts/csi-vxflexos/templates/node.yaml
+index c0b335d..805854c 100644
+--- a/charts/csi-vxflexos/templates/node.yaml
++++ b/charts/csi-vxflexos/templates/node.yaml
+@@ -37,7 +37,7 @@ rules:
+     resources: ["securitycontextconstraints"]
+     verbs: ["use"]
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+   - apiGroups: [""]
+     resources: ["pods"]
+     verbs: ["get", "list", "watch", "update", "delete"]
+@@ -79,7 +79,7 @@ spec:
+     metadata:
+       labels:
+         app: {{ .Release.Name }}-node
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         driver.dellemc.com: dell-storage
+ {{- end }}
+       annotations:
+@@ -103,7 +103,7 @@ spec:
+       {{- end }}
+       containers:  
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: podmon
+           securityContext:
+             privileged: true
+@@ -414,7 +414,7 @@ spec:
+ {{ end }}
+ {{ end }}
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: usr-bin
+           hostPath:
+             path: /usr/bin
+diff --git a/charts/csi-vxflexos/values.yaml b/charts/csi-vxflexos/values.yaml
+index 573bcc6..8644074 100644
+--- a/charts/csi-vxflexos/values.yaml
++++ b/charts/csi-vxflexos/values.yaml
+@@ -1,4 +1,8 @@
+ ---
++# CSM Control
++csm:
++  resiliency: false
++
+ # k8s/driver attributes
+ driverName: "csi-vxflexos.dellemc.com"
+
+--
+2.25.1

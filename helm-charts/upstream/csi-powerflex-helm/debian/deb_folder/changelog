@@ -1,0 +1,5 @@
+csi-powerflex-helm (2.10-1) unstable; urgency=medium
+
+  * Initial release.
+
+ --  Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>  Mon, 08 Apr 2024 11:40:00 +0000
