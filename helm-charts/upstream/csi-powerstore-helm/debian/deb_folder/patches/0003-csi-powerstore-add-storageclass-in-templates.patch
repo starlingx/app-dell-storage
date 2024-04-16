@@ -1,4 +1,4 @@
-From 51021e130db083ba2bcb3ed3c02609fd2eff5573 Mon Sep 17 00:00:00 2001
+From 64519b629c6edb0f0e9ab6b0eed1bf1b7b80aac6 Mon Sep 17 00:00:00 2001
 From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 Date: Mon, 26 Feb 2024 10:22:20 -0300
 Subject: [PATCH] csi-powerstore: add storageclass in templates
@@ -9,16 +9,16 @@ created manually.
 
 Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
- .../templates/storageclass.yaml               | 43 +++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ .../templates/storageclass.yaml               | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
  create mode 100644 charts/csi-powerstore/templates/storageclass.yaml
 
 diff --git a/charts/csi-powerstore/templates/storageclass.yaml b/charts/csi-powerstore/templates/storageclass.yaml
 new file mode 100644
-index 0000000..2bce0cd
+index 0000000..4a5eee7
 --- /dev/null
 +++ b/charts/csi-powerstore/templates/storageclass.yaml
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,49 @@
 +{{- range $sc := .Values.storageClasses }}
 +apiVersion: storage.k8s.io/v1
 +kind: StorageClass
@@ -29,37 +29,43 @@ index 0000000..2bce0cd
 +  name: "csi-powerstore-nfs"
 +{{- end }}
 +provisioner: {{ $sc.provisioner | default ( print "csi-powerstore.dellemc.com" ) }}
-+parameters:
-+  arrayID: "{{ $sc.arrayID }}"
-+  {{- if $sc.fstype }}
-+  csi.storage.k8s.io/fstype: {{ $sc.fstype | lower | default "nfs" }}
-+  {{- end }}
-+  {{- if $sc.nasName }}
-+  nasName: "{{ $sc.nasName }}"
-+  {{- end }}
-+  allowRoot: "{{ $sc.allowRoot | default "false" }}"
-+  {{- if and $sc.replication $.Values.csm.replication }}
-+  replication.storage.dell.com/isReplicationEnabled: "true"
-+  replication.storage.dell.com/remoteStorageClassName: "{{ $sc.replication.remoteStorageClassName | default print "csi-powerstore-replication" }}"
-+  {{- if  $sc.replication.remoteClusterID }}
-+  replication.storage.dell.com/remoteClusterID: "{{ $sc.replication.remoteClusterID }}"
-+  {{- end }}
-+  {{- if  $sc.replication.remoteSystem }}
-+  replication.storage.dell.com/remoteSystem: "{{ $sc.replication.remoteSystem }}"
-+  {{- end }}
-+  {{- if  $sc.replication.rpo }}
-+  replication.storage.dell.com/rpo: {{ $sc.replication.rpo | default "Five_Minutes" }}
-+  {{- end }}
-+  replication.storage.dell.com/ignoreNamespaces: "{{ $sc.replication.ignoreNamespaces | default false }}"
-+  replication.storage.dell.com/volumeGroupPrefix: {{ $sc.replication.volumeGroupPrefix | default "csi-powerstore" }}
-+  {{- end }}
 +reclaimPolicy: {{ $sc.reclaimPolicy | default "Delete" }}
-+allowVolumeExpansion: {{ $sc.allowVolumeExpansion | default "true" }}
++allowVolumeExpansion: {{ $sc.allowVolumeExpansion | default "false" }}
 +volumeBindingMode: {{ $sc.volumeBindingMode | default "Immediate" }}
 +{{- if $sc.allowedTopologies }}
 +allowedTopologies:
 +  {{ $sc.allowedTopologies | toYaml | nindent 4 }}
 +{{- end }}
++parameters:
++  {{- if $sc.arrayID }}
++  arrayID: "{{ $sc.arrayID }}"
++  {{- end }}
++  {{- if $sc.nasName }}
++  nasName: "{{ $sc.nasName }}"
++  {{- end }}
++  {{- if and $sc.replication ( or $.Values.controller.replication.enabled $.Values.csm.replication ) }}
++  {{ $prefix := $.Values.controller.replication.replicationPrefix -}}
++  {{ printf "%s/isReplicationEnabled" $prefix }}: "true"
++  {{ printf "%s/remoteStorageClassName" $prefix }}: "{{ $sc.replication.remoteStorageClassName | default "csi-powerstore-replication" }}"
++  {{- if $sc.replication.ignoreNamespaces }}
++  {{ printf "%s/ignoreNamespaces" $prefix }}: "{{ $sc.replication.ignoreNamespaces }}"
++  {{- end }}
++  {{- if $sc.replication.volumeGroupPrefix }}
++  {{ printf "%s/volumeGroupPrefix" $prefix }}: {{ $sc.replication.volumeGroupPrefix }}
++  {{- end }}
++  {{- if $sc.replication.remoteClusterID }}
++  {{ printf "%s/remoteClusterID" $prefix }}: "{{ $sc.replication.remoteClusterID }}"
++  {{- end }}
++  {{- if $sc.replication.remoteSystem }}
++  {{ printf "%s/remoteSystem" $prefix }}: "{{ $sc.replication.remoteSystem }}"
++  {{- end }}
++  {{- if $sc.replication.rpo }}
++  {{ printf "%s/rpo" $prefix }}: {{ $sc.replication.rpo | default "Five_Minutes" }}
++  {{- end }}
++  {{- end }}
++  csi.storage.k8s.io/fstype: {{ $sc.fstype | lower | default "nfs" }}
++  allowRoot: "{{ $sc.allowRoot | default "false" }}"
++  nfsAcls: "{{ $sc.nfsAcls | default "A::EVERYONE@:RWX" }}"
 +---
 +{{- end }}
 -- 

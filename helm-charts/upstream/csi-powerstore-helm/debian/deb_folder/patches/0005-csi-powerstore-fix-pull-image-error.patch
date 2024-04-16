@@ -1,4 +1,4 @@
-From 6d60351cffc161790124e9bca957692bed1e4dea Mon Sep 17 00:00:00 2001
+From 6acf3263b3e534b2278c9311d5993a3f4402f9cb Mon Sep 17 00:00:00 2001
 From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 Date: Mon, 26 Feb 2024 11:37:21 -0300
 Subject: [PATCH] csi-powerstore: fix pull image error
@@ -15,7 +15,7 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  2 files changed, 4 insertions(+)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index 22b45f9..274e4ee 100644
+index 708e0d5..a2c27ed 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
 @@ -19,6 +19,8 @@ kind: ServiceAccount

@@ -3,7 +3,7 @@
 0003-csi-powerstore-add-storageclass-in-templates.patch
 0004-csi-powerstore-fix-image-path-for-templates.patch
 0005-csi-powerstore-fix-pull-image-error.patch
-0006-csi-powerstore-add-separator-after-comments.patch
-0007-csi-powerstore-enabling-csm-resiliency.patch
-0008-csi-powerstore-enabling-csm-replication.patch
-0009-csi-powerstore-add-label-app.starlingx.io-component.patch
+0006-csi-powerstore-enabling-csm-resiliency.patch
+0007-csi-powerstore-enabling-csm-replication.patch
+0008-csi-powerstore-add-label-app.starlingx.io-component.patch
+0009-csi-powerstore-add-snapshotclass-in-templates.patch

@@ -1,4 +1,4 @@
-From 02373eaca6451efd9e93531c958a36d98af535cd Mon Sep 17 00:00:00 2001
+From 7d8f46f5fb1dff8b3711a55e853ae67b3092448c Mon Sep 17 00:00:00 2001
 From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 Date: Mon, 26 Feb 2024 12:04:04 -0300
 Subject: [PATCH] csi-powerstore: enabling csm-replication
@@ -13,10 +13,10 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index c2007d7..e827b7f 100644
+index 568c3ef..2e0836e 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -116,7 +116,7 @@ rules:
+@@ -114,7 +114,7 @@ rules:
      verbs: ["update", "patch"]
    # below for dell-csi-replicator
    {{- if hasKey .Values.controller "replication" }}
@@ -25,7 +25,7 @@ index c2007d7..e827b7f 100644
    - apiGroups: ["replication.storage.dell.com"]
      resources: ["dellcsireplicationgroups"]
      verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-@@ -322,7 +322,7 @@ spec:
+@@ -320,7 +320,7 @@ spec:
          {{- end }}
          {{- end }}
          {{- if hasKey .Values.controller "replication" }}
@@ -34,7 +34,7 @@ index c2007d7..e827b7f 100644
          - name: dell-csi-replicator
            image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
-@@ -426,7 +426,7 @@ spec:
+@@ -424,7 +424,7 @@ spec:
              - name: X_CSI_PODMON_API_PORT
                value: "{{ .Values.podmonAPIPort }}"
              {{- if hasKey .Values.controller "replication" }}
@@ -44,7 +44,7 @@ index c2007d7..e827b7f 100644
                value: {{ .Values.controller.replication.replicationContextPrefix | default "powerstore"}}
              - name: X_CSI_REPLICATION_PREFIX
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index fd9daf2..fb9d20b 100644
+index 527f3fd..8b1b61e 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
 @@ -16,6 +16,7 @@

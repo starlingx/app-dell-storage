@@ -1,4 +1,4 @@
-From ff4743a16dd78a9340fae12f49fe6a6b083e2ffd Mon Sep 17 00:00:00 2001
+From 5737b1072fa044849000021e5fecf7cb2aaf84f9 Mon Sep 17 00:00:00 2001
 From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 Date: Mon, 26 Feb 2024 11:50:15 -0300
 Subject: [PATCH] csi-powerstore: enabling csm-resiliency
@@ -15,10 +15,10 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  4 files changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index a717e65..c2007d7 100644
+index a2c27ed..568c3ef 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -40,7 +40,7 @@ rules:
+@@ -38,7 +38,7 @@ rules:
    - apiGroups: [""]
      resources: ["nodes"]
    {{- if hasKey .Values "podmon" }}
@@ -27,7 +27,7 @@ index a717e65..c2007d7 100644
      verbs: ["get", "list", "watch", "patch"]
    {{- else }}
      verbs: ["get", "list", "watch"]
-@@ -58,7 +58,7 @@ rules:
+@@ -56,7 +56,7 @@ rules:
    - apiGroups: ["storage.k8s.io"]
      resources: ["volumeattachments"]
    {{- if hasKey .Values "podmon" }}
@@ -36,7 +36,7 @@ index a717e65..c2007d7 100644
      verbs: ["get", "list", "watch", "update", "patch", "delete"]
    {{- else }}
      verbs: ["get", "list", "watch", "update", "patch"]
-@@ -98,7 +98,7 @@ rules:
+@@ -96,7 +96,7 @@ rules:
    - apiGroups: [""]
      resources: ["pods"]
    {{- if hasKey .Values "podmon" }}
@@ -45,7 +45,7 @@ index a717e65..c2007d7 100644
      verbs: ["get", "list", "watch", "update", "delete"]
    {{- else }}
      verbs: ["get", "list", "watch"]
-@@ -199,7 +199,7 @@ spec:
+@@ -197,7 +197,7 @@ spec:
                topologyKey: "kubernetes.io/hostname"
        containers:
          {{- if hasKey .Values "podmon" }}
@@ -54,7 +54,7 @@ index a717e65..c2007d7 100644
          - name: podmon
            image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
-@@ -413,8 +413,8 @@ spec:
+@@ -411,8 +411,8 @@ spec:
                value: /powerstore-config-params/driver-config-params.yaml
              {{- if hasKey .Values "podmon" }}
              - name: X_CSI_PODMON_ENABLED
@@ -66,10 +66,10 @@ index a717e65..c2007d7 100644
                  {{- if contains "--arrayConnectivityPollRate" $value }}
              - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
 diff --git a/charts/csi-powerstore/templates/driver-config-params.yaml b/charts/csi-powerstore/templates/driver-config-params.yaml
-index fcd3868..8531ef1 100644
+index ce5349d..6622abf 100644
 --- a/charts/csi-powerstore/templates/driver-config-params.yaml
 +++ b/charts/csi-powerstore/templates/driver-config-params.yaml
-@@ -25,7 +25,7 @@ data:
+@@ -23,7 +23,7 @@ data:
    driver-config-params.yaml: |
      CSI_LOG_LEVEL: "{{ .Values.logLevel }}"
      CSI_LOG_FORMAT: "{{ .Values.logFormat }}"
@@ -79,10 +79,10 @@ index fcd3868..8531ef1 100644
      PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
      PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
 diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
-index a886579..04bb072 100644
+index f4c1c12..1a6d02e 100644
 --- a/charts/csi-powerstore/templates/node.yaml
 +++ b/charts/csi-powerstore/templates/node.yaml
-@@ -57,7 +57,7 @@ rules:
+@@ -55,7 +55,7 @@ rules:
      resources: ["securitycontextconstraints"]
      verbs: ["use"]
    {{- if hasKey .Values "podmon" }}
@@ -91,7 +91,7 @@ index a886579..04bb072 100644
    - apiGroups: [""]
      resources: ["pods"]
      verbs: ["get", "list", "watch", "update", "delete"]
-@@ -97,7 +97,7 @@ spec:
+@@ -95,7 +95,7 @@ spec:
      metadata:
        labels:
          app: {{ .Release.Name }}-node
@@ -100,7 +100,7 @@ index a886579..04bb072 100644
          driver.dellemc.com: dell-storage
        {{- end }}
        annotations:
-@@ -117,7 +117,7 @@ spec:
+@@ -115,7 +115,7 @@ spec:
        hostIPC: true
        containers:
        {{- if hasKey .Values "podmon" }}
@@ -109,7 +109,7 @@ index a886579..04bb072 100644
          - name: podmon
            securityContext:
              privileged: true
-@@ -230,8 +230,8 @@ spec:
+@@ -228,8 +228,8 @@ spec:
              {{- end }}
              {{- if hasKey .Values "podmon" }}
              - name: X_CSI_PODMON_ENABLED
@@ -120,7 +120,7 @@ index a886579..04bb072 100644
                {{- range $key, $value := .Values.podmon.node.args }}
                  {{- if contains "--arrayConnectivityPollRate" $value }}
              - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
-@@ -340,7 +340,7 @@ spec:
+@@ -338,7 +338,7 @@ spec:
            secret:
              secretName: {{ .Release.Name }}-config
          {{- if hasKey .Values "podmon" }}
@@ -130,7 +130,7 @@ index a886579..04bb072 100644
            hostPath:
              path: /usr/bin
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index aff4471..fd9daf2 100644
+index ff58275..527f3fd 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
 @@ -14,6 +14,10 @@
