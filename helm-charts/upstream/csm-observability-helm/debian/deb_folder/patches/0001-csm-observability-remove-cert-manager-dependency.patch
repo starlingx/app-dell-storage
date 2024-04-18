@@ -1,29 +1,29 @@
-From 77a6f67b57d2a3926d476c4e36b949c76303fae7 Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Wed, 6 Mar 2024 16:42:25 -0300
+From 259732ce83825a390b38f58c84004a4cad3a6cb8 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Wed, 17 Apr 2024 09:44:56 -0300
 Subject: [PATCH] csm-observability: remove cert-manager dependency
 
 This patch consists of removing the cert-manager dependency.
 It was needed removing because cert-manager already exists
 by default in the system avoiding a new install.
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
  charts/karavi-observability/Chart.yaml | 5 -----
  1 file changed, 5 deletions(-)
 
 diff --git a/charts/karavi-observability/Chart.yaml b/charts/karavi-observability/Chart.yaml
-index 78d715f..b91b238 100644
+index 17b178b..8aca5a8 100644
 --- a/charts/karavi-observability/Chart.yaml
 +++ b/charts/karavi-observability/Chart.yaml
 @@ -4,8 +4,3 @@ name: karavi-observability
  description: CSM for Observability is part of the [Container Storage Modules](https://github.com/dell/csm) open source suite of Kubernetes storage enablers for Dell EMC storage products. CSM for Observability provides Kubernetes administrators with visibility into metrics and topology data related to containerized storage.
  type: application
- version: 1.7.0
+ version: 1.8.0
 -dependencies:
 -- name: cert-manager
 -  version: 1.10.0
 -  repository: https://charts.jetstack.io
 -  condition: cert-manager.enabled
---
-2.25.1
+-- 
+2.34.1
