@@ -1,0 +1,63 @@
+From 004ea0df67e30d7846a2bb41acfbcd602bcbaff7 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Mon, 22 Apr 2024 10:33:24 -0300
+Subject: [PATCH] csi-unity: add snapshotclass in templates
+
+This patch consists of adding a snapshot class in the helm chart
+templates directory.
+It's needed because this helm chart needs a snapshot class that should
+be created manually.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+---
+ charts/csi-unity/templates/snapshotclass.yaml | 14 ++++++++++++++
+ charts/csi-unity/values.yaml                  |  4 ++++
+ 2 files changed, 18 insertions(+)
+ create mode 100644 charts/csi-unity/templates/snapshotclass.yaml
+
+diff --git a/charts/csi-unity/templates/snapshotclass.yaml b/charts/csi-unity/templates/snapshotclass.yaml
+new file mode 100644
+index 0000000..dcd9756
+--- /dev/null
++++ b/charts/csi-unity/templates/snapshotclass.yaml
+@@ -0,0 +1,14 @@
++apiVersion: snapshot.storage.k8s.io/v1
++kind: VolumeSnapshotClass
++metadata:
++  name: {{ .Release.Name }}-snapshotclass
++driver: {{ .Values.driverName | default ( print "csi-unity.dellemc.com" ) }}
++# Configure what happens to a VolumeSnapshotContent when the VolumeSnapshot object
++# it is bound to is to be deleted
++# Allowed values:
++#   Delete: the underlying storage snapshot will be deleted along with the VolumeSnapshotContent object.
++#   Retain: both the underlying snapshot and VolumeSnapshotContent remain.
++# Default value: None
++# Optional: false
++# Examples: Delete
++deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
+\ No newline at end of file
+diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
+index 7ee6af6..d8fdeeb 100644
+--- a/charts/csi-unity/values.yaml
++++ b/charts/csi-unity/values.yaml
+@@ -93,6 +93,8 @@ controller:
+     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
+ 
++    deletionPolicy: Delete
++
+   resizer:
+     # enabled: Enable/Disable volume expansion feature
+     # Allowed values:
+@@ -294,6 +296,8 @@ storageCapacity:
+   # Default value: 5m
+   pollInterval: 5m
+ 
++driverName: "csi-unity.dellemc.com"
++
+ secret:
+ 
+ storageClasses:
+-- 
+2.34.1
+

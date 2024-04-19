@@ -1,4 +1,4 @@
-From 4de4a10f9b237c487872e266b1c53ec68598a245 Mon Sep 17 00:00:00 2001
+From 6aa8d6c0b6dcbf60ce0fd4d0b45a4d082e00d20e Mon Sep 17 00:00:00 2001
 From: Guilherme Costa <guilherme.costa@windriver.com>
 Date: Fri, 1 Mar 2024 13:22:55 -0300
 Subject: [PATCH] csi-unity: add label app.starlingx.io/component
@@ -45,5 +45,5 @@ index 333326c..534d319 100644
  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
          driver.dellemc.com: dell-storage
  {{- end }}
---
-2.25.1
+-- 
+2.34.1

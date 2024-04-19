@@ -1,15 +1,15 @@
 ---
 debname: csi-unity-helm
-debver: 2.9-1
+debver: 2.10-0
 dl_path:
-  name: csi-unity-2.9.1.tar.gz
-  url: https://github.com/dell/helm-charts/archive/csi-unity-2.9.1.tar.gz
-  sha256sum: f8715edcfed6220a0e9a86a8cf8690142b0552adccb47c70047ac00311cf68d6
+  name: csi-unity-2.10.0.tar.gz
+  url: https://github.com/dell/helm-charts/archive/csi-unity-2.10.0.tar.gz
+  sha256sum: 35e82f4982f671f639df8f44f7e86c5d58850ea568d445d7f32e5adc108d7a3d
 src_files:
   - csi-unity-helm/files/Makefile
 revision:
   dist: $STX_DIST
-  stx_patch: 0
+  stx_patch: 8
   GITREVCOUNT:
-    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    BASE_SRCREV: e092b4e541f9fb1d3a5ee3faa187c85aeb0440e6
     SRC_DIR: ${MY_REPO}/stx/app-dell-storage/helm-charts/upstream/csi-unity-helm

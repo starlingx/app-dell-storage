@@ -1,13 +1,13 @@
-From bd59978ee4e57c960bc5658b30e11972a91be1c0 Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Fri, 1 Mar 2024 13:17:55 -0300
+From f539bb053e82c2739d80eee921e74162e18705c5 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 19 Apr 2024 13:57:17 -0300
 Subject: [PATCH] csi-unity: enabling csm-resiliency
 
 This patch consists of changing the format of the values in templates
 and changing the values.yaml for the user be able to enable
 csm-resiliency
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
  charts/csi-unity/templates/controller.yaml           | 8 ++++----
  charts/csi-unity/templates/driver-config-params.yaml | 2 +-
@@ -109,18 +109,18 @@ index 280c628..333326c 100644
            hostPath:
              path: /usr/bin
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 5d2b248..f73dc23 100644
+index 38e9143..43f9212 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -1,6 +1,9 @@
  ## K8S/DRIVER ATTRIBUTES
  ########################
-
+ 
 +csm:
 +  resiliency: false
 +
  # version: version of this values file
  # Note: Do not change this value
- # Examples : "v2.9.1" , "nightly"
---
-2.25.1
+ # Examples : "v2.9.0" , "nightly"
+-- 
+2.34.1
