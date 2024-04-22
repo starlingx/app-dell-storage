@@ -6,6 +6,7 @@ maintain_attributes: true
 
 disabled_charts:
 - csi-unity
+- csi-powerscale
 - csm-application-mobility
 - csm-observability
 - csm-replication

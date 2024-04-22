@@ -1,0 +1,63 @@
+From bc8d33899893b0f5fddaa606faf9e2f6a159edc5 Mon Sep 17 00:00:00 2001
+From: Guilherme Costa <guilherme.costa@windriver.com>
+Date: Mon, 8 Apr 2024 10:57:40 -0300
+Subject: [PATCH] csi-powerscale: add snapshotclass in templates
+
+This patch consists of adding a snapshot class in the helm chart
+templates directory.
+It's needed because this helm chart needs a snapshot classes that should
+be created manually.
+
+Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+---
+ .../csi-isilon/templates/snapshotclass.yaml   | 22 +++++++++++++++++++
+ charts/csi-isilon/values.yaml                 |  4 ++++
+ 2 files changed, 26 insertions(+)
+ create mode 100644 charts/csi-isilon/templates/snapshotclass.yaml
+
+diff --git a/charts/csi-isilon/templates/snapshotclass.yaml b/charts/csi-isilon/templates/snapshotclass.yaml
+new file mode 100644
+index 0000000..caa16e5
+--- /dev/null
++++ b/charts/csi-isilon/templates/snapshotclass.yaml
+@@ -0,0 +1,22 @@
++{{- range $sc := $.Values.snapshotClasses }}
++# For kubernetes version 20 (v1 snaps)
++apiVersion: snapshot.storage.k8s.io/v1
++kind: VolumeSnapshotClass
++metadata:
++  name: {{ $sc.name | lower | quote }}
++driver: {{ $.Values.driverName | default ( print "csi-isilon.dellemc.com" ) }}
++
++# Configure what happens to a VolumeSnapshotContent when the VolumeSnapshot object
++# it is bound to is to be deleted
++# Allowed values:
++#   Delete: the underlying storage snapshot will be deleted along with the VolumeSnapshotContent object.
++#   Retain: both the underlying snapshot and VolumeSnapshotContent remain.
++deletionPolicy: {{ $sc.deletionPolicy | default "Delete" | quote }}
++
++parameters:
++  # The base path of the volumes on Isilon cluster for which snapshot is being created.
++  # This path should be same as the IsiPath from the storageClass.
++  # Optional: false
++  IsiPath: {{ $sc.IsiPath | default $.Values.isiPath | quote }}
++---
++{{- end }}
+diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
+index af7c17b..76dec14 100644
+--- a/charts/csi-isilon/values.yaml
++++ b/charts/csi-isilon/values.yaml
+@@ -497,6 +497,10 @@ encryption:
+   # See the gocryptfs documentation for more details.
+   extraArgs: []
+ 
++driverName: "csi-isilon.dellemc.com"
++
+ secret:
+ 
+ storageClasses:
++
++snapshotClasses:
+-- 
+2.34.1
+

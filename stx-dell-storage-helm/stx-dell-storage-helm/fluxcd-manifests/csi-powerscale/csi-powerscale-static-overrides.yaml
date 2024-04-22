@@ -1,0 +1,69 @@
+#
+# Copyright (c) 2024 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+csm:
+  authorization: false
+  replication: false
+  resiliency: false
+
+app.starlingx.io/component: platform
+
+driver:
+  image: docker.io/dellemc/csi-isilon:v2.10.0
+
+controller:
+  provisioner:
+    image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
+  replication:
+    image: docker.io/dellemc/dell-csi-replicator:v1.8.0
+  snapshot:
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
+    snapNamePrefix: csi-powerscale-snap
+  resizer:
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
+  attacher:
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
+  healthMonitor:
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+  metadataretriever:
+    image: docker.io/dellemc/csi-metadata-retriever:v1.7.2
+  volumeNamePrefix: csi-powerscale-vol
+  nodeSelector: { "node-role.kubernetes.io/control-plane": "" }
+  tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: "Exists"
+    effect: "NoSchedule"
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+node:
+  registrar:
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
+  nodeSelector: { "kubernetes.io/os": "linux" }
+  tolerations:
+  - operator: "Exists"
+
+authorization:
+  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
+  rootCertificate:
+
+podmon:
+  image: docker.io/dellemc/podmon:v1.9.0
+
+encryption:
+  image: docker.io/dellemc/csm-encryption:v0.3.0
+
+driverName: "csi-isilon.dellemc.com"
+
+proxyAuthzTokens:
+
+secret:
+
+storageClasses:
+
+snapshotClasses:
+  - name: csi-powerscale-snapshotclass

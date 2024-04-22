@@ -1,0 +1,18 @@
+#
+# Copyright (c) 2024 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+namespace: dell-storage
+resources:
+  - helmrelease.yaml
+secretGenerator:
+  - name: csi-powerscale-static-overrides
+    files:
+      - csi-powerscale-static-overrides.yaml
+  - name: csi-powerscale-system-overrides
+    files:
+      - csi-powerscale-system-overrides.yaml
+generatorOptions:
+  disableNameSuffixHash: true
