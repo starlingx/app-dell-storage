@@ -1,0 +1,82 @@
+#
+# Copyright (c) 2024 Wind River Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+global:
+  credentialsSecret:
+  defaultSecret:
+    username:
+    password:
+  managementServers: []
+
+csm:
+  authorization: false
+  replication: false
+
+app.starlingx.io/component: platform
+
+driver:
+  image: docker.io/dellemc/csi-powermax:v2.10.0
+
+controller:
+  provisioner:
+    image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
+  snapshot:
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
+    snapNamePrefix: csi-powermax-snap
+    deletionPolicy: Delete
+  resizer:
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
+  attacher:
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
+  healthMonitor:
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+  metadataretriever:
+    image: docker.io/dellemc/csi-metadata-retriever:v1.7.2
+  volumeNamePrefix: csi-powermax-vol
+  nodeSelector: { "node-role.kubernetes.io/control-plane": "" }
+  tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: "Exists"
+    effect: "NoSchedule"
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+node:
+  registrar:
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
+  noderescan:
+    image: docker.io/dellemc/dell-csi-node-rescanner:v1.2.0
+  nodeSelector: { "kubernetes.io/os": "linux" }
+  tolerations:
+  - operator: "Exists"
+
+csireverseproxy:
+  image: docker.io/dellemc/csipowermax-reverseproxy:v2.9.0
+
+authorization:
+  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
+  rootCertificate:
+  configs:
+
+encryption:
+  image: docker.io/dellemc/csm-encryption:v0.3.0
+
+replication:
+  image: docker.io/dellemc/dell-csi-replicator:v1.8.0
+
+migration:
+  image: docker.io/dellemc/dell-csi-migrator:v1.3.0
+
+driverName: "csi-powermax.dellemc.com"
+
+proxyAuthzTokens:
+  access:
+  refresh:
+
+certSecret:
+
+storageClasses:

@@ -1,0 +1,5 @@
+csi-powermax-helm (2.10-0) unstable; urgency=medium
+
+  * Initial release.
+
+ --  Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>  Mon, 22 Apr 2024 17:30:00 +0000

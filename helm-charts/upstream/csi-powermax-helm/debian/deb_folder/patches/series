@@ -1,0 +1,12 @@
+0001-csi-powermax-add-default-values-for-templates.patch
+0002-csi-powermax-fix-image-path-for-templates.patch
+0003-csi-powermax-fix-pull-image-error.patch
+0004-csi-powermax-enabling-csm-replication.patch
+0005-csi-powermax-enabling-csm-authorization.patch
+0006-csi-powermax-add-label-app.starlingx.io-component.patch
+0007-csi-powermax-add-secrets-in-templates.patch
+0008-csi-powermax-add-secretcert-in-templates.patch
+0009-csi-powermax-add-storageclass-in-templates.patch
+0010-csi-powermax-add-snapshotclass-in-templates.patch
+csireverseproxy/0001-csireverseproxy-fix-config-inclusion-in-configmap.patch
+csireverseproxy/0002-csireverseproxy-add-default-values-for-templates.patch

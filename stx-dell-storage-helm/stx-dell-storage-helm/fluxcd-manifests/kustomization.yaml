@@ -10,9 +10,10 @@ namespace: dell-storage
 resources:
   - base
   - csi-powerflex
-  - csi-powerstore
+  - csi-powermax
   - csi-powerscale
+  - csi-powerstore
   - csi-unity
-  - csm-replication
-  - csm-observability
   - csm-application-mobility
+  - csm-observability
+  - csm-replication

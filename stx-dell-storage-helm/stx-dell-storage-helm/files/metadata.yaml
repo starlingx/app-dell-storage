@@ -6,8 +6,9 @@ maintain_attributes: true
 
 disabled_charts:
 - csi-powerflex
-- csi-unity
+- csi-powermax
 - csi-powerscale
+- csi-unity
 - csm-application-mobility
 - csm-observability
 - csm-replication
