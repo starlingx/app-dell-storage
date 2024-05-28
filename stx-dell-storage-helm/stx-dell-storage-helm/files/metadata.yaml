@@ -9,7 +9,6 @@ disabled_charts:
 - csi-powermax
 - csi-powerscale
 - csi-unity
-- csm-application-mobility
 - csm-observability
 - csm-replication
 
