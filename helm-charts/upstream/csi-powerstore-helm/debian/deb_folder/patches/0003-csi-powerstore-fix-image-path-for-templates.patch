@@ -1,6 +1,6 @@
-From bedceb9cca8848c6014f3160fca2ca8a6830bc05 Mon Sep 17 00:00:00 2001
+From 35419e8432e61d73c30b9f07afc28f796edec094 Mon Sep 17 00:00:00 2001
 From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Mon, 26 Feb 2024 11:33:37 -0300
+Date: Thu, 5 Dec 2024 09:22:32 -0300
 Subject: [PATCH] csi-powerstore: fix image path for templates
 
 This patch consists of changing the format to use the image path directly
@@ -10,132 +10,159 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
  .../csi-powerstore/templates/controller.yaml  | 20 +++++++++----------
  charts/csi-powerstore/templates/node.yaml     |  6 +++---
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ charts/csi-powerstore/values.yaml             |  8 ++++----
+ 3 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index 968ccf6..708e0d5 100644
+index 5652c17..499ae85 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -197,7 +197,7 @@ spec:
+@@ -199,7 +199,7 @@ spec:
          {{- if hasKey .Values "podmon" }}
          {{- if eq .Values.podmon.enabled true }}
          - name: podmon
--          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
 +          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              {{- toYaml .Values.podmon.controller.args | nindent 12 }}
-@@ -225,7 +225,7 @@ spec:
+@@ -227,7 +227,7 @@ spec:
          {{ if .Values.dev.enableTracing }}{{- include "pstore.tracing" . | nindent 8 }}{{ end }}
          {{- end }}
          - name: attacher
--          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher }}
+-          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image }}
 +          image: {{ required "Must provide the CSI attacher container image." .Values.controller.attacher.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -243,7 +243,7 @@ spec:
+@@ -245,7 +245,7 @@ spec:
          {{- if hasKey .Values.controller "resizer" }}
          {{- if eq .Values.controller.resizer.enabled true }}
          - name: resizer
--          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer }}
+-          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer.image }}
 +          image: {{ required "Must provide the CSI resizer container image." .Values.controller.resizer.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -258,7 +258,7 @@ spec:
+@@ -260,7 +260,7 @@ spec:
          {{end}}
          {{end}}
          - name: provisioner
--          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner }}
+-          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner.image }}
 +          image: {{ required "Must provide the CSI provisioner container image." .Values.controller.provisioner.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -289,7 +289,7 @@ spec:
+@@ -291,7 +291,7 @@ spec:
          {{- if hasKey .Values.controller "snapshot" }}
          {{- if eq .Values.controller.snapshot.enabled true }}
          - name: snapshotter
--          image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter }}
+-          image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter.image }}
 +          image: {{ required "Must provide the CSI snapshotter container image." .Values.controller.snapshot.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -307,7 +307,7 @@ spec:
+@@ -309,7 +309,7 @@ spec:
          {{- if hasKey .Values.controller "vgsnapshot" }}
          {{- if eq .Values.controller.vgsnapshot.enabled true }}
          - name: vg-snapshotter
--          image: {{ required "Must provide the vgsnapshotter container image." .Values.images.vgsnapshotter }}
+-          image: {{ required "Must provide the vgsnapshotter container image." .Values.images.vgsnapshotter.image }}
 +          image: {{ required "Must provide the vgsnapshotter container image." .Values.controller.vgsnapshot.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
              - name: ADDRESS
-@@ -320,7 +320,7 @@ spec:
+@@ -322,7 +322,7 @@ spec:
          {{- if hasKey .Values.controller "replication" }}
          {{- if eq .Values.controller.replication.enabled true}}
          - name: dell-csi-replicator
--          image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication }}
+-          image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication.image }}
 +          image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -348,7 +348,7 @@ spec:
+@@ -350,7 +350,7 @@ spec:
          {{- if hasKey .Values.controller "healthMonitor" }}
          {{- if eq .Values.controller.healthMonitor.enabled true}}
          - name: csi-external-health-monitor-controller
--          image: {{ required "Must provide the CSI external health monitor controller image." .Values.images.healthmonitor }}
+-          image: {{ required "Must provide the CSI external health monitor controller image." .Values.images.healthmonitor.image }}
 +          image: {{ required "Must provide the CSI external health monitor controller image." .Values.controller.healthMonitor.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--v=5"
-@@ -367,7 +367,7 @@ spec:
+@@ -369,7 +369,7 @@ spec:
          {{- end }}
          {{- end }}
          - name: csi-metadata-retriever
--          image: {{ required "Must provide the CSI Metadata retriever container image." .Values.images.metadataretriever }}
+-          image: {{ required "Must provide the CSI Metadata retriever container image." .Values.images.metadataretriever.image }}
 +          image: {{ required "Must provide the CSI Metadata retriever container image." .Values.controller.metadataretriever.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-metadata-retriever" ]
            env:
-@@ -382,7 +382,7 @@ spec:
+@@ -384,7 +384,7 @@ spec:
              - name: socket-dir
                mountPath: /var/run/csi
          - name: driver
--          image: {{ required "Must provide the PowerStore driver image repository." .Values.images.driver }}
+-          image: {{ required "Must provide the PowerStore driver image repository." .Values.images.driver.image }}
 +          image: {{ required "Must provide the PowerStore driver image repository." .Values.driver.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-powerstore" ]
            env:
 diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
-index 1ee7969..47cd54e 100644
+index 19124aa..f4c1c12 100644
 --- a/charts/csi-powerstore/templates/node.yaml
 +++ b/charts/csi-powerstore/templates/node.yaml
-@@ -120,7 +120,7 @@ spec:
+@@ -122,7 +122,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
--          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
 +          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              {{- toYaml .Values.podmon.node.args | nindent 12 }}
-@@ -173,7 +173,7 @@ spec:
+@@ -175,7 +175,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
--          image: {{ required "Must provide the Powerstore driver image repository." .Values.images.driver }}
+-          image: {{ required "Must provide the Powerstore driver image repository." .Values.images.driver.image }}
 +          image: {{ required "Must provide the Powerstore driver image repository." .Values.driver.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-powerstore" ]
            env:
-@@ -266,7 +266,7 @@ spec:
+@@ -268,7 +268,7 @@ spec:
              - name: powerstore-config-params
                mountPath: /powerstore-config-params
          - name: registrar
--          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar }}
+-          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
 +          image: {{ required "Must provide the CSI node registrar container image." .Values.node.registrar.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--v=5"
+diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
+index 4c94ab7..4f526a9 100644
+--- a/charts/csi-powerstore/values.yaml
++++ b/charts/csi-powerstore/values.yaml
+@@ -119,8 +119,7 @@ controller:
+     #   false: disable volume-group-snapshot feature(do not install vg-snapshotter sidecar)
+     # Default value: false
+     enabled: false
+-    vgsnapshotter:
+-      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
++    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
+ 
+   # snapshot: allows to enable/disable snapshot feature
+   # snapshot CRDs needs to be installed before enabling this feature
+@@ -131,8 +130,9 @@ controller:
+     #   false: disable volume snapshot feature(do not install snapshotter sidecar)
+     # Default value: None
+     enabled: true
+-    snapshotter:
+-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
++
++    deletionPolicy: Delete
+ 
+     # snapNamePrefix: Prefix to apply to the names of a created snapshots
+     # Allowed values: string
 -- 
 2.34.1
