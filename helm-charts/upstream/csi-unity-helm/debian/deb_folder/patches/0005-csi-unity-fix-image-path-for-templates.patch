@@ -1,111 +1,111 @@
-From cbf85204b3b836f170ab6c0ca82a986996480584 Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Fri, 1 Mar 2024 13:08:22 -0300
+From f3fdd610a89b4c3bea323421df685c2bef2e9629 Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Wed, 4 Dec 2024 16:46:56 -0300
 Subject: [PATCH] csi-unity: fix image path for templates
 
 This patch consists of changing the format to use the image path
 directly following the expected format used by kube_app.
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
  charts/csi-unity/templates/controller.yaml | 14 +++++++-------
  charts/csi-unity/templates/node.yaml       |  6 +++---
  2 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
-index 84b64b0..21f704c 100644
+index 80ecbca..8141aba 100644
 --- a/charts/csi-unity/templates/controller.yaml
 +++ b/charts/csi-unity/templates/controller.yaml
-@@ -152,7 +152,7 @@ spec:
+@@ -154,7 +154,7 @@ spec:
  {{- if .Values.podmon.enabled }}
          - name: podmon
            imagePullPolicy: {{ .Values.imagePullPolicy }}
--          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
 +          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            args:
              {{- toYaml .Values.podmon.controller.args | nindent 12 }}
            env:
-@@ -175,7 +175,7 @@ spec:
+@@ -177,7 +177,7 @@ spec:
                mountPath: /unity-config
  {{- end }}
          - name: attacher
--          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher }}
+-          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image }}
 +          image: {{ required "Must provide the CSI attacher container image." .Values.controller.attacher.image }}
            args:
              - "--csi-address=$(ADDRESS)"
              - "--v=5"
-@@ -187,7 +187,7 @@ spec:
+@@ -189,7 +189,7 @@ spec:
              - name: socket-dir
                mountPath: /var/run/csi
          - name: provisioner
--          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner }}
+-          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner.image }}
 +          image: {{ required "Must provide the CSI provisioner container image." .Values.controller.provisioner.image }}
            args:
              - "--csi-address=$(ADDRESS)"
              - "--volume-name-prefix={{ required "Must provide a Volume Name Prefix." .Values.controller.volumeNamePrefix }}"
-@@ -220,7 +220,7 @@ spec:
+@@ -222,7 +222,7 @@ spec:
          {{- if hasKey .Values.controller "snapshot" }}
          {{- if eq .Values.controller.snapshot.enabled true }}
          - name: snapshotter
--          image: {{ required "Must provide the CSI snapshotter container image. " .Values.images.snapshotter }}
+-          image: {{ required "Must provide the CSI snapshotter container image. " .Values.images.snapshotter.image }}
 +          image: {{ required "Must provide the CSI snapshotter container image. " .Values.controller.snapshot.image }}
            args:
              - "--csi-address=$(ADDRESS)"
              - "--snapshot-name-prefix={{ required "Must privided a Snapshot Name Prefix" .Values.controller.snapshot.snapNamePrefix }}"
-@@ -239,7 +239,7 @@ spec:
+@@ -241,7 +241,7 @@ spec:
          {{- if hasKey .Values.controller "resizer" }}
          {{- if eq .Values.controller.resizer.enabled true }}
          - name: resizer
--          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer }}
+-          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer.image }}
 +          image: {{ required "Must provide the CSI resizer container image." .Values.controller.resizer.image }}
            args:
              - "--csi-address=$(ADDRESS)"
              - "--v=5"
-@@ -255,7 +255,7 @@ spec:
+@@ -257,7 +257,7 @@ spec:
          {{- if hasKey .Values.controller "healthMonitor" }}
          {{- if eq .Values.controller.healthMonitor.enabled true }}
          - name: csi-external-health-monitor-controller
--          image: {{ required "Must provide the CSI external health monitor image." .Values.images.healthmonitor }}
+-          image: {{ required "Must provide the CSI external health monitor image." .Values.images.healthmonitor.image }}
 +          image: {{ required "Must provide the CSI external health monitor image." .Values.controller.healthMonitor.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--v=5"
-@@ -274,7 +274,7 @@ spec:
+@@ -276,7 +276,7 @@ spec:
          {{- end }}
          {{- end }}
          - name: driver
--          image: "{{ required "Must provide the driver image repository." .Values.images.driver }}"
+-          image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
 +          image: "{{ required "Must provide the driver image repository." .Values.driver.image }}"
            args:
              - "--driver-name=csi-unity.dellemc.com"
              - "--driver-config=/unity-config/driver-config-params.yaml"
 diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
-index 9358b0c..7d8cf73 100644
+index a724f8f..5eb6d7c 100644
 --- a/charts/csi-unity/templates/node.yaml
 +++ b/charts/csi-unity/templates/node.yaml
-@@ -97,7 +97,7 @@ spec:
+@@ -99,7 +99,7 @@ spec:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
            imagePullPolicy: {{ .Values.imagePullPolicy }}
--          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
 +          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            args:
            {{- toYaml .Values.podmon.node.args | nindent 12 }}
            env:
-@@ -145,7 +145,7 @@ spec:
+@@ -147,7 +147,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
--          image: "{{ required "Must provide the driver image repository." .Values.images.driver }}"
+-          image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
 +          image: "{{ required "Must provide the driver image repository." .Values.driver.image }}"
            args:
              - "--driver-name=csi-unity.dellemc.com"
              - "--driver-config=/unity-config/driver-config-params.yaml"
-@@ -204,7 +204,7 @@ spec:
+@@ -208,7 +208,7 @@ spec:
              - name: unity-secret
                mountPath: /unity-secret
          - name: registrar
--          image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar }}
+-          image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar.image }}
 +          image: {{ required "Must provide the CSI registrar container image." .Values.node.registrar.image }}
            args:
              - "--v=5"

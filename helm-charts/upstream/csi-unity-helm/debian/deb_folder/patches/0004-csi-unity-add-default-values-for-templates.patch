@@ -1,6 +1,6 @@
-From 0de2896ad8ebbf01023051faf818425d31e906f7 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 19 Apr 2024 12:48:45 -0300
+From fa012b6687207099d046cdb6fbd425afce3a13bf Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Wed, 4 Dec 2024 16:17:07 -0300
 Subject: [PATCH] csi-unity: add default values for templates
 
 This patch consists of adding the default values in the values.yaml of
@@ -9,113 +9,121 @@ It's necessary because the images in templates were in unexpected
 format for the system and because templates need default values to be
 able to build the package.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
- charts/csi-unity/values.yaml | 52 +++++++++++++++++++++++++++---------
- 1 file changed, 39 insertions(+), 13 deletions(-)
+ charts/csi-unity/values.yaml | 60 +++++++++++++++++++++++-------------
+ 1 file changed, 39 insertions(+), 21 deletions(-)
 
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index a22c480..83d6899 100644
+index ad3741b..45df7ee 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
-@@ -6,19 +6,11 @@
+@@ -6,27 +6,11 @@
  # Examples : "v2.9.0" , "nightly"
- version: "v2.10.0"
+ version: "v2.12.0"
  
 -images:
 -  # "driver" defines the container image, used for the driver container.
--  driver: dellemc/csi-unity:v2.10.0
+-  driver:
+-    image: quay.io/dell/container-storage-modules/csi-unity:v2.12.0
 -  # CSI sidecars
--  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
--  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
--  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
--  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
--  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
--  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+-  attacher:
+-    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+-  provisioner:
+-    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+-  snapshotter:
+-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+-  resizer:
+-    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+-  registrar:
+-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+-  healthmonitor:
+-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
 -
 -  # CSM sidecars
--  podmon: dellemc/podmon:v1.9.0
+-  podmon:
+-    image: quay.io/dell/container-storage-modules/podmon:v1.11.0
 +driver:
 +  # image: Image to use for driver sidecar. This shouldn't be changed
 +  # Allowed values: string
-+  # Default value: docker.io/dellemc/csi-unity:v2.10.0
-+  image: docker.io/dellemc/csi-unity:v2.10.0
++  # Default value: quay.io/dell/container-storage-modules/csi-unity:v2.12.0
++  image: quay.io/dell/container-storage-modules/csi-unity:v2.12.0
  
  # LogLevel is used to set the logging level of the driver.
  # Allowed values: "error", "warn"/"warning", "info", "debug"
-@@ -68,6 +60,18 @@ controller:
+@@ -83,6 +67,18 @@ controller:
    # Default value: None
    volumeNamePrefix: csivol
  
 +  attacher:
 +    # image: Image to use for attacher sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
-+    image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
++    # Default value: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
++    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
 +
 +  provisioner:
 +    # image: Image to use for provisioner sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
-+    image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
++    # Default value: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
++    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
 +
    snapshot:
      # enabled: Enable/Disable volume snapshot feature
      # Allowed values:
-@@ -80,6 +84,11 @@ controller:
-     # Allowed values: string
+@@ -96,6 +92,11 @@ controller:
      # Default value: None
      snapNamePrefix: csi-snap
-+
+ 
 +    # image: Image to use for snapshotter sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
-+    image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
- 
++    # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
++
    resizer:
      # enabled: Enable/Disable volume expansion feature
-@@ -89,6 +98,11 @@ controller:
+     # Allowed values:
+@@ -103,6 +104,11 @@ controller:
+     #   false: disable volume snapshot feature(do not install resizer sidecar)
      # Default value: None
      enabled: true
- 
++
 +    # image: Image to use for resizer sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
-+    image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
-+
++    # Default value: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
++    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+ 
    # nodeSelector: Define node selection constraints for controller pods.
    # For the pod to be eligible to run on a node, the node must have each
-   # of the indicated key-value pairs as labels.
-@@ -127,6 +141,11 @@ controller:
+@@ -142,6 +148,11 @@ controller:
      # Default value: 60s
      interval: 60s
  
 +    # image: Image to use for csi-external-health-monitor-controller sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
-+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
++    # Default value: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
++    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
 +
  # node: configure node pod specific parameters
  node:
    # dnsPolicy : Define the DNS Policy of the Node service.
-@@ -136,6 +155,12 @@ node:
+@@ -151,6 +162,12 @@ node:
    # Default value: None
    dnsPolicy: "ClusterFirstWithHostNet"
  
 +  # image: Image to use for registrar sidecar. This shouldn't be changed
 +  # Allowed values: string
-+  # Default value: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
++  # Default value: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
 +  registrar:
-+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
++    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
 +
    healthMonitor:
      # enabled: Enable/Disable health monitor of CSI Volumes - volume usage
      # Allowed values:
-@@ -204,6 +229,7 @@ podmon:
+@@ -219,6 +236,7 @@ podmon:
    # defaule value : None
    # Examples : true , false
    enabled: false
-+  image: docker.io/dellemc/podmon:v1.9.0
++  image: quay.io/dell/container-storage-modules/podmon:v1.11.0
    controller:
      args:
        - "--csisock=unix:/var/run/csi/csi.sock"

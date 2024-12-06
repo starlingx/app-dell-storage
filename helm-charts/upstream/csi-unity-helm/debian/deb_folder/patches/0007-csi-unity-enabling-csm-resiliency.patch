@@ -1,13 +1,13 @@
-From f539bb053e82c2739d80eee921e74162e18705c5 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 19 Apr 2024 13:57:17 -0300
+From ba9498e4dc91e1983183f07fd855ea948da9cb2f Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Wed, 4 Dec 2024 16:52:07 -0300
 Subject: [PATCH] csi-unity: enabling csm-resiliency
 
 This patch consists of changing the format of the values in templates
 and changing the values.yaml for the user be able to enable
 csm-resiliency
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
  charts/csi-unity/templates/controller.yaml           | 8 ++++----
  charts/csi-unity/templates/driver-config-params.yaml | 2 +-
@@ -16,7 +16,7 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  4 files changed, 12 insertions(+), 9 deletions(-)
 
 diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
-index 22051d6..e846612 100644
+index 41dbea9..0c5ded2 100644
 --- a/charts/csi-unity/templates/controller.yaml
 +++ b/charts/csi-unity/templates/controller.yaml
 @@ -19,7 +19,7 @@ rules:
@@ -46,7 +46,7 @@ index 22051d6..e846612 100644
      verbs: ["get", "list", "watch", "update", "delete"]
  {{- else }}
      verbs: ["get", "list", "watch"]
-@@ -151,7 +151,7 @@ spec:
+@@ -153,7 +153,7 @@ spec:
        {{- toYaml .Values.controller.tolerations | nindent 6 }}
        {{- end }}
        containers:
@@ -69,7 +69,7 @@ index 2bbf894..66032e0 100644
      PODMON_CONTROLLER_LOG_FORMAT: "TEXT"
      PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
 diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
-index 280c628..333326c 100644
+index efb442f..42bbbb5 100644
 --- a/charts/csi-unity/templates/node.yaml
 +++ b/charts/csi-unity/templates/node.yaml
 @@ -36,7 +36,7 @@ rules:
@@ -81,8 +81,8 @@ index 280c628..333326c 100644
    - apiGroups: [ "" ]
      resources: [ "pods" ]
      verbs: [ "get", "list", "watch", "update", "delete" ]
-@@ -74,7 +74,7 @@ spec:
-     metadata:
+@@ -76,7 +76,7 @@ spec:
+         kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
 -{{- if .Values.podmon.enabled }}
@@ -90,7 +90,7 @@ index 280c628..333326c 100644
          driver.dellemc.com: dell-storage
  {{- end }}
      spec:
-@@ -91,7 +91,7 @@ spec:
+@@ -93,7 +93,7 @@ spec:
        hostNetwork: true
        dnsPolicy: {{ .Values.node.dnsPolicy }}
        containers:
@@ -99,7 +99,7 @@ index 280c628..333326c 100644
          - name: podmon
            securityContext:
              privileged: true
-@@ -265,7 +265,7 @@ spec:
+@@ -269,7 +269,7 @@ spec:
          - name: unity-secret
            secret:
                secretName: {{ .Release.Name }}-creds
@@ -109,7 +109,7 @@ index 280c628..333326c 100644
            hostPath:
              path: /usr/bin
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 38e9143..43f9212 100644
+index 45df7ee..8ef923a 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -1,6 +1,9 @@
