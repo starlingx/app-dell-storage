@@ -1,6 +1,6 @@
-From 27e8f3293f18e44df39b4eaa90f8d59f36898f5d Mon Sep 17 00:00:00 2001
+From e7b539836939af9895eccd9574214d1b2cf7d080 Mon Sep 17 00:00:00 2001
 From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Wed, 17 Apr 2024 10:26:06 -0300
+Date: Fri, 6 Dec 2024 09:52:06 -0300
 Subject: [PATCH] csm-observability: fix all image paths
 
 This patch consists of changing the format to use the image path
@@ -9,145 +9,78 @@ docker.io prefix in image path to prevent future issues.
 
 Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
- .../templates/karavi-metrics-powerflex.yaml   |  2 +-
- .../templates/karavi-metrics-powermax.yaml    |  2 +-
- .../templates/karavi-metrics-powerscale.yaml  |  2 +-
- charts/karavi-observability/values.yaml       | 28 ++++++++-----------
- 4 files changed, 15 insertions(+), 19 deletions(-)
+ .../templates/karavi-metrics-powerflex.yaml              | 2 +-
+ .../templates/karavi-metrics-powermax.yaml               | 2 +-
+ .../templates/karavi-metrics-powerscale.yaml             | 2 +-
+ charts/karavi-observability/values.yaml                  | 9 +++++++--
+ 4 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml b/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
-index fe48b9b..eaaadfd 100644
+index 9b82d7b..bd8206b 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
 @@ -73,7 +73,7 @@ spec:
        {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
        - name: karavi-authorization-proxy
          imagePullPolicy: IfNotPresent
--        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerflex.authorization.sidecarProxyImage }}
+-        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerflex.authorization.sidecarProxy.image }}
 +        image: {{ required "Must provide the authorization sidecar container image." .Values.sidecarProxy.image }}
          env:
            - name: PROXY_HOST
              value: "{{ .Values.karaviMetricsPowerflex.authorization.proxyHost }}"
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
-index ccf391d..cad31d5 100644
+index 3acfab7..57b7541 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
 @@ -77,7 +77,7 @@ spec:
        {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
        - name: karavi-authorization-proxy
          imagePullPolicy: IfNotPresent
--        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowermax.authorization.sidecarProxyImage }}
+-        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowermax.authorization.sidecarProxy.image }}
 +        image: {{ required "Must provide the authorization sidecar container image." .Values.sidecarProxy.image }}
          env:
            - name: PROXY_HOST
              value: "{{ .Values.karaviMetricsPowermax.authorization.proxyHost }}"
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml b/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml
-index f7aa39f..6a6ef9b 100644
+index 83b6680..6ece94d 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powerscale.yaml
 @@ -73,7 +73,7 @@ spec:
        {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
        - name: karavi-authorization-proxy
          imagePullPolicy: IfNotPresent
--        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerscale.authorization.sidecarProxyImage }}
+-        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerscale.authorization.sidecarProxy.image }}
 +        image: {{ required "Must provide the authorization sidecar container image." .Values.sidecarProxy.image }}
          env:
            - name: PROXY_HOST
              value: "{{ .Values.karaviMetricsPowerscale.authorization.proxyHost }}"
 diff --git a/charts/karavi-observability/values.yaml b/charts/karavi-observability/values.yaml
-index 5c0d89e..33a4fec 100644
+index fa1449f..09cb408 100644
 --- a/charts/karavi-observability/values.yaml
 +++ b/charts/karavi-observability/values.yaml
-@@ -1,5 +1,5 @@
- karaviTopology:
--  image: dellemc/csm-topology:v1.8.0
-+  image: docker.io/dellemc/csm-topology:v1.8.0
-   enabled: true
-   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
-   provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com,csi-powermax.dellemc.com
-@@ -13,7 +13,7 @@ karaviTopology:
+@@ -12,6 +12,11 @@ karaviTopology:
+     serviceName: karavi-topology
      probability: 0.0
- 
- karaviMetricsPowerflex:
--  image: dellemc/csm-metrics-powerflex:v1.8.0
-+  image: docker.io/dellemc/csm-metrics-powerflex:v1.8.0
-   enabled: true
-   collectorAddr: otel-collector:55680
-   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
-@@ -39,9 +39,6 @@ karaviMetricsPowerflex:
-   logFormat: text
-   authorization:
-     enabled: false
--    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
--    # Default value: dellemc/csm-authorization-sidecar:v1.10.0
--    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.0
-     # proxyHost: hostname of the csm-authorization server
-     # Default value: None
-     proxyHost:
-@@ -53,7 +50,7 @@ karaviMetricsPowerflex:
-     skipCertificateValidation: true
- 
- karaviMetricsPowerstore:
--  image: dellemc/csm-metrics-powerstore:v1.8.0
-+  image: docker.io/dellemc/csm-metrics-powerstore:v1.8.0
-   enabled: true
-   collectorAddr: otel-collector:55680
-   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
-@@ -79,7 +76,7 @@ karaviMetricsPowerstore:
-     probability: 0.0
- 
- karaviMetricsPowerscale:
--  image: dellemc/csm-metrics-powerscale:v1.5.0
-+  image: docker.io/dellemc/csm-metrics-powerscale:v1.5.0
-   enabled: true
-   collectorAddr: otel-collector:55680
-   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
-@@ -115,9 +112,6 @@ karaviMetricsPowerscale:
-     isiLogVerbose: 0
-   authorization:
-     enabled: false
--    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
--    # Default value: dellemc/csm-authorization-sidecar:v1.10.0
--    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.0
-     # proxyHost: hostname of the csm-authorization server
-     # Default value: None
-     proxyHost:
-@@ -129,7 +123,7 @@ karaviMetricsPowerscale:
-     skipCertificateValidation: true
- 
- karaviMetricsPowermax:
--  image: dellemc/csm-metrics-powermax:v1.3.0
-+  image: docker.io/dellemc/csm-metrics-powermax:v1.3.0
-   enabled: true
-   collectorAddr: otel-collector:55680
-   # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
-@@ -152,9 +146,6 @@ karaviMetricsPowermax:
-   logFormat: text
-   authorization:
-     enabled: false
--    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
--    # Default value: dellemc/csm-authorization-sidecar:v1.10.0
--    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.0
-     # proxyHost: hostname of the csm-authorization server
-     # Default value: None
-     proxyHost:
-@@ -165,12 +156,17 @@ karaviMetricsPowermax:
-     # Default value: "true"
-     skipCertificateValidation: true
  
 +sidecarProxy:
 +  # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-+  # Default value: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
-+  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
++  # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
++  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
 +
+ karaviMetricsPowerflex:
+   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.10.0
+   enabled: true
+@@ -169,11 +174,11 @@ karaviMetricsPowermax:
+     skipCertificateValidation: true
+ 
  otelCollector:
 -  image: otel/opentelemetry-collector:0.42.0
 +  image: docker.io/otel/opentelemetry-collector:0.42.0
    service:
      type: ClusterIP
    nginxProxy:
--    image: nginxinc/nginx-unprivileged:1.20
-+    image: docker.io/nginxinc/nginx-unprivileged:1.20
+-    image: nginxinc/nginx-unprivileged:1.27
++    image: docker.io/nginxinc/nginx-unprivileged:1.27
  # Karavi-observability requires cert-manager. If cert-manager is already present in cluster, set enabled to false not to install it.
  cert-manager:
    enabled: true
