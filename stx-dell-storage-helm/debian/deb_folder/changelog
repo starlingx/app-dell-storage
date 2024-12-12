@@ -1,3 +1,9 @@
+stx-dell-storage-helm (1.2-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Heitor Farhat <heitor.farhat@windriver.com>  Fri, 27 Feb 2025 14:20:00 +0000
+
 stx-dell-storage-helm (1.1-0) unstable; urgency=medium
 
   * New upstream release.

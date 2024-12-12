@@ -1,7 +1,6 @@
 0001-csm-replication-add-default-values-for-templates.patch
 0002-csm-replication-fix-pull-image-error.patch
 0003-csm-replication-support-setting-config-values.patch
-0004-csm-replication-fix-helm-lint-error.patch
-0005-csm-replication-add-label-app.starlingx.io-component.patch
-0006-csm-replication-add-DellCSIReplicationGroup-in-templ.patch
-0007-csm-replication-add-cluster-secret-template.patch
+0004-csm-replication-add-label-app.starlingx.io-component.patch
+0005-csm-replication-add-DellCSIReplicationGroup-in-templ.patch
+0006-csm-replication-add-cluster-secret-template.patch

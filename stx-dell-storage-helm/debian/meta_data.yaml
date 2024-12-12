@@ -1,9 +1,9 @@
 ---
 debname: stx-dell-storage-helm
-debver: 1.1-0
+debver: 1.2-0
 src_path: stx-dell-storage-helm
 revision:
   dist: $STX_DIST
   GITREVCOUNT:
-    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    BASE_SRCREV: 14fca49234e8708abb0ccd82cabeac0889acbc32
     SRC_DIR: ${MY_REPO}/stx/app-dell-storage
