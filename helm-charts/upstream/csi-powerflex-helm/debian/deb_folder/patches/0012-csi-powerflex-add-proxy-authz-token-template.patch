@@ -1,26 +1,26 @@
-From b00075bb5d78e8fe6ee09dbe513394c80281f9fc Mon Sep 17 00:00:00 2001
-From: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
-Date: Tue, 23 Apr 2024 14:36:42 -0300
+From 44a12a9097cf365cbf31d8d3aebe5192f5361ba2 Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Wed, 11 Dec 2024 12:02:13 -0300
 Subject: [PATCH] csi-powerflex: add proxy-authz-token template
 
 This patch consists of adding proxy-authz-token in the helm chart
 templates directory. It's needed because this helm chart needs a config
 secret that should be created manually.
 
-Signed-off-by: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
- charts/csi-vxflexos/templates/controller.yaml         |  4 ++--
- charts/csi-vxflexos/templates/node.yaml               |  4 ++--
- charts/csi-vxflexos/templates/proxy-authz-tokens.yaml | 10 ++++++++++
- charts/csi-vxflexos/values.yaml                       |  2 ++
+ .../charts/csi-vxflexos/templates/controller.yaml      |  4 ++--
+ .../charts/csi-vxflexos/templates/node.yaml            |  4 ++--
+ .../csi-vxflexos/templates/proxy-authz-tokens.yaml     | 10 ++++++++++
+ .../charts/csi-vxflexos/values.yaml                    |  2 ++
  4 files changed, 16 insertions(+), 4 deletions(-)
  create mode 100644 charts/csi-vxflexos/templates/proxy-authz-tokens.yaml
 
 diff --git a/charts/csi-vxflexos/templates/controller.yaml b/charts/csi-vxflexos/templates/controller.yaml
-index e0e8baa..e04e232 100644
+index 5445f67..16175b2 100644
 --- a/charts/csi-vxflexos/templates/controller.yaml
 +++ b/charts/csi-vxflexos/templates/controller.yaml
-@@ -375,12 +375,12 @@ spec:
+@@ -377,12 +377,12 @@ spec:
              - name: ACCESS_TOKEN
                valueFrom:
                  secretKeyRef:
@@ -36,10 +36,10 @@ index e0e8baa..e04e232 100644
            volumeMounts:
              - name: karavi-authorization-config
 diff --git a/charts/csi-vxflexos/templates/node.yaml b/charts/csi-vxflexos/templates/node.yaml
-index 1cb74bb..3fd945c 100644
+index cb03175..76b5aa6 100644
 --- a/charts/csi-vxflexos/templates/node.yaml
 +++ b/charts/csi-vxflexos/templates/node.yaml
-@@ -165,12 +165,12 @@ spec:
+@@ -168,12 +168,12 @@ spec:
              - name: ACCESS_TOKEN
                valueFrom:
                  secretKeyRef:
@@ -56,7 +56,7 @@ index 1cb74bb..3fd945c 100644
              - name: karavi-authorization-config
 diff --git a/charts/csi-vxflexos/templates/proxy-authz-tokens.yaml b/charts/csi-vxflexos/templates/proxy-authz-tokens.yaml
 new file mode 100644
-index 0000000..38f35cf
+index 0000000..fb80def
 --- /dev/null
 +++ b/charts/csi-vxflexos/templates/proxy-authz-tokens.yaml
 @@ -0,0 +1,10 @@
@@ -71,12 +71,12 @@ index 0000000..38f35cf
 +  refresh: {{ .Values.proxyAuthzTokens.refresh | default " " | quote }}
 +{{- end }}
 diff --git a/charts/csi-vxflexos/values.yaml b/charts/csi-vxflexos/values.yaml
-index f0bb02d..c8803a7 100644
+index 0ac3190..1919730 100644
 --- a/charts/csi-vxflexos/values.yaml
 +++ b/charts/csi-vxflexos/values.yaml
-@@ -415,6 +415,8 @@ authorization:
-   # Default value: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
-   image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
+@@ -423,6 +423,8 @@ interfaceNames:
+   # worker1: interface1
+   # worker2: interface2
 
 +proxyAuthzTokens:
 +
@@ -84,4 +84,4 @@ index f0bb02d..c8803a7 100644
 
  secret:
 --
-2.25.1
+2.34.1

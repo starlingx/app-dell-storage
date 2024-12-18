@@ -1,0 +1,60 @@
+From 937c83af232aa6e15ea141979f077a10b35b2224 Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Tue, 17 Dec 2024 09:07:48 -0300
+Subject: [PATCH] csi-powerflex: duplicate driver config map
+
+This patch consists of adding copy of the driver
+config map named vxflexos-config-params and
+a new namespace called vxflexos.
+
+The reason being that powerflex has this name
+hardcoded in its source code. Without this
+it will never find the config map it is
+looking for.
+
+An bug report has been opened in the upstream repository
+for dell csi-powerflex about this problem, available in:
+
+ - https://github.com/dell/csm/issues/1774
+
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+---
+ .../driver-config-params-and-namespace.yaml   | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 charts/csi-vxflexos/templates/driver-config-params-and-namespace.yaml
+
+diff --git a/charts/csi-vxflexos/templates/driver-config-params-and-namespace.yaml b/charts/csi-vxflexos/templates/driver-config-params-and-namespace.yaml
+new file mode 100644
+index 0000000..f0f0205
+--- /dev/null
++++ b/charts/csi-vxflexos/templates/driver-config-params-and-namespace.yaml
+@@ -0,0 +1,26 @@
++---
++apiVersion: v1
++kind: Namespace
++metadata:
++  name: vxflexos
++
++---
++apiVersion: v1
++kind: ConfigMap
++metadata:
++  name: vxflexos-config-params
++  namespace: vxflexos
++data:
++  driver-config-params.yaml: |
++    CSI_LOG_LEVEL: "{{ .Values.logLevel }}"
++    CSI_LOG_FORMAT: "{{ .Values.logFormat }}"
++    {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
++    PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
++    PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
++    PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
++    PODMON_NODE_LOG_FORMAT: "{{ .Values.logFormat }}"
++    {{ end }}
++    interfaceNames:
++      {{- range $node, $interfaces := .Values.interfaceNames }}
++      {{ $node }}: "{{ $interfaces }}"
++      {{- end }}
+-- 
+2.34.1
+

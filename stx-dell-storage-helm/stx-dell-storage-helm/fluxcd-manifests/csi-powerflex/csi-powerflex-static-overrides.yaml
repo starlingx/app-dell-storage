@@ -1,28 +1,30 @@
 #
-# Copyright (c) 2024 Wind River Systems, Inc.
+# Copyright (c) 2024-2025 Wind River Systems, Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
 
 csm:
+  authorization: false
   replication: false
   resiliency: false
 
-app.starlingx.io/component: platform
+labels:
+  isApplication: false
 
 controller:
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
   healthMonitor:
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
   provisioner:
-    image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
   replication:
-    image: docker.io/dellemc/dell-csi-replicator:v1.8.0
+    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
   resizer:
-    image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
   snapshot:
-    image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
     snapNamePrefix: csi-powerflex-snap
   volumeNamePrefix: csi-powerflex-vol
   nodeSelector: { "node-role.kubernetes.io/control-plane": "" }
@@ -36,25 +38,30 @@ controller:
 
 node:
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
   powerflexSdc:
-    image: docker.io/dellemc/sdc:4.5.1
+    image: docker.io/dellemc/sdc:4.5.2.1
   nodeSelector: { "kubernetes.io/os": "linux" }
   tolerations:
   - operator: "Exists"
 
 driver:
-  image: docker.io/dellemc/csi-vxflexos:v2.10.0
+  image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.12.0
 
 vgsnapshotter:
-  image: docker.io/dellemc/csi-volumegroup-snapshotter:v1.5.0
+  image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
 
 podmon:
-  image: docker.io/dellemc/podmon:v1.9.0
+  image: quay.io/dell/container-storage-modules/podmon:v1.11.0
 
 authorization:
-  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
+  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
+
+kubectl:
+  image: docker.io/bitnami/kubectl:1.29
 
 secret:
 
 storageClasses:
+
+proxyAuthzTokens:

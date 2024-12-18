@@ -1,0 +1,34 @@
+From 98a3dbe9bb4dc00c27c5d4ea450ed291030e2fdb Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Tue, 17 Dec 2024 10:37:20 -0300
+Subject: [PATCH] csi-powerflex: make sure /opt/emc is created
+
+This patch consists of changing the /opt/emc path
+from Directory type to DirectoryOrCreate, making
+sure it exists at the beginning of the application-apply,
+avoiding a mount failure (warning).
+
+After a few seconds after the mount failure, the directory
+is created anyway.
+
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+---
+ charts/csi-vxflexos/templates/node.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/charts/csi-vxflexos/templates/node.yaml b/charts/csi-vxflexos/templates/node.yaml
+index 02e0b48..59314b6 100644
+--- a/charts/csi-vxflexos/templates/node.yaml
++++ b/charts/csi-vxflexos/templates/node.yaml
+@@ -400,7 +400,7 @@ spec:
+         - name: host-opt-emc-path
+           hostPath:
+             path: /opt/emc
+-            type: Directory
++            type: DirectoryOrCreate
+         - name: vxflexos-config
+           secret:
+             secretName: {{ .Release.Name }}-config
+-- 
+2.34.1
+

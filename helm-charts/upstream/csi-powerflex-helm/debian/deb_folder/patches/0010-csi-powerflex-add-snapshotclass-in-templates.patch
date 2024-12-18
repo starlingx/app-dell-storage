@@ -1,6 +1,6 @@
-From 57481ace96dec77dcfff22c2b1300e5ac78d5b0f Mon Sep 17 00:00:00 2001
-From: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
-Date: Mon, 15 Apr 2024 08:24:32 -0300
+From 924d04d1a6cd7783224edd4e51d706873b1c57de Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Wed, 11 Dec 2024 11:55:04 -0300
 Subject: [PATCH] csi-powerflex: add snapshotclass in templates
 
 This patch consists of adding a snapshot class in the helm chart
@@ -8,9 +8,9 @@ templates directory.
 It's needed because this helm chart needs a snapshot classes that should
 be created manually.
 
-Signed-off-by: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
- charts/csi-vxflexos/templates/snapshotclass.yaml | 6 ++++++
+ .../charts/csi-vxflexos/templates/snapshotclass.yaml        | 6 ++++++
  1 file changed, 6 insertions(+)
  create mode 100644 charts/csi-vxflexos/templates/snapshotclass.yaml
 
@@ -27,4 +27,4 @@ index 0000000..44de710
 +driver: {{ .Values.driverName | default ( print "csi-vxflexos.dellemc.com" ) }}
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
 --
-2.25.1
+2.34.1

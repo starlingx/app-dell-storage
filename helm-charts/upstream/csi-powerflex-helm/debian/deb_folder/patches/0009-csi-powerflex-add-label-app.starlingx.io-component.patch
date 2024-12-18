@@ -1,6 +1,6 @@
-From 8ee25bde6180c22ee00ae0f7fe131ebaf2d193bc Mon Sep 17 00:00:00 2001
-From: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
-Date: Wed, 10 Apr 2024 16:51:32 -0300
+From 5e2316f9c80ffca8d78c03b50d0934eda63fd2cf Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Wed, 11 Dec 2024 11:51:20 -0300
 Subject: [PATCH] csi-powerflex: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment resource and
@@ -9,17 +9,18 @@ The strategy was needed changing because in the reapply the old replicasets
 were not being deleted. The default value was rollingUpdate.
 In this case, it doesn't effect functionality.
 
-Signed-off-by: Luiz Felipe Kina <LuizFelipe.EiskeKina@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
- charts/csi-vxflexos/templates/controller.yaml | 4 ++--
- charts/csi-vxflexos/templates/node.yaml       | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ .../charts/csi-vxflexos/templates/controller.yaml             | 4 ++--
+ .../charts/csi-vxflexos/templates/node.yaml                   | 1 +
+ .../charts/csi-vxflexos/values.yaml                           | 3 +++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/charts/csi-vxflexos/templates/controller.yaml b/charts/csi-vxflexos/templates/controller.yaml
-index 5cd32fd..ace6c45 100644
+index a6331e4..3bcfe84 100644
 --- a/charts/csi-vxflexos/templates/controller.yaml
 +++ b/charts/csi-vxflexos/templates/controller.yaml
-@@ -153,8 +153,7 @@ metadata:
+@@ -156,8 +156,7 @@ metadata:
  spec:
  {{- if gt (int .Values.controller.controllerCount) 1 }}
    strategy:
@@ -29,25 +30,36 @@ index 5cd32fd..ace6c45 100644
  {{- end }}
    selector:
      matchLabels:
-@@ -169,6 +168,7 @@ spec:
+@@ -172,6 +171,7 @@ spec:
          vg-snapshotter-enabled: "false"
        {{- end }}
          name: {{ .Release.Name }}-controller
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
        annotations:
          kubectl.kubernetes.io/default-container: "driver"
      spec:
 diff --git a/charts/csi-vxflexos/templates/node.yaml b/charts/csi-vxflexos/templates/node.yaml
-index 805854c..6fe85b3 100644
+index d512746..2e53324 100644
 --- a/charts/csi-vxflexos/templates/node.yaml
 +++ b/charts/csi-vxflexos/templates/node.yaml
-@@ -79,6 +79,7 @@ spec:
+@@ -82,6 +82,7 @@ spec:
      metadata:
        labels:
          app: {{ .Release.Name }}-node
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
          driver.dellemc.com: dell-storage
  {{- end }}
+diff --git a/charts/csi-vxflexos/values.yaml b/charts/csi-vxflexos/values.yaml
+index cdf6557..749d518 100644
+--- a/charts/csi-vxflexos/values.yaml
++++ b/charts/csi-vxflexos/values.yaml
+@@ -422,3 +422,6 @@ interfaceNames:
+ storageClasses:
+
+ secret:
++
++labels:
++  isApplication: false
 --
-2.25.1
+2.34.1
