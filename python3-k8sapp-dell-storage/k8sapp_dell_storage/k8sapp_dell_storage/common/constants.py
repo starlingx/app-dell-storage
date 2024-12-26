@@ -25,7 +25,3 @@ FLUXCD_HELMRELEASE_CSI_POWERSCALE = 'csi-powerscale'
 FLUXCD_HELMRELEASE_CSI_UNITY = 'csi-unity'
 FLUXCD_HELMRELEASE_CSM_REPLICATION = 'csm-replication'
 FLUXCD_HELMRELEASE_CSM_OBSERVABILITY = 'csm-observability'
-
-# Label
-HELM_COMPONENT_LABEL = 'app.starlingx.io/component'
-HELM_COMPONENT_SUPPORTED_LABELS = ('platform', 'application')

@@ -1,26 +1,25 @@
-From 32169496234214d7b1d46d0bf84835146f59c938 Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Wed, 17 Apr 2024 14:44:46 -0300
+From eed02850cede664cb4ccaf3c3e5e3f098ac17480 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 20 Dec 2024 13:27:08 -0300
 Subject: [PATCH] csi-powerscale: add proxy-authz-token template
 
 This patch consists of adding proxy-authz-token in the helm chart
 templates directory. It's needed because this helm chart needs a config
 secret that should be created manually.
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
  charts/csi-isilon/templates/controller.yaml         |  4 ++--
  charts/csi-isilon/templates/node.yaml               |  4 ++--
  charts/csi-isilon/templates/proxy-authz-tokens.yaml | 10 ++++++++++
- charts/csi-isilon/values.yaml                       |  2 ++
- 4 files changed, 16 insertions(+), 4 deletions(-)
+ 3 files changed, 14 insertions(+), 4 deletions(-)
  create mode 100644 charts/csi-isilon/templates/proxy-authz-tokens.yaml
 
 diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
-index b99b023..4338abe 100644
+index 4dd50dd..df23f2e 100644
 --- a/charts/csi-isilon/templates/controller.yaml
 +++ b/charts/csi-isilon/templates/controller.yaml
-@@ -507,12 +507,12 @@ spec:
+@@ -487,12 +487,12 @@ spec:
              - name: ACCESS_TOKEN
                valueFrom:
                  secretKeyRef:
@@ -36,10 +35,10 @@ index b99b023..4338abe 100644
            volumeMounts:
              - name: karavi-authorization-config
 diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
-index 3ff94ac..e0249e5 100644
+index 86f0f50..766efdc 100644
 --- a/charts/csi-isilon/templates/node.yaml
 +++ b/charts/csi-isilon/templates/node.yaml
-@@ -287,12 +287,12 @@ spec:
+@@ -270,12 +270,12 @@ spec:
              - name: ACCESS_TOKEN
                valueFrom:
                  secretKeyRef:
@@ -56,7 +55,7 @@ index 3ff94ac..e0249e5 100644
              - name: karavi-authorization-config
 diff --git a/charts/csi-isilon/templates/proxy-authz-tokens.yaml b/charts/csi-isilon/templates/proxy-authz-tokens.yaml
 new file mode 100644
-index 0000000..fb80def
+index 0000000..38f35cf
 --- /dev/null
 +++ b/charts/csi-isilon/templates/proxy-authz-tokens.yaml
 @@ -0,0 +1,10 @@
@@ -70,19 +69,6 @@ index 0000000..fb80def
 +  access: {{ .Values.proxyAuthzTokens.access |  default " " | quote}}
 +  refresh: {{ .Values.proxyAuthzTokens.refresh | default " " | quote }}
 +{{- end }}
-diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
-index 7e32f47..23183df 100644
---- a/charts/csi-isilon/values.yaml
-+++ b/charts/csi-isilon/values.yaml
-@@ -500,6 +500,8 @@ encryption:
- 
- driverName: "csi-isilon.dellemc.com"
- 
-+proxyAuthzTokens:
-+
- secret:
- 
- storageClasses:
 -- 
 2.34.1
 

@@ -1,6 +1,6 @@
-From ea55c24dbed1982ee4a70aca8678c50dfb3033af Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Tue, 2 Apr 2024 17:19:45 -0300
+From dfda67b7ee0bba6338d8e9ec7dbedf01767cc2da Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Tue, 18 Feb 2025 12:25:55 -0300
 Subject: [PATCH] csi-powerscale: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment
@@ -9,17 +9,18 @@ The strategy was needed changing because in the reapply the old
 replicasets were not being deleted. The default value was rollingUpdate.
 In this case, it doesn't affect functionality.
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
  charts/csi-isilon/templates/controller.yaml | 5 ++---
  charts/csi-isilon/templates/node.yaml       | 1 +
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ charts/csi-isilon/values.yaml               | 3 +++
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
-index bdeaac5..172ff8a 100644
+index 750cda5..7836587 100644
 --- a/charts/csi-isilon/templates/controller.yaml
 +++ b/charts/csi-isilon/templates/controller.yaml
-@@ -151,13 +151,12 @@ spec:
+@@ -151,15 +151,14 @@ spec:
    replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
    {{- end }}
    strategy:
@@ -29,24 +30,37 @@ index bdeaac5..172ff8a 100644
 +    type: Recreate
    template:
      metadata:
+       annotations:
+         kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-controller
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
      spec:
        serviceAccount: {{ .Release.Name }}-controller
        affinity:
 diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
-index fde6b0a..d81d535 100644
+index c1d262f..0a72599 100644
 --- a/charts/csi-isilon/templates/node.yaml
 +++ b/charts/csi-isilon/templates/node.yaml
-@@ -79,6 +79,7 @@ spec:
-     metadata:
+@@ -81,6 +81,7 @@ spec:
+         kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
- {{- if .Values.podmon.enabled }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
+ {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
          driver.dellemc.com: dell-storage
  {{- end }}
+diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
+index 92029ab..2a8bcf9 100644
+--- a/charts/csi-isilon/values.yaml
++++ b/charts/csi-isilon/values.yaml
+@@ -448,3 +448,6 @@ storageClasses:
+ snapshotClasses:
+ 
+ proxyAuthzTokens:
++
++labels:
++  isApplication: false
 -- 
 2.34.1
 
