@@ -1,6 +1,6 @@
-From c8609a71712b0d28d20a9da8afae8e1f341a3ce2 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Tue, 23 Apr 2024 14:41:10 -0300
+From 9fa787ecbb690f376867f460ca9ed4c6ca123a4e Mon Sep 17 00:00:00 2001
+From: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
+Date: Fri, 27 Dec 2024 13:02:03 -0300
 Subject: [PATCH] csi-powermax: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment
@@ -9,17 +9,18 @@ The strategy was needed changing because in the reapply the old
 replicasets were not being deleted. The default value was rollingUpdate.
 In this case, it doesn't affect functionality.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
 ---
  charts/csi-powermax/templates/controller.yaml | 3 +++
  charts/csi-powermax/templates/node.yaml       | 1 +
- 2 files changed, 4 insertions(+)
+ charts/csi-powermax/values.yaml               | 3 +++
+ 3 files changed, 7 insertions(+)
 
 diff --git a/charts/csi-powermax/templates/controller.yaml b/charts/csi-powermax/templates/controller.yaml
-index 933cb31..37f7d89 100644
+index 3ec96ff..9af07b9 100644
 --- a/charts/csi-powermax/templates/controller.yaml
 +++ b/charts/csi-powermax/templates/controller.yaml
-@@ -141,6 +141,8 @@ metadata:
+@@ -152,6 +152,8 @@ metadata:
    {{ end }}
  spec:
    replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
@@ -28,25 +29,36 @@ index 933cb31..37f7d89 100644
    selector:
      matchLabels:
        name: {{ .Release.Name }}-controller
-@@ -148,6 +150,7 @@ spec:
-     metadata:
+@@ -161,6 +163,7 @@ spec:
+         kubectl.kubernetes.io/default-container: "driver"
        labels:
          name: {{ .Release.Name }}-controller
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
      spec:
        {{ if .Values.controller.nodeSelector }}
        nodeSelector:
 diff --git a/charts/csi-powermax/templates/node.yaml b/charts/csi-powermax/templates/node.yaml
-index 933ea27..fa7b7bd 100644
+index 58d4f25..ef94991 100644
 --- a/charts/csi-powermax/templates/node.yaml
 +++ b/charts/csi-powermax/templates/node.yaml
-@@ -83,6 +83,7 @@ spec:
-     metadata:
+@@ -109,6 +109,7 @@ spec:
+         kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
-     spec:
-       serviceAccountName: {{ .Release.Name }}-node
-       {{ if .Values.node.nodeSelector }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
+         {{- if .Values.podmon.enabled }}
+         driver.dellemc.com: dell-storage
+         {{- end }}
+diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
+index ad9d118..8d760b0 100644
+--- a/charts/csi-powermax/values.yaml
++++ b/charts/csi-powermax/values.yaml
+@@ -557,3 +557,6 @@ podmon:
+       - "--driver-config-params=/powermax-config-params/driver-config-params.yaml"
+       - "--driverPodLabelValue=dell-storage"
+       - "--ignoreVolumelessPods=false"
++
++labels:
++  isApplication: false
 -- 
 2.34.1

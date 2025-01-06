@@ -1,6 +1,6 @@
-From ad47f28db1cee82b61304869f72372c43953a392 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Tue, 23 Apr 2024 08:56:25 -0300
+From d2962aa0a6f82694e1c0443e16e323f16b07e2df Mon Sep 17 00:00:00 2001
+From: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
+Date: Thu, 26 Dec 2024 12:26:56 -0300
 Subject: [PATCH] csi-powermax: fix pull image error
 
 This patch consists of adding imagePullSecrets with name
@@ -8,14 +8,14 @@ default-registry-key only in ServiceAccounts.
 It's necessary because without it the system can't use the
 images from the registry local
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
 ---
  charts/csi-powermax/templates/controller.yaml | 2 ++
  charts/csi-powermax/templates/node.yaml       | 2 ++
  2 files changed, 4 insertions(+)
 
 diff --git a/charts/csi-powermax/templates/controller.yaml b/charts/csi-powermax/templates/controller.yaml
-index 045c4eb..80fa055 100644
+index 96cb948..11f01f3 100644
 --- a/charts/csi-powermax/templates/controller.yaml
 +++ b/charts/csi-powermax/templates/controller.yaml
 @@ -12,6 +12,8 @@ metadata:
@@ -28,10 +28,10 @@ index 045c4eb..80fa055 100644
    - apiGroups: ["coordination.k8s.io"]
      resources: ["leases"]
 diff --git a/charts/csi-powermax/templates/node.yaml b/charts/csi-powermax/templates/node.yaml
-index d41117c..512a748 100644
+index 3956c25..69b0a3a 100644
 --- a/charts/csi-powermax/templates/node.yaml
 +++ b/charts/csi-powermax/templates/node.yaml
-@@ -12,6 +12,8 @@ metadata:
+@@ -13,6 +13,8 @@ metadata:
    {{- else }}
    name: {{ .Release.Name }}-node
    {{- end }}
@@ -40,5 +40,5 @@ index d41117c..512a748 100644
  rules:
    - apiGroups: [""]
      resources: ["nodes"]
--- 
+--
 2.34.1
