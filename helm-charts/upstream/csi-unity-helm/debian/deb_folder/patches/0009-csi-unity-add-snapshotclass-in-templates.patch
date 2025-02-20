@@ -1,6 +1,6 @@
-From 004ea0df67e30d7846a2bb41acfbcd602bcbaff7 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Mon, 22 Apr 2024 10:33:24 -0300
+From 562608028a05a0c93c6dd50274663cffef5da2de Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Thu, 12 Dec 2024 08:29:31 -0300
 Subject: [PATCH] csi-unity: add snapshotclass in templates
 
 This patch consists of adding a snapshot class in the helm chart
@@ -8,7 +8,7 @@ templates directory.
 It's needed because this helm chart needs a snapshot class that should
 be created manually.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
  charts/csi-unity/templates/snapshotclass.yaml | 14 ++++++++++++++
  charts/csi-unity/values.yaml                  |  4 ++++
@@ -17,7 +17,7 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 
 diff --git a/charts/csi-unity/templates/snapshotclass.yaml b/charts/csi-unity/templates/snapshotclass.yaml
 new file mode 100644
-index 0000000..dcd9756
+index 0000000..0f8c1a6
 --- /dev/null
 +++ b/charts/csi-unity/templates/snapshotclass.yaml
 @@ -0,0 +1,14 @@
@@ -35,21 +35,20 @@ index 0000000..dcd9756
 +# Optional: false
 +# Examples: Delete
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
-\ No newline at end of file
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 7ee6af6..d8fdeeb 100644
+index 2c19d6f..78c50e7 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
-@@ -93,6 +93,8 @@ controller:
-     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
-     image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
+@@ -100,6 +100,8 @@ controller:
+     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
  
 +    deletionPolicy: Delete
 +
    resizer:
      # enabled: Enable/Disable volume expansion feature
      # Allowed values:
-@@ -294,6 +296,8 @@ storageCapacity:
+@@ -301,6 +303,8 @@ storageCapacity:
    # Default value: 5m
    pollInterval: 5m
  

@@ -1,6 +1,6 @@
-From 6aa8d6c0b6dcbf60ce0fd4d0b45a4d082e00d20e Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Fri, 1 Mar 2024 13:22:55 -0300
+From ed61a0be140bb6557b1d56d0a3f75176d83fc36c Mon Sep 17 00:00:00 2001
+From: Heitor Farhat <heitor.farhat@windriver.com>
+Date: Tue, 3 Dec 2024 14:03:31 -0300
 Subject: [PATCH] csi-unity: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment
@@ -9,17 +9,18 @@ The strategy was needed changing because in the reapply the old
 replicasets were not being deleted. The default value was rollingUpdate.
 In this case, it doesn't effect functionality.
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
 ---
  charts/csi-unity/templates/controller.yaml | 3 +++
  charts/csi-unity/templates/node.yaml       | 1 +
- 2 files changed, 4 insertions(+)
+ charts/csi-unity/values.yaml               | 3 +++
+ 3 files changed, 7 insertions(+)
 
 diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
-index e846612..2643121 100644
+index 65fbccf..c0a0601 100644
 --- a/charts/csi-unity/templates/controller.yaml
 +++ b/charts/csi-unity/templates/controller.yaml
-@@ -126,10 +126,13 @@ spec:
+@@ -126,12 +126,15 @@ spec:
    selector:
      matchLabels:
        app: {{ .Release.Name }}-controller
@@ -27,23 +28,36 @@ index e846612..2643121 100644
 +    type: Recreate
    template:
      metadata:
+       annotations:
+         kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-controller
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
      spec:
        serviceAccountName: {{ .Release.Name }}-controller
        affinity:
 diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
-index 333326c..534d319 100644
+index b5f9fcd..3e97680 100644
 --- a/charts/csi-unity/templates/node.yaml
 +++ b/charts/csi-unity/templates/node.yaml
-@@ -74,6 +74,7 @@ spec:
-     metadata:
+@@ -76,6 +76,7 @@ spec:
+         kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
-+        app.starlingx.io/component: {{ index .Values "app.starlingx.io/component" }}
++        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
          driver.dellemc.com: dell-storage
  {{- end }}
+diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
+index 20badb8..16ed878 100644
+--- a/charts/csi-unity/values.yaml
++++ b/charts/csi-unity/values.yaml
+@@ -286,3 +286,6 @@ storageCapacity:
+ secret:
+ 
+ storageClasses:
++
++labels:
++  isApplication: false
 -- 
 2.34.1
