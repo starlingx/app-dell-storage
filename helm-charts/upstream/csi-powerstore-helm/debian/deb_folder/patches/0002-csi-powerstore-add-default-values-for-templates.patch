@@ -1,0 +1,135 @@
+From 04419c21fa84a7983e911a04a2d5fb4c002aa0d4 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Thu, 5 Dec 2024 09:13:52 -0300
+Subject: [PATCH] csi-powerstore: add default values for templates
+
+This patch consists of adding the default values in the values.yaml of
+the helm chart.
+It's necessary because the images in templates were in unexpected format
+for the system and because templates need default values to be able
+to build the package.
+
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+---
+ charts/csi-powerstore/values.yaml | 49 +++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 26 deletions(-)
+
+diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
+index 0262cc7..4c94ab7 100644
+--- a/charts/csi-powerstore/values.yaml
++++ b/charts/csi-powerstore/values.yaml
+@@ -27,33 +27,10 @@ version: v2.12.0
+ 
+ # "images" defines every container images used for the driver and its sidecars.
+ #  To use your own images, or a private registry, change the values here.
+-images:
+-  # "driver" defines the container image, used for the driver container.
+-  driver:
+-    image: quay.io/dell/container-storage-modules/csi-powerstore:v2.12.0
+-  # CSI sidecars
+-  attacher:
+-    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+-  provisioner:
+-    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+-  snapshotter:
+-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+-  resizer:
+-    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+-  registrar:
+-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+-  healthmonitor:
+-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
++# "driver" defines the container image, used for the driver container.
++driver:
++  image: quay.io/dell/container-storage-modules/csi-powerstore:v2.12.0
+ 
+-  # CSM sidecars
+-  replication:
+-    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
+-  vgsnapshotter:
+-    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
+-  podmon:
+-    image: quay.io/dell/container-storage-modules/podmon:v1.11.0
+-  metadataretriever:
+-    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.9.0
+ 
+ # Specify kubelet config dir path.
+ # Ensure that the config.yaml file is present at this path.
+@@ -124,6 +101,15 @@ controller:
+   # Default value: None
+   volumeNamePrefix: csivol
+ 
++  attacher:
++    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
++
++  provisioner:
++    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
++
++  metadataretriever:
++    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.9.0
++
+   # vgsnapshot: allows to configure volume-group-snapshot
+   # volume-group-snapshot CRDs must be installed before installing driver
+   vgsnapshot:
+@@ -133,6 +119,8 @@ controller:
+     #   false: disable volume-group-snapshot feature(do not install vg-snapshotter sidecar)
+     # Default value: false
+     enabled: false
++    vgsnapshotter:
++      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
+ 
+   # snapshot: allows to enable/disable snapshot feature
+   # snapshot CRDs needs to be installed before enabling this feature
+@@ -143,6 +131,8 @@ controller:
+     #   false: disable volume snapshot feature(do not install snapshotter sidecar)
+     # Default value: None
+     enabled: true
++    snapshotter:
++      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+ 
+     # snapNamePrefix: Prefix to apply to the names of a created snapshots
+     # Allowed values: string
+@@ -156,6 +146,7 @@ controller:
+     #   false: disable volume expansion feature(do not install resizer sidecar)
+     # Default value: true
+     enabled: true
++    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+ 
+   healthMonitor:
+     # enabled: Enable/Disable health monitor of CSI volumes
+@@ -164,6 +155,7 @@ controller:
+     #   false: disable checking of health condition of CSI volumes
+     # Default value: false
+     enabled: false
++    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
+ 
+     # interval: Interval of monitoring volume health condition
+     # Allowed values: Number followed by unit (s,m,h)
+@@ -180,6 +172,7 @@ controller:
+     #   false: disable replication feature(do not install dell-csi-replicator sidecar)
+     # Default value: false
+     enabled: false
++    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
+ 
+     # replicationContextPrefix: prefix to use for naming of resources created by replication feature
+     # Allowed values: string
+@@ -229,6 +222,9 @@ node:
+   # Default value: None
+   nodeIDPath: /etc/machine-id
+ 
++  registrar:
++    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
++
+   healthMonitor:
+     # enabled: Enable/Disable health monitor of CSI volumes- volume usage, volume condition
+     # Allowed values:
+@@ -336,6 +332,7 @@ storageCapacity:
+ # Enable this feature only after contact support for additional information
+ podmon:
+   enabled: false
++  image: quay.io/dell/container-storage-modules/podmon:v1.11.0
+   controller:
+     args:
+       - "--csisock=unix:/var/run/csi/csi.sock"
+-- 
+2.34.1
