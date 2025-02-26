@@ -1,6 +1,6 @@
-From 123b6eb5b2dbf3e3a635ee4d97c298748ac927aa Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Wed, 24 Apr 2024 10:23:41 -0300
+From 1a714831d4fd4a350a58f6951c3f126c4c5f92bb Mon Sep 17 00:00:00 2001
+From: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
+Date: Thu, 26 Dec 2024 14:26:39 -0300
 Subject: [PATCH] csi-powermax: add snapshotclass in templates
 
 This patch consists of adding a snapshot class in the helm chart
@@ -8,7 +8,7 @@ templates directory.
 It's needed because this helm chart needs a snapshot classes that should
 be created manually.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
 ---
  charts/csi-powermax/templates/snapshotclass.yaml | 6 ++++++
  charts/csi-powermax/values.yaml                  | 4 ++++
@@ -28,22 +28,22 @@ index 0000000..f1a0ed6
 +driver: {{ .Values.driverName | default "csi-powermax.dellemc.com" }}
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
 diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
-index 3b3e4c0..7932c3e 100644
+index 28e05a6..5876a05 100644
 --- a/charts/csi-powermax/values.yaml
 +++ b/charts/csi-powermax/values.yaml
-@@ -65,6 +65,8 @@ csm:
+@@ -92,6 +92,8 @@ csm:
    replication: false
    authorization: false
- 
+
 +driverName:
 +
  driver:
    # image: Image used for driver container. This shouldn't be changed
    # Allowed values: string
-@@ -164,6 +166,8 @@ controller:
-     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
-     image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
- 
+@@ -197,6 +199,8 @@ controller:
+     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+
 +    deletionPolicy: Delete
 +
    resizer:

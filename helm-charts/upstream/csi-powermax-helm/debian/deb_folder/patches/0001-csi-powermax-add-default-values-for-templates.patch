@@ -1,6 +1,6 @@
-From f33126ad37db07377d20a6b71b910d63e4081979 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Mon, 22 Apr 2024 17:41:18 -0300
+From da2470314e3a3c09b96cce660c1b3589c6b6cd20 Mon Sep 17 00:00:00 2001
+From: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
+Date: Fri, 27 Dec 2024 11:44:43 -0300
 Subject: [PATCH] csi-powermax: add default values for templates
 
 This patch consists of adding the default values in the values.yaml of
@@ -9,39 +9,51 @@ It's necessary because the images in templates were in unexpected format
 for the system and because templates need default values to be able
 to build the package.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
 ---
- charts/csi-powermax/values.yaml | 77 ++++++++++++++++++++++++---------
- 1 file changed, 57 insertions(+), 20 deletions(-)
+ .../charts/csi-powermax/values.yaml | 91 ++++++++++++++++++++++-----------
+ 1 file changed, 60 insertions(+), 31 deletions(-)
 
 diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
-index 4194785..fcf274f 100644
+index 4d7a1e9..1db2fa5 100644
 --- a/charts/csi-powermax/values.yaml
 +++ b/charts/csi-powermax/values.yaml
-@@ -50,31 +50,17 @@ global:
- # Don't modify this value as this value will be used by the install script
- version: "v2.10.0"
+@@ -76,42 +76,18 @@ version: "v2.12.0"
  
--# "images" defines every container images used for the driver and its sidecars.
--#  To use your own images, or a private registry, change the values here.
+ # "images" defines every container images used for the driver and its sidecars.
+ #  To use your own images, or a private registry, change the values here.
 -images:
 -  # "driver" defines the container image, used for the driver container.
--  driver: dellemc/csi-powermax:v2.10.0
--  csireverseproxy: dellemc/csipowermax-reverseproxy:v2.9.0
+-  driver:
+-    image: quay.io/dell/container-storage-modules/csi-powermax:v2.12.0
+-  csireverseproxy:
+-    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.11.0
 -  # CSI sidecars
--  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
--  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
--  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
--  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
--  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
--  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+-  attacher:
+-    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+-  provisioner:
+-    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+-  snapshotter:
+-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+-  resizer:
+-    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+-  registrar:
+-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+-  healthmonitor:
+-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
 -  # CSM sidecars
--  replication: dellemc/dell-csi-replicator:v1.8.0
--  authorization: dellemc/csm-authorization-sidecar:v1.10.0
--  migration: dellemc/dell-csi-migrator:v1.3.0
+-  replication:
+-    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
+-  authorization:
+-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
+-  migration:
+-    image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.6.0
+-  podmon:
+-    image: quay.io/dell/container-storage-modules/podmon:v1.11.0
 -  # Node rescan sidecar does a rescan on nodes for identifying new paths
--  # Default value: dellemc/dell-csi-node-rescanner:v1.0.1
--  noderescan: dellemc/dell-csi-node-rescanner:v1.2.0
+-  noderescan:
+-    image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.5.0
++
  ## K8S/DRIVER ATTRIBUTES
  ########################
  # customDriverName: If enabled, sets the driver name to the
@@ -50,63 +62,63 @@ index 4194785..fcf274f 100644
 +driver:
 +  # image: Image used for driver container. This shouldn't be changed
 +  # Allowed values: string
-+  # Default value: docker.io/dellemc/csi-powermax:v2.10.0
-+  image: docker.io/dellemc/csi-powermax:v2.10.0
++  # Default value: docker.io/dellemc/csi-powermax:v2.12.0
++  image: docker.io/dellemc/csi-powermax:v2.12.0
 +
  # e.g, namespace.csi-powermax
  # Default value: None
  # Examples: "namespace.dellemc-array", "namespace.powermaxarray"
-@@ -138,6 +124,18 @@ controller:
+@@ -175,6 +151,18 @@ controller:
    # Examples: "volumes", "vol"
    volumeNamePrefix: pmax
  
 +  provisioner:
 +    # image: Image used for csi-provisioner sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
-+    image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
++    # Default value: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
++    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
 +
 +  attacher:
 +    # image: Image used for csi-attacher sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
-+    image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
++    # Default value: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
++    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
 +
    snapshot:
      # enabled: Enable/Disable volume snapshot feature
      # Allowed values:
-@@ -151,6 +149,11 @@ controller:
+@@ -188,6 +176,11 @@ controller:
      # Examples: "snap", "snapshot"
      snapNamePrefix: pmsn
  
 +    # image: Image used for csi-snapshotter sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
-+    image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
++    # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
 +
    resizer:
      # enabled: Enable/Disable volume expansion feature
      # Allowed values:
-@@ -159,6 +162,11 @@ controller:
+@@ -196,6 +189,11 @@ controller:
      # Default value: None
      enabled: true
  
 +    # image: Image used for csi-resizer sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
-+    image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
++    # Default value: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
++    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
 +
    # nodeSelector: Define node selection constraints for controller pods.
    # For the pod to be eligible to run on a node, the node must have each
    # of the indicated key-value pairs as labels.
-@@ -202,8 +210,24 @@ controller:
+@@ -239,8 +237,24 @@ controller:
      # Default value: 60s
      interval: 60s
  
 +    # image: Image used for csi-external-health-monitor-controller sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
-+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
++    # Default value: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
++    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
 +
  # node: configure node specific parameters
  node:
@@ -114,56 +126,65 @@ index 4194785..fcf274f 100644
 +  registrar:
 +    # image: Image used for csi-node-driver-registrar sidecar. This shouldn't be changed
 +    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
-+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
++    # Default value: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
++    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
 +
 +  noderescan:
 +    # Node rescan sidecar does a rescan on nodes for identifying new paths
-+    # Default value: docker.io/dellemc/dell-csi-node-rescanner:v1.0.1
-+    image: docker.io/dellemc/dell-csi-node-rescanner:v1.2.0
++    # Default value: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.5.0
++    image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.5.0
    # nodeSelector: Define node selection constraints for node pods.
    # For the pod to be eligible to run on a node, the node must have each
    # of the indicated key-value pairs as labels.
-@@ -276,6 +300,7 @@ enableCHAP: false
+@@ -313,6 +327,7 @@ enableCHAP: false
  
  # csireverseproxy: Refers to the subchart csireverseproxy
  csireverseproxy:
-+  image: docker.io/dellemc/csipowermax-reverseproxy:v2.9.0
++  image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.11.0
    # "tlsSecret" defines the TLS secret that is created with certificate
    # and its associated key
    # Default value: None
-@@ -397,6 +422,11 @@ replication:
+@@ -415,6 +430,11 @@ replication:
    # Examples: "replication.storage.dell.com", "rdf.storage.dell.com"
    replicationPrefix: "replication.storage.dell.com"
  
 +  # image: Image used for dell-csi-replicator sidecar. This shouldn't be changed
 +  # Allowed values: string
-+  # Default value: docker.io/dellemc/dell-csi-replicator:v1.8.0
-+  image: docker.io/dellemc/dell-csi-replicator:v1.8.0
++  # Default value: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
++  image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
 +
  # CSM module attributes
  # Set this to true to enable migration
  # Allowed values:
-@@ -410,6 +440,8 @@ migration:
+@@ -428,6 +448,8 @@ migration:
    # Examples: "migration.storage.dell.com"
    migrationPrefix: "migration.storage.dell.com"
  
-+  image: docker.io/dellemc/dell-csi-migrator:v1.3.0
++  image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.6.0
 +
  # CSM module attributes
  # authorization: enable csm-authorization for RBAC
  # Deploy and configure authorization before installing driver
-@@ -429,6 +461,11 @@ authorization:
+@@ -447,6 +469,11 @@ authorization:
    # Default value: "true"
    skipCertificateValidation: true
  
 +  # image: Image used for csm-authorization sidecar. This shouldn't be changed
 +  # Allowed values: string
-+  # Default value: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
-+  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
++  # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
++  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
 +
  # Storage Capacity Tracking
  # Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
  storageCapacity:
+@@ -484,6 +511,8 @@ vSphere:
+ 
+ # Enable this feature only after contact support for additional information
+ podmon:
++
++  image: quay.io/dell/container-storage-modules/podmon:v1.11.0
+   # podmonAPIPort: Defines the port to be used within the kubernetes cluster
+   # Allowed values:
+   # Any valid and free port.
 -- 
 2.34.1
