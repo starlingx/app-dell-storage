@@ -1,6 +1,6 @@
-From c3aaf6dd72d076b439d0af3a96f930862d5a5d07 Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Tue, 2 Apr 2024 13:28:05 -0300
+From 2df9d95f6391cd9b4ae771a5f3a4865ab20dd0d3 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 20 Dec 2024 07:57:40 -0300
 Subject: [PATCH] csi-powerscale: add default values for templates
 
 This patch consists of adding the default values in the values.yaml of
@@ -9,149 +9,157 @@ It's necessary because the images in templates were in unexpected format
 for the system and because templates need default values to be able
 to build the package.
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
- charts/csi-isilon/values.yaml | 71 ++++++++++++++++++++++++++---------
- 1 file changed, 54 insertions(+), 17 deletions(-)
+ charts/csi-isilon/values.yaml | 72 ++++++++++++++++++++++-------------
+ 1 file changed, 46 insertions(+), 26 deletions(-)
 
 diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
-index ea94556..d0b8cbf 100644
+index b785a3d..92029ab 100644
 --- a/charts/csi-isilon/values.yaml
 +++ b/charts/csi-isilon/values.yaml
-@@ -4,23 +4,11 @@
+@@ -4,33 +4,19 @@
  # Note: Do not change this value
- version: "v2.10.0"
+ version: "v2.12.0"
  
 -images:
 -  # "driver" defines the container image, used for the driver container.
--  driver: dellemc/csi-isilon:v2.10.0
+-  driver:
+-    image: quay.io/dell/container-storage-modules/csi-isilon:v2.12.0
 -  # CSI sidecars
--  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
--  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
--  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
--  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
--  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
--  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
--
+-  attacher:
+-    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+-  provisioner:
+-    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+-  snapshotter:
+-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+-  resizer:
+-    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+-  registrar:
+-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+-  healthmonitor:
+-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
++csm:
++  authorization: false
++  resiliency: false
++  replication: false
+ 
 -  # CSM sidecars
--  replication: dellemc/dell-csi-replicator:v1.8.0
--  podmon: dellemc/podmon:v1.9.0
--  authorization: dellemc/csm-authorization-sidecar:v1.10.0
--  metadataretriever: dellemc/csi-metadata-retriever:v1.7.2
--  encryption: dellemc/csm-encryption:v0.3.0
+-  replication:
+-    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
+-  podmon:
+-    image: quay.io/dell/container-storage-modules/podmon:v1.11.0
+-  authorization:
+-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
+-  metadataretriever:
+-    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.9.0
++labels:
++  isApplication: false
++
++driverName: "csi-isilon.dellemc.com"
++
++# "driver" defines the container image, used for the driver container.
 +driver:
-+  # image: Image used for driver container. This shouldn't be changed
-+  # Allowed values: string
-+  # Default value: docker.io/dellemc/csi-isilon:v2.10.0
-+  image: docker.io/dellemc/csi-isilon:v2.10.0
++  image: quay.io/dell/container-storage-modules/csi-isilon:v2.12.0
  
  # CSI driver log level
  # Allowed values: "error", "warn"/"warning", "info", "debug"
-@@ -148,6 +136,11 @@ controller:
-     # Default value: replication.storage.dell.com
-     replicationPrefix: "replication.storage.dell.com"
+@@ -121,6 +107,15 @@ controller:
+   # Default value: None
+   volumeNamePrefix: k8s
  
-+    # image: Image used for dell-csi-replicator sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: docker.io/dellemc/dell-csi-replicator:v1.8.0
-+    image: docker.io/dellemc/dell-csi-replicator:v1.8.0
++  attacher:
++    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
 +
-   snapshot:
-     # enabled: Enable/Disable volume snapshot feature
-     # Allowed values:
-@@ -160,6 +153,10 @@ controller:
++  provisioner:
++    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
++
++  metadataretriever:
++    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.9.0
++
+   # leaderElection: configure leader election parameters
+   leaderElection:
+     # Duration, that non-leader candidates will wait to force acquire leadership
+@@ -148,6 +143,8 @@ controller:
+     # Default value: false
+     enabled: false
+ 
++    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
++
+     # replicationContextPrefix: prefix to use for naming of resources created by replication feature
+     # Allowed values: string
+     # Default value: powerscale
+@@ -166,6 +163,8 @@ controller:
+     # Default value: None
+     enabled: true
+ 
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
++
+     # snapNamePrefix: Prefix to apply to the names of a created snapshots
      # Allowed values: string
      # Default value: None
-     snapNamePrefix: snapshot
-+    # image: Image used for csi-snapshotter sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
-+    image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
- 
-   resizer:
-     # enabled: Enable/Disable volume expansion feature
-@@ -168,6 +165,10 @@ controller:
+@@ -178,6 +177,7 @@ controller:
      #   false: disable volume snapshot feature(do not install resizer sidecar)
      # Default value: None
      enabled: true
-+    # image: Image used for csi-resizer sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
-+    image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
++    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
  
    healthMonitor:
      # enabled: Enable/Disable health monitor of CSI volumes- volume status, volume condition
-@@ -181,6 +182,28 @@ controller:
-     # Allowed values: Number followed by unit of time (s,m,h)
-     # Default value: 60s
-     interval: 60s
-+    # image: Image used for csi-external-health-monitor-controller sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
-+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
-+
-+  attacher:
-+    # image: Image used for csi-attacher sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
-+    image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
-+
-+  provisioner:
-+    # image: Image used for csi-provisioner sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
-+    image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
-+
-+  metadataretriever:
-+    # image: Image used for csi-metadata-retriever sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: docker.io/dellemc/csi-metadata-retriever:v1.7.2
-+    image: docker.io/dellemc/csi-metadata-retriever:v1.7.2
- 
-   # nodeSelector: Define node selection constraints for pods of controller deployment.
-   # For the pod to be eligible to run on a node, the node must have each
-@@ -286,6 +309,12 @@ node:
+@@ -187,6 +187,8 @@ controller:
      # Default value: None
      enabled: false
  
-+  registrar:
-+    # image: Image used for csi-node-driver-registrar sidecar. This shouldn't be changed
-+    # Allowed values: string
-+    # Default value: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
-+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
++    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
 +
- ## PLATFORM ATTRIBUTES
- ######################
- # endpointPort: Specify the HTTPs port number of the PowerScale OneFS API server
-@@ -377,6 +406,10 @@ authorization:
-   #   "false" - TLS certificate will be verified
-   # Default value: "true"
-   skipCertificateValidation: true
-+  # image: Image used for csm-authorization sidecar. This shouldn't be changed
-+  # Allowed values: string
-+  # Default value: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
-+  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
+     # interval: Interval of monitoring volume health condition
+     # Allowed values: Number followed by unit of time (s,m,h)
+     # Default value: 60s
+@@ -288,6 +290,9 @@ node:
+   # In certain scenarios, users might need to change the default dnsPolicy.
+   dnsPolicy: ClusterFirstWithHostNet
  
- # Storage Capacity Tracking
- # Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
-@@ -395,6 +428,7 @@ storageCapacity:
++  registrar:
++    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
++
+   healthMonitor:
+     # enabled: Enable/Disable health monitor of CSI volumes- volume usage, volume condition
+     # Allowed values:
+@@ -378,9 +383,15 @@ autoProbe: true
+ 
+ authorization:
+   enabled: false
++
++  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
++
+   # proxyHost: hostname of the csm-authorization server
+   # Default value: None
+   proxyHost:
++  # rootCertificate: certificate used to communicate with the csm-authorization server
++  # Default value: None
++  rootCertificate:
+   # skipCertificateValidation: certificate validation of the csm-authorization server
+   # Allowed Values:
+   #   "true" - TLS certificate verification will be skipped
+@@ -405,6 +416,7 @@ storageCapacity:
  # Enable this feature only after contact support for additional information
  podmon:
    enabled: false
-+  image: docker.io/dellemc/podmon:v1.9.0
++  image: quay.io/dell/container-storage-modules/podmon:v1.11.0
    controller:
-    args:
-      - "--csisock=unix:/var/run/csi/csi.sock"
-@@ -423,6 +457,9 @@ encryption:
-   # enabled: Enable/disable volume encryption feature.
-   enabled: false
- 
-+  #image: Image used for csm-encryption sidecar.
-+  image: docker.io/dellemc/csm-encryption:v0.3.0
+     args:
+       - "--csisock=unix:/var/run/csi/csi.sock"
+@@ -428,3 +440,11 @@ podmon:
+       - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+       - "--driverPodLabelValue=dell-storage"
+       - "--ignoreVolumelessPods=false"
 +
-   # pluginName: The name of the provisioner to use for encrypted volumes.
-   pluginName: "sec-isilon.dellemc.com"
- 
++secret:
++
++storageClasses:
++
++snapshotClasses:
++
++proxyAuthzTokens:
 -- 
 2.34.1
-
