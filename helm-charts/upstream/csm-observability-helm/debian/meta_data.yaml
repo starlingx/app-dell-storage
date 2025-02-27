@@ -1,15 +1,15 @@
 ---
 debname: csm-observability-helm
-debver: 1.8-0
+debver: 1.10-0
 dl_path:
- name: karavi-observability-1.8.0.tar.gz
- url: https://github.com/dell/helm-charts/archive/karavi-observability-1.8.0.tar.gz
- sha256sum: f0bdc5fca5c820bc07075298b5ce29c2c3a7b5c3379bc180402e37f75804545c
+ name: karavi-observability-1.10.0.tar.gz
+ url: https://github.com/dell/helm-charts/archive/karavi-observability-1.10.0.tar.gz
+ sha256sum: 70d1cb663c0ec78d500bd7c773609e089c2402d4133753590d605d666a06116f
 src_files:
   - csm-observability-helm/files/Makefile
 revision:
   dist: $STX_DIST
-  stx_patch: 0
+  stx_patch: 4
   GITREVCOUNT:
-    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    BASE_SRCREV: 45f718cb4d7ec33c62c7311a54099298a1911058
     SRC_DIR: ${MY_REPO}/stx/app-dell-storage/helm-charts/upstream/csm-observability-helm

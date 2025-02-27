@@ -1,31 +1,32 @@
 #
-# Copyright (c) 2023-2024 Wind River Systems, Inc.
+# Copyright (c) 2023-2025 Wind River Systems, Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
 
-app.starlingx.io/component: platform
-
 karaviMetricsPowerstore:
   enabled: true
-  image: docker.io/dellemc/csm-metrics-powerstore:v1.8.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.10.0
 karaviMetricsPowerflex:
   enabled: false
-  image: docker.io/dellemc/csm-metrics-powerflex:v1.8.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.10.0
 karaviMetricsPowerscale:
   enabled: false
-  image: docker.io/dellemc/csm-metrics-powerscale:v1.5.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.7.0
 karaviMetricsPowermax:
   enabled: false
-  image: docker.io/dellemc/csm-metrics-powermax:v1.3.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.5.0
 karaviTopology:
   enabled: true
-  image: docker.io/dellemc/csm-topology:v1.8.0
+  image: quay.io/dell/container-storage-modules/csm-topology:v1.10.0
 sidecarProxy:
-  image: docker.io/dellemc/csm-authorization-sidecar:v1.10.0
+  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
 otelCollector:
   image: docker.io/otel/opentelemetry-collector:0.42.0
   nginxProxy:
-    image: docker.io/nginxinc/nginx-unprivileged:1.20
+    image: docker.io/nginxinc/nginx-unprivileged:1.27
 cert-manager:
   enabled: false
+
+labels:
+  isApplication: false
