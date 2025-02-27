@@ -1,13 +1,13 @@
-From 3522001fd50c68ddff1750873c05fc227064b280 Mon Sep 17 00:00:00 2001
-From: Guilherme Costa <guilherme.costa@windriver.com>
-Date: Tue, 26 Mar 2024 15:53:39 -0300
+From 68e18eff48a4bf195d80652dda0d010347eeeaa2 Mon Sep 17 00:00:00 2001
+From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Date: Fri, 13 Dec 2024 11:57:25 +0000
 Subject: [PATCH] csm-replication: add DellCSIReplicationGroup in templates
 
 This patch consists of adding a DellCSIReplicationGroup in the helm
 chart templates directory. It's needed because this helm chart needs
 that DellCSIReplicationGroup should be created manually.
 
-Signed-off-by: Guilherme Costa <guilherme.costa@windriver.com>
+Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 ---
  .../templates/replicationgroup.yaml           | 22 +++++++++++++++++++
  1 file changed, 22 insertions(+)
@@ -42,4 +42,4 @@ index 0000000..57f4318
 +{{- end }}
 +{{- end }}
 -- 
-2.25.1
+2.34.1

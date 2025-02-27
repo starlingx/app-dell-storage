@@ -1,15 +1,15 @@
 ---
 debname: csm-replication-helm
-debver: 1.8-0
+debver: 1.10-0
 dl_path:
-  name: csm-replication-1.8.0.tar.gz
-  url: https://github.com/dell/helm-charts/archive/csm-replication-1.8.0.tar.gz
-  sha256sum: 2e6d013830b5d3a6add3398072176a8eb6d2e6b9ab1d1681de54300cd109743d
+  name: csm-replication-1.10.0.tar.gz
+  url: https://github.com/dell/helm-charts/archive/csm-replication-1.10.0.tar.gz
+  sha256sum: c49bbcef265c817eafd740d24d7adbddbac12e7b2f9bd6b2be7f95b9e4d3d585
 src_files:
   - csm-replication-helm/files/Makefile
 revision:
   dist: $STX_DIST
-  stx_patch: 0
+  stx_patch: 5
   GITREVCOUNT:
-    BASE_SRCREV: 8db8f63466df064069133380243443e3822fa8ce
+    BASE_SRCREV: 30132226e3027cb7f11b308a7c7e412cc091b817
     SRC_DIR: ${MY_REPO}/stx/app-dell-storage/helm-charts/upstream/csm-replication-helm
