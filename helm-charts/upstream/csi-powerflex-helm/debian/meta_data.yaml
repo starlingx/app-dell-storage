@@ -1,15 +1,15 @@
 ---
 debname: csi-powerflex-helm
-debver: 2.12-0
+debver: 2.13-0
 dl_path:
-  name: csi-vxflexos-2.12.0.tar.gz
-  url: https://github.com/dell/helm-charts/archive/csi-vxflexos-2.12.0.tar.gz
-  sha256sum: 8848ceb5f12f0977b4c18211b59964dd5414ceb316d5b5e6947330840e8ff977
+  name: csi-vxflexos-2.13.0.tar.gz
+  url: https://github.com/dell/helm-charts/archive/csi-vxflexos-2.13.0.tar.gz
+  sha256sum: 663cae9627fea3e62284efdaf33c113394498318f08b381c13d491e91e45b0e1
 src_files:
   - csi-powerflex-helm/files/Makefile
 revision:
   dist: $STX_DIST
   stx_patch: 15
   GITREVCOUNT:
-    BASE_SRCREV: 256210bd76ff15790ed3b4780ff398a863447954
+    BASE_SRCREV: e6ca9db39fca349d143a100e81b2add0f06a74b1
     SRC_DIR: ${MY_REPO}/stx/app-dell-storage/helm-charts/upstream/csi-powerflex-helm
