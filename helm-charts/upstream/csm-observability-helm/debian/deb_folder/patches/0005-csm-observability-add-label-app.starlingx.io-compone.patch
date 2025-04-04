@@ -1,12 +1,12 @@
-From 7bd075358da9be3d4ffa8abfd973ff218862e217 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 6 Dec 2024 09:52:06 -0300
+From adf11d08558e358bc55c5c066e1278e9752f98c1 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 21 Mar 2025 13:26:31 -0300
 Subject: [PATCH] csm-observability: add label app.starlingx.io/component
 
 This patch consists of adding the app.starlingx.io/component label
 in all pods.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  .../templates/karavi-metrics-powerflex.yaml                    | 1 +
  .../templates/karavi-metrics-powermax.yaml                     | 1 +
@@ -90,18 +90,18 @@ index d1c400a..d78cc39 100644
        serviceAccount: otel-collector
        volumes:
 diff --git a/charts/karavi-observability/values.yaml b/charts/karavi-observability/values.yaml
-index 09cb408..296668b 100644
+index 3cd7f84..dba4ca1 100644
 --- a/charts/karavi-observability/values.yaml
 +++ b/charts/karavi-observability/values.yaml
 @@ -17,6 +17,9 @@ sidecarProxy:
-   # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
-   image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
- 
+   # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+   image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+
 +labels:
 +  isApplication: false
 +
  karaviMetricsPowerflex:
-   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.10.0
+   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.11.0
    enabled: true
--- 
+--
 2.34.1
