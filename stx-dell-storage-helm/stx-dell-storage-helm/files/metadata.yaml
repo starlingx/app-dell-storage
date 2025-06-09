@@ -21,3 +21,5 @@ supported_k8s_version:
 behavior:
   platform_managed_app: yes
   desired_state: uploaded
+
+class: storage
