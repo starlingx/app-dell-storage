@@ -1,12 +1,12 @@
-From 35419e8432e61d73c30b9f07afc28f796edec094 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Thu, 5 Dec 2024 09:22:32 -0300
+From fd03548b74fb008a527252d6bb2b9443784cef2c Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Mon, 17 Mar 2025 14:07:00 -0300
 Subject: [PATCH] csi-powerstore: fix image path for templates
 
 This patch consists of changing the format to use the image path directly
 following the expected format used by kube_app.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  .../csi-powerstore/templates/controller.yaml  | 20 +++++++++----------
  charts/csi-powerstore/templates/node.yaml     |  6 +++---
@@ -139,26 +139,26 @@ index 19124aa..f4c1c12 100644
            args:
              - "--v=5"
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index 4c94ab7..4f526a9 100644
+index 11d0ee3..eddc81c 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
-@@ -119,8 +119,7 @@ controller:
+@@ -117,8 +117,7 @@ controller:
      #   false: disable volume-group-snapshot feature(do not install vg-snapshotter sidecar)
      # Default value: false
      enabled: false
 -    vgsnapshotter:
--      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
-+    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
+-      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
++    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
  
    # snapshot: allows to enable/disable snapshot feature
    # snapshot CRDs needs to be installed before enabling this feature
-@@ -131,8 +130,9 @@ controller:
+@@ -129,8 +128,9 @@ controller:
      #   false: disable volume snapshot feature(do not install snapshotter sidecar)
      # Default value: None
      enabled: true
 -    snapshotter:
--      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
-+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
 +
 +    deletionPolicy: Delete
  

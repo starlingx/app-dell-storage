@@ -1,13 +1,13 @@
-From e7b539836939af9895eccd9574214d1b2cf7d080 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 6 Dec 2024 09:52:06 -0300
+From 1eeb23b2807f83bd5a4e073643ca8bb8b6202eac Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 21 Mar 2025 13:36:31 -0300
 Subject: [PATCH] csm-observability: fix all image paths
 
 This patch consists of changing the format to use the image path
 directly following the expected format used by kube_app and add
 docker.io prefix in image path to prevent future issues.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  .../templates/karavi-metrics-powerflex.yaml              | 2 +-
  .../templates/karavi-metrics-powermax.yaml               | 2 +-
@@ -55,24 +55,24 @@ index 83b6680..6ece94d 100644
            - name: PROXY_HOST
              value: "{{ .Values.karaviMetricsPowerscale.authorization.proxyHost }}"
 diff --git a/charts/karavi-observability/values.yaml b/charts/karavi-observability/values.yaml
-index fa1449f..09cb408 100644
+index 38b88e3..3cd7f84 100644
 --- a/charts/karavi-observability/values.yaml
 +++ b/charts/karavi-observability/values.yaml
 @@ -12,6 +12,11 @@ karaviTopology:
      serviceName: karavi-topology
      probability: 0.0
- 
+
 +sidecarProxy:
 +  # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-+  # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
-+  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
++  # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
++  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
 +
  karaviMetricsPowerflex:
-   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.10.0
+   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.11.0
    enabled: true
 @@ -169,11 +174,11 @@ karaviMetricsPowermax:
      skipCertificateValidation: true
- 
+
  otelCollector:
 -  image: otel/opentelemetry-collector:0.42.0
 +  image: docker.io/otel/opentelemetry-collector:0.42.0
@@ -84,5 +84,5 @@ index fa1449f..09cb408 100644
  # Karavi-observability requires cert-manager. If cert-manager is already present in cluster, set enabled to false not to install it.
  cert-manager:
    enabled: true
--- 
+--
 2.34.1
