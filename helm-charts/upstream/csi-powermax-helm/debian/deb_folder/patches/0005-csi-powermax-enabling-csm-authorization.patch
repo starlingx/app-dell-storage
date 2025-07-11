@@ -1,6 +1,6 @@
-From 7d8018702a5766f47063b45afab19be6f141361b Mon Sep 17 00:00:00 2001
-From: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
-Date: Thu, 26 Dec 2024 14:10:40 -0300
+From a7e42b5aa9d4a2039203b3167051bbfb6f077da0 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Wed, 12 Mar 2025 09:07:10 -0300
 Subject: [PATCH] csi-powermax: enabling csm-authorization
 
 This patch consists of:
@@ -14,7 +14,7 @@ This patch consists of:
   - Add template for proxy-server-root-certificate secret needed by the
     csm-authorization sidecar.
 
-Signed-off-by: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  .../templates/authorization-config.yaml       | 20 +++++++++++++++++++
  charts/csi-powermax/templates/controller.yaml | 14 ++++++-------
@@ -195,18 +195,18 @@ diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
 index d4f134a..ad9d118 100644
 --- a/charts/csi-powermax/values.yaml
 +++ b/charts/csi-powermax/values.yaml
-@@ -85,6 +85,7 @@ version: "v2.12.0"
+@@ -85,6 +85,7 @@ version: "v2.13.0"
  # CSM Control
  csm:
    replication: false
 +  authorization: false
- 
+
  driver:
    # image: Image used for driver container. This shouldn't be changed
 @@ -92,6 +93,12 @@ driver:
-   # Default value: docker.io/dellemc/csi-powermax:v2.12.0
-   image: docker.io/dellemc/csi-powermax:v2.12.0
- 
+   # Default value: docker.io/dellemc/csi-powermax:v2.13.0
+   image: docker.io/dellemc/csi-powermax:v2.13.0
+
 +  configs:
 +
 +  # rootCertificate: certificate used to communicate with the csm-authorization server
@@ -219,13 +219,13 @@ index d4f134a..ad9d118 100644
 @@ -513,6 +520,10 @@ vSphere:
    # vCenterCredSecret: secret name for the vCenter credentials
    vCenterCredSecret: vcenter-creds
- 
+
 +proxyAuthzTokens:
 +  access:
 +  refresh:
 +
  # Enable this feature only after contact support for additional information
  podmon:
- 
--- 
+
+--
 2.34.1

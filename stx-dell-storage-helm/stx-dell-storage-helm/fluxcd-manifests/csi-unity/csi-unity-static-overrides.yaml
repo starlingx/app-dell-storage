@@ -12,15 +12,15 @@ labels:
 
 controller:
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
   healthMonitor:
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
   provisioner:
     image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
   resizer:
-    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.13.1
   snapshot:
-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
     snapNamePrefix: csi-unity-snap
   volumeNamePrefix: csi-unity-vol
   nodeSelector: { "node-role.kubernetes.io/control-plane": "" }
@@ -34,17 +34,17 @@ controller:
 
 node:
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
   nodeNamePrefix: csi-unity-node
   nodeSelector: { "kubernetes.io/os": "linux" }
   tolerations:
   - operator: "Exists"
 
 driver:
-  image: quay.io/dell/container-storage-modules/csi-unity:v2.12.0
+  image: quay.io/dell/container-storage-modules/csi-unity:v2.13.0
 
 podmon:
-  image: quay.io/dell/container-storage-modules/podmon:v1.11.0
+  image: quay.io/dell/container-storage-modules/podmon:v1.12.0
 
 kubectl:
   image: docker.io/bitnami/kubectl:1.29

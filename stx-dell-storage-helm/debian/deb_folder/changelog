@@ -1,3 +1,9 @@
+stx-dell-storage-helm (1.3-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>  Thu, 03 Apr 2025 00:00:00 +0000
+
 stx-dell-storage-helm (1.2-0) unstable; urgency=medium
 
   * New upstream release.

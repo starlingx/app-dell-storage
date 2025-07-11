@@ -1,15 +1,15 @@
 ---
 debname: csi-powerscale-helm
-debver: 2.12-0
+debver: 2.13-0
 dl_path:
-  name: csi-powerscale-2.12.0.tar.gz
-  url: https://github.com/dell/helm-charts/archive/csi-isilon-2.12.0.tar.gz
-  sha256sum: 6731a5e6076395d259b9912e63fd091f105e7d28171aa3cd3ddf4c042bf8a3b9
+  name: csi-powerscale-2.13.0.tar.gz
+  url: https://github.com/dell/helm-charts/archive/csi-isilon-2.13.0.tar.gz
+  sha256sum: 6d436efe571e48039ed98545ce2db785ad2efa47292030d62eab529abca82456
 src_files:
   - csi-powerscale-helm/files/Makefile
 revision:
   dist: $STX_DIST
   stx_patch: 13
   GITREVCOUNT:
-    BASE_SRCREV: 1ecdef81736cfe569cd46eb12bcb1e2ac25cb6f6
+    BASE_SRCREV: 8f5333b9365cb36d489ceb7b106887ba99a9021f
     SRC_DIR: ${MY_REPO}/stx/app-dell-storage/helm-charts/upstream/csi-powerscale-helm
