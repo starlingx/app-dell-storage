@@ -36,7 +36,7 @@ index 9172cfd..99d661e 100644
 @@ -44,3 +44,6 @@ replicationGroup:
  
  kubectl:
-   image: docker.io/bitnami/kubectl:1.29
+   image: docker.io/bitnamilegacy/kubectl:1.29
 +
 +labels:
 +  isApplication: false

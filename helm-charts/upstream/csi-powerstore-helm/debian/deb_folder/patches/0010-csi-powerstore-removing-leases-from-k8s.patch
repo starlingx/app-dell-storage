@@ -160,7 +160,7 @@ index ad863ee..6c59d6e 100644
    image: quay.io/dell/container-storage-modules/csi-powerstore:v2.13.0
 
 +kubectl:
-+  image: docker.io/bitnami/kubectl:1.29
++  image: docker.io/bitnamilegacy/kubectl:1.29
 +
  # Specify kubelet config dir path.
  # Ensure that the config.yaml file is present at this path.

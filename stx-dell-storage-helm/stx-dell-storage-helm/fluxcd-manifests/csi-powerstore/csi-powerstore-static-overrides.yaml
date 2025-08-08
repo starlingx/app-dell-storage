@@ -9,7 +9,7 @@ csm:
   resiliency: false
 
 kubectl:
-  image: docker.io/bitnami/kubectl:1.29
+  image: docker.io/bitnamilegacy/kubectl:1.29
 
 controller:
   metadataretriever:

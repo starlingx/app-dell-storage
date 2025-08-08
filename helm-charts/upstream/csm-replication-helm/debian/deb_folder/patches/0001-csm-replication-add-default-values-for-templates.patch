@@ -29,7 +29,7 @@ index 4329d04..9172cfd 100644
 +  create: false
 +
 +kubectl:
-+  image: docker.io/bitnami/kubectl:1.29
++  image: docker.io/bitnamilegacy/kubectl:1.29
 -- 
 2.34.1
 

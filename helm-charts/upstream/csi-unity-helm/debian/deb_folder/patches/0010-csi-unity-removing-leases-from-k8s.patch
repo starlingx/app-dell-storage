@@ -161,7 +161,7 @@ index 78c50e7..19bc86d 100644
    isApplication: false
 +
 +kubectl:
-+  image: docker.io/bitnami/kubectl:1.29
++  image: docker.io/bitnamilegacy/kubectl:1.29
 -- 
 2.34.1
 
