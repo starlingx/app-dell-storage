@@ -1,6 +1,6 @@
-From fd03548b74fb008a527252d6bb2b9443784cef2c Mon Sep 17 00:00:00 2001
+From 69b5d0fcc9fea226c4e7e81e7307b65e71047071 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Mon, 17 Mar 2025 14:07:00 -0300
+Date: Wed, 8 Oct 2025 14:47:15 -0300
 Subject: [PATCH] csi-powerstore: fix image path for templates
 
 This patch consists of changing the format to use the image path directly
@@ -10,14 +10,14 @@ Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjun
 ---
  .../csi-powerstore/templates/controller.yaml  | 20 +++++++++----------
  charts/csi-powerstore/templates/node.yaml     |  6 +++---
- charts/csi-powerstore/values.yaml             |  8 ++++----
- 3 files changed, 17 insertions(+), 17 deletions(-)
+ charts/csi-powerstore/values.yaml             |  6 ++----
+ 3 files changed, 15 insertions(+), 17 deletions(-)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index 5652c17..499ae85 100644
+index 62b3a7a..8fbebe2 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -199,7 +199,7 @@ spec:
+@@ -228,7 +228,7 @@ spec:
          {{- if hasKey .Values "podmon" }}
          {{- if eq .Values.podmon.enabled true }}
          - name: podmon
@@ -26,7 +26,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              {{- toYaml .Values.podmon.controller.args | nindent 12 }}
-@@ -227,7 +227,7 @@ spec:
+@@ -256,7 +256,7 @@ spec:
          {{ if .Values.dev.enableTracing }}{{- include "pstore.tracing" . | nindent 8 }}{{ end }}
          {{- end }}
          - name: attacher
@@ -35,7 +35,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -245,7 +245,7 @@ spec:
+@@ -274,7 +274,7 @@ spec:
          {{- if hasKey .Values.controller "resizer" }}
          {{- if eq .Values.controller.resizer.enabled true }}
          - name: resizer
@@ -44,7 +44,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -260,7 +260,7 @@ spec:
+@@ -289,7 +289,7 @@ spec:
          {{end}}
          {{end}}
          - name: provisioner
@@ -53,7 +53,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -291,7 +291,7 @@ spec:
+@@ -320,7 +320,7 @@ spec:
          {{- if hasKey .Values.controller "snapshot" }}
          {{- if eq .Values.controller.snapshot.enabled true }}
          - name: snapshotter
@@ -62,7 +62,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -309,7 +309,7 @@ spec:
+@@ -338,7 +338,7 @@ spec:
          {{- if hasKey .Values.controller "vgsnapshot" }}
          {{- if eq .Values.controller.vgsnapshot.enabled true }}
          - name: vg-snapshotter
@@ -71,7 +71,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
              - name: ADDRESS
-@@ -322,7 +322,7 @@ spec:
+@@ -351,7 +351,7 @@ spec:
          {{- if hasKey .Values.controller "replication" }}
          {{- if eq .Values.controller.replication.enabled true}}
          - name: dell-csi-replicator
@@ -80,7 +80,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -350,7 +350,7 @@ spec:
+@@ -379,7 +379,7 @@ spec:
          {{- if hasKey .Values.controller "healthMonitor" }}
          {{- if eq .Values.controller.healthMonitor.enabled true}}
          - name: csi-external-health-monitor-controller
@@ -89,7 +89,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--v=5"
-@@ -369,7 +369,7 @@ spec:
+@@ -398,7 +398,7 @@ spec:
          {{- end }}
          {{- end }}
          - name: csi-metadata-retriever
@@ -98,7 +98,7 @@ index 5652c17..499ae85 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-metadata-retriever" ]
            env:
-@@ -384,7 +384,7 @@ spec:
+@@ -413,7 +413,7 @@ spec:
              - name: socket-dir
                mountPath: /var/run/csi
          - name: driver
@@ -108,10 +108,10 @@ index 5652c17..499ae85 100644
            command: [ "/csi-powerstore" ]
            env:
 diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
-index 19124aa..f4c1c12 100644
+index db30a30..4694a40 100644
 --- a/charts/csi-powerstore/templates/node.yaml
 +++ b/charts/csi-powerstore/templates/node.yaml
-@@ -122,7 +122,7 @@ spec:
+@@ -177,7 +177,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
@@ -120,7 +120,7 @@ index 19124aa..f4c1c12 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              {{- toYaml .Values.podmon.node.args | nindent 12 }}
-@@ -175,7 +175,7 @@ spec:
+@@ -230,7 +230,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
@@ -129,9 +129,9 @@ index 19124aa..f4c1c12 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-powerstore" ]
            env:
-@@ -268,7 +268,7 @@ spec:
-             - name: powerstore-config-params
-               mountPath: /powerstore-config-params
+@@ -352,7 +352,7 @@ spec:
+               readOnly: true
+             {{- end }}
          - name: registrar
 -          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
 +          image: {{ required "Must provide the CSI node registrar container image." .Values.node.registrar.image }}
@@ -139,30 +139,28 @@ index 19124aa..f4c1c12 100644
            args:
              - "--v=5"
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index 11d0ee3..eddc81c 100644
+index 61432fe..6b71891 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
-@@ -117,8 +117,7 @@ controller:
+@@ -126,8 +126,7 @@ controller:
      #   false: disable volume-group-snapshot feature(do not install vg-snapshotter sidecar)
      # Default value: false
      enabled: false
 -    vgsnapshotter:
 -      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
 +    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
- 
+
+
    # snapshot: allows to enable/disable snapshot feature
-   # snapshot CRDs needs to be installed before enabling this feature
-@@ -129,8 +128,9 @@ controller:
+@@ -139,8 +138,7 @@ controller:
      #   false: disable volume snapshot feature(do not install snapshotter sidecar)
      # Default value: None
      enabled: true
 -    snapshotter:
--      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
-+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
-+
-+    deletionPolicy: Delete
- 
+-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
+
      # snapNamePrefix: Prefix to apply to the names of a created snapshots
      # Allowed values: string
--- 
+--
 2.34.1
