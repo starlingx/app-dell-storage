@@ -1,6 +1,6 @@
-From 0fbadd49e5b09c21e5bbf05cc7bd434e66608357 Mon Sep 17 00:00:00 2001
+From dcb29f5ecc608a21b5d6b43821855eb2dc73a838 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Wed, 6 Mar 2025 09:49:00 -0300
+Date: Tue, 14 Oct 2025 10:55:00 -0300
 Subject: [PATCH] csi-unity: add snapshotclass in templates
 
 This patch consists of adding a snapshot class in the helm chart
@@ -17,7 +17,7 @@ Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjun
 
 diff --git a/charts/csi-unity/templates/snapshotclass.yaml b/charts/csi-unity/templates/snapshotclass.yaml
 new file mode 100644
-index 0000000..0f8c1a6
+index 0000000..975c1eb
 --- /dev/null
 +++ b/charts/csi-unity/templates/snapshotclass.yaml
 @@ -0,0 +1,14 @@
@@ -36,12 +36,12 @@ index 0000000..0f8c1a6
 +# Examples: Delete
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index be0fbea..c32279b 100644
+index 2050fae..aa0bb85 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -102,6 +102,8 @@ controller:
-     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
-     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
+     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
 
 +    deletionPolicy: Delete
 +
@@ -59,4 +59,3 @@ index be0fbea..c32279b 100644
  storageClasses:
 --
 2.34.1
-

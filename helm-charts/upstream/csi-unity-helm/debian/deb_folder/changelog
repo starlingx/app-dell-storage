@@ -1,3 +1,9 @@
+csi-unity-helm (2.15-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>  Tue, 14 Oct 2025 07:56:00 +0000
+
 csi-unity-helm (2.13-0) unstable; urgency=medium
 
   * New upstream release.

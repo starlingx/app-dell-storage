@@ -1,25 +1,25 @@
-From ba9498e4dc91e1983183f07fd855ea948da9cb2f Mon Sep 17 00:00:00 2001
-From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Wed, 4 Dec 2024 16:52:07 -0300
+From 79d44e8f2f1042089056a23b6da80032a534f7f2 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Tue, 14 Oct 2025 10:46:00 -0300
 Subject: [PATCH] csi-unity: enabling csm-resiliency
 
 This patch consists of changing the format of the values in templates
 and changing the values.yaml for the user be able to enable
 csm-resiliency
 
-Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- charts/csi-unity/templates/controller.yaml           | 8 ++++----
- charts/csi-unity/templates/driver-config-params.yaml | 2 +-
- charts/csi-unity/templates/node.yaml                 | 8 ++++----
- charts/csi-unity/values.yaml                         | 3 +++
- 4 files changed, 12 insertions(+), 9 deletions(-)
+ charts/csi-unity/templates/controller.yaml           |  8 ++++----
+ charts/csi-unity/templates/driver-config-params.yaml |  2 +-
+ charts/csi-unity/templates/node.yaml                 | 10 +++++-----
+ charts/csi-unity/values.yaml                         |  3 +++
+ 4 files changed, 13 insertions(+), 10 deletions(-)
 
 diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
-index 41dbea9..0c5ded2 100644
+index 438a122..570721e 100644
 --- a/charts/csi-unity/templates/controller.yaml
 +++ b/charts/csi-unity/templates/controller.yaml
-@@ -19,7 +19,7 @@ rules:
+@@ -17,7 +17,7 @@ rules:
      verbs: ["list", "watch", "create", "update", "patch"]
    - apiGroups: [""]
      resources: ["nodes"]
@@ -28,30 +28,30 @@ index 41dbea9..0c5ded2 100644
      verbs: ["get", "list", "watch", "patch"]
  {{- else }}
      verbs: ["get", "list", "watch"]
-@@ -35,7 +35,7 @@ rules:
+@@ -33,7 +33,7 @@ rules:
      verbs: ["get", "list", "watch"]
    - apiGroups: ["storage.k8s.io"]
      resources: ["volumeattachments"]
 -{{- if .Values.podmon.enabled }}
-+{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
-     verbs: ["get", "list", "watch", "update", "patch", "delete"]
++{{- if or .Values.podmon.enabled .Values.csm.resiliency}}
+     verbs: ["get", "list", "watch", "patch", "delete"]
  {{- else }}
-     verbs: ["get", "list", "watch", "update","patch"]
-@@ -51,7 +51,7 @@ rules:
-     verbs: ["get", "list", "watch"]
+     verbs: ["get", "list", "watch", "patch"]
+@@ -46,7 +46,7 @@ rules:
+     verbs: ["patch"]
    - apiGroups: [""]
      resources: ["pods"]
 -{{- if .Values.podmon.enabled }}
 +{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
-     verbs: ["get", "list", "watch", "update", "delete"]
+     verbs: ["get", "list", "watch", "delete"]
  {{- else }}
      verbs: ["get", "list", "watch"]
-@@ -153,7 +153,7 @@ spec:
+@@ -174,7 +174,7 @@ spec:
        {{- toYaml .Values.controller.tolerations | nindent 6 }}
        {{- end }}
        containers:
 -{{- if .Values.podmon.enabled }}
-+{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency}}
          - name: podmon
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
@@ -69,10 +69,10 @@ index 2bbf894..66032e0 100644
      PODMON_CONTROLLER_LOG_FORMAT: "TEXT"
      PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
 diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
-index efb442f..42bbbb5 100644
+index 7298c6f..c6c62a8 100644
 --- a/charts/csi-unity/templates/node.yaml
 +++ b/charts/csi-unity/templates/node.yaml
-@@ -36,7 +36,7 @@ rules:
+@@ -31,7 +31,7 @@ rules:
      resourceNames: [ "privileged" ]
      resources: [ "securitycontextconstraints" ]
      verbs: [ "use" ]
@@ -80,8 +80,17 @@ index efb442f..42bbbb5 100644
 +{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
    - apiGroups: [ "" ]
      resources: [ "pods" ]
-     verbs: [ "get", "list", "watch", "update", "delete" ]
-@@ -76,7 +76,7 @@ spec:
+     verbs: [ "get", "list", "watch" ]
+@@ -50,7 +50,7 @@ roleRef:
+   kind: ClusterRole
+   name: {{ .Release.Name }}-node
+   apiGroup: rbac.authorization.k8s.io
+-{{- if .Values.podmon.enabled }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+ ---
+ # Role for Driver-specific Permissions in a Namespace
+ kind: Role
+@@ -97,7 +97,7 @@ spec:
          kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
@@ -90,7 +99,7 @@ index efb442f..42bbbb5 100644
          driver.dellemc.com: dell-storage
  {{- end }}
      spec:
-@@ -93,7 +93,7 @@ spec:
+@@ -114,7 +114,7 @@ spec:
        hostNetwork: true
        dnsPolicy: {{ .Values.node.dnsPolicy }}
        containers:
@@ -99,7 +108,7 @@ index efb442f..42bbbb5 100644
          - name: podmon
            securityContext:
              privileged: true
-@@ -269,7 +269,7 @@ spec:
+@@ -290,7 +290,7 @@ spec:
          - name: unity-secret
            secret:
                secretName: {{ .Release.Name }}-creds
@@ -109,18 +118,18 @@ index efb442f..42bbbb5 100644
            hostPath:
              path: /usr/bin
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 45df7ee..8ef923a 100644
+index 3f9c117..2b5a0ca 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -1,6 +1,9 @@
  ## K8S/DRIVER ATTRIBUTES
  ########################
- 
+
 +csm:
 +  resiliency: false
 +
  # version: version of this values file
  # Note: Do not change this value
  # Examples : "v2.9.0" , "nightly"
--- 
+--
 2.34.1
