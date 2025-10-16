@@ -1,6 +1,6 @@
-From adf11d08558e358bc55c5c066e1278e9752f98c1 Mon Sep 17 00:00:00 2001
+From 9b014ec0eda1fa1592f6a28247de9b7e905163f7 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Fri, 21 Mar 2025 13:26:31 -0300
+Date: Thu, 15 Oct 2025 08:18:47 -0300
 Subject: [PATCH] csm-observability: add label app.starlingx.io/component
 
 This patch consists of adding the app.starlingx.io/component label
@@ -12,10 +12,9 @@ Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjun
  .../templates/karavi-metrics-powermax.yaml                     | 1 +
  .../templates/karavi-metrics-powerscale.yaml                   | 1 +
  .../templates/karavi-metrics-powerstore.yaml                   | 1 +
- charts/karavi-observability/templates/karavi-topology.yaml     | 1 +
  charts/karavi-observability/templates/otel-collector.yaml      | 1 +
  charts/karavi-observability/values.yaml                        | 3 +++
- 7 files changed, 9 insertions(+)
+ 6 files changed, 8 insertions(+)
 
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml b/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
 index bd8206b..1c384de 100644
@@ -30,7 +29,7 @@ index bd8206b..1c384de 100644
        serviceAccount: {{ .Release.Name }}-metrics-powerflex-controller
        containers:
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
-index 57b7541..d0c76de 100644
+index 4d08ead..17c5552 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
 @@ -46,6 +46,7 @@ spec:
@@ -54,7 +53,7 @@ index 6ece94d..20e27c7 100644
        serviceAccount: {{ .Release.Name }}-metrics-powerscale-controller
        containers:
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml b/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml
-index 2c6f491..da9899b 100644
+index 38f2131..b7aab11 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powerstore.yaml
 @@ -40,6 +40,7 @@ spec:
@@ -65,20 +64,8 @@ index 2c6f491..da9899b 100644
      spec:
        serviceAccount: {{ .Release.Name }}-metrics-powerstore-controller
        containers:
-diff --git a/charts/karavi-observability/templates/karavi-topology.yaml b/charts/karavi-observability/templates/karavi-topology.yaml
-index 24af5a2..0b991a1 100644
---- a/charts/karavi-observability/templates/karavi-topology.yaml
-+++ b/charts/karavi-observability/templates/karavi-topology.yaml
-@@ -40,6 +40,7 @@ spec:
-       labels:
-         app.kubernetes.io/name: karavi-topology
-         app.kubernetes.io/instance: {{ .Release.Name }}
-+        app.starlingx.io/component: {{ ternary "application" "platform" .Values.labels.isApplication }}
-     spec:
-       volumes:
-         - name: karavi-topology-secret-volume
 diff --git a/charts/karavi-observability/templates/otel-collector.yaml b/charts/karavi-observability/templates/otel-collector.yaml
-index d1c400a..d78cc39 100644
+index fadfb5b..d1fb7a5 100644
 --- a/charts/karavi-observability/templates/otel-collector.yaml
 +++ b/charts/karavi-observability/templates/otel-collector.yaml
 @@ -73,6 +73,7 @@ spec:
@@ -90,18 +77,18 @@ index d1c400a..d78cc39 100644
        serviceAccount: otel-collector
        volumes:
 diff --git a/charts/karavi-observability/values.yaml b/charts/karavi-observability/values.yaml
-index 3cd7f84..dba4ca1 100644
+index e671d73..51745f1 100644
 --- a/charts/karavi-observability/values.yaml
 +++ b/charts/karavi-observability/values.yaml
-@@ -17,6 +17,9 @@ sidecarProxy:
-   # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
-   image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+@@ -43,6 +43,9 @@ karaviMetricsPowerflex:
+     # Default value: "true"
+     skipCertificateValidation: true
 
 +labels:
 +  isApplication: false
 +
- karaviMetricsPowerflex:
-   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.11.0
+ karaviMetricsPowerstore:
+   image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.13.0
    enabled: true
 --
 2.34.1

@@ -1,6 +1,6 @@
-From 1eeb23b2807f83bd5a4e073643ca8bb8b6202eac Mon Sep 17 00:00:00 2001
+From b565660028c64483ecf8382656caaba049c665b3 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Fri, 21 Mar 2025 13:36:31 -0300
+Date: Thu, 15 Oct 2025 08:11:06 -0300
 Subject: [PATCH] csm-observability: fix all image paths
 
 This patch consists of changing the format to use the image path
@@ -9,11 +9,11 @@ docker.io prefix in image path to prevent future issues.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../templates/karavi-metrics-powerflex.yaml              | 2 +-
- .../templates/karavi-metrics-powermax.yaml               | 2 +-
- .../templates/karavi-metrics-powerscale.yaml             | 2 +-
- charts/karavi-observability/values.yaml                  | 9 +++++++--
- 4 files changed, 10 insertions(+), 5 deletions(-)
+ .../templates/karavi-metrics-powerflex.yaml                | 2 +-
+ .../templates/karavi-metrics-powermax.yaml                 | 2 +-
+ .../templates/karavi-metrics-powerscale.yaml               | 2 +-
+ charts/karavi-observability/values.yaml                    | 7 ++++++-
+ 4 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml b/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
 index 9b82d7b..bd8206b 100644
@@ -29,10 +29,10 @@ index 9b82d7b..bd8206b 100644
            - name: PROXY_HOST
              value: "{{ .Values.karaviMetricsPowerflex.authorization.proxyHost }}"
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
-index 3acfab7..57b7541 100644
+index 9e28779..4d08ead 100644
 --- a/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
 +++ b/charts/karavi-observability/templates/karavi-metrics-powermax.yaml
-@@ -77,7 +77,7 @@ spec:
+@@ -87,7 +87,7 @@ spec:
        {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
        - name: karavi-authorization-proxy
          imagePullPolicy: IfNotPresent
@@ -55,32 +55,27 @@ index 83b6680..6ece94d 100644
            - name: PROXY_HOST
              value: "{{ .Values.karaviMetricsPowerscale.authorization.proxyHost }}"
 diff --git a/charts/karavi-observability/values.yaml b/charts/karavi-observability/values.yaml
-index 38b88e3..3cd7f84 100644
+index 64f69d3..e671d73 100644
 --- a/charts/karavi-observability/values.yaml
 +++ b/charts/karavi-observability/values.yaml
-@@ -12,6 +12,11 @@ karaviTopology:
-     serviceName: karavi-topology
+@@ -73,6 +73,11 @@ karaviMetricsPowerstore:
+     serviceName: metrics-powerstore
      probability: 0.0
 
 +sidecarProxy:
 +  # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-+  # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
-+  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
++  # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
++  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
 +
- karaviMetricsPowerflex:
-   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.11.0
+ karaviMetricsPowerscale:
+   image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.10.0
    enabled: true
-@@ -169,11 +174,11 @@ karaviMetricsPowermax:
-     skipCertificateValidation: true
-
- otelCollector:
--  image: otel/opentelemetry-collector:0.42.0
-+  image: docker.io/otel/opentelemetry-collector:0.42.0
+@@ -189,7 +194,7 @@ otelCollector:
    service:
      type: ClusterIP
    nginxProxy:
--    image: nginxinc/nginx-unprivileged:1.27
-+    image: docker.io/nginxinc/nginx-unprivileged:1.27
+-    image: nginxinc/nginx-unprivileged:1.29
++    image: docker.io/nginxinc/nginx-unprivileged:1.29
  # Karavi-observability requires cert-manager. If cert-manager is already present in cluster, set enabled to false not to install it.
  cert-manager:
    enabled: true
