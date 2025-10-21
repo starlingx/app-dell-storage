@@ -1,22 +1,22 @@
-From b0f4b90efb7d73f1c743b979e67f15c122f5c8ef Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 20 Dec 2024 10:11:31 -0300
+From 11ed0193f29e6d0b7e3ee2277a84761778f331aa Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Mon, 20 Oct 2025 08:32:14 -0300
 Subject: [PATCH] csi-powerscale: enabling csm-replication
 
 This patch consists of changing the format of the values in templates and
 changing the values.yaml for the user be able to enable csm-replication.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  charts/csi-isilon/templates/controller.yaml | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
-index c92bb1e..e5941ff 100644
+index 34bb793..95bcf79 100644
 --- a/charts/csi-isilon/templates/controller.yaml
 +++ b/charts/csi-isilon/templates/controller.yaml
-@@ -93,7 +93,7 @@ rules:
-     verbs: ["get", "watch", "list", "delete", "update", "create"]
+@@ -81,7 +81,7 @@ rules:
+     verbs: ["patch"]
    # below for dell-csi-replicator
    {{- if hasKey .Values.controller "replication" }}
 -  {{- if eq .Values.controller.replication.enabled true}}
@@ -24,7 +24,7 @@ index c92bb1e..e5941ff 100644
    - apiGroups: ["replication.storage.dell.com"]
      resources: ["dellcsireplicationgroups"]
      verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-@@ -211,7 +211,7 @@ spec:
+@@ -230,7 +230,7 @@ spec:
                mountPath: /csi-isilon-config-params
          {{- end }}
          {{- if hasKey .Values.controller "replication" }}
@@ -33,7 +33,7 @@ index c92bb1e..e5941ff 100644
          - name: dell-csi-replicator
            image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
-@@ -440,7 +440,7 @@ spec:
+@@ -459,7 +459,7 @@ spec:
                {{ end }}
              {{ end }}
              {{- if hasKey .Values.controller "replication" }}
@@ -42,5 +42,6 @@ index c92bb1e..e5941ff 100644
              - name: X_CSI_REPLICATION_CONTEXT_PREFIX
                value: {{ .Values.controller.replication.replicationContextPrefix | default "powerscale"}}
              - name: X_CSI_REPLICATION_PREFIX
--- 
+--
 2.34.1
+

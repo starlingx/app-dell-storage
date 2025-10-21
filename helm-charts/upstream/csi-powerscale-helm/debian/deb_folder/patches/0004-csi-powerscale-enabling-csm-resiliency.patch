@@ -1,20 +1,20 @@
-From dcb6ea554ac5968d3d3e7232cc3397c79077c6d9 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 20 Dec 2024 09:58:14 -0300
+From 7e8c61a9fc7ae82d5715028aa85f46f9d7a26c32 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Mon, 20 Oct 2025 09:13:47 -0300
 Subject: [PATCH] csi-powerscale: enabling csm-resiliency
 
 This patch consists of changing the format of the values in templates and
 changing the values.yaml for the user be able to enable csm-resiliency.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- charts/csi-isilon/templates/controller.yaml          | 12 ++++++------
- .../csi-isilon/templates/driver-config-params.yaml   |  2 +-
- charts/csi-isilon/templates/node.yaml                | 12 ++++++------
- 3 files changed, 13 insertions(+), 13 deletions(-)
+ charts/csi-isilon/templates/controller.yaml        | 12 ++++++------
+ .../csi-isilon/templates/driver-config-params.yaml |  2 +-
+ charts/csi-isilon/templates/node.yaml              | 14 +++++++-------
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
-index b3add81..c92bb1e 100644
+index fcbf23e..34bb793 100644
 --- a/charts/csi-isilon/templates/controller.yaml
 +++ b/charts/csi-isilon/templates/controller.yaml
 @@ -17,7 +17,7 @@ rules:
@@ -32,7 +32,7 @@ index b3add81..c92bb1e 100644
    {{- if hasKey .Values "podmon" }}
 -  {{- if eq .Values.podmon.enabled true }}
 +  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
-     verbs: ["get", "list", "watch", "update", "delete"]
+     verbs: ["get", "list", "watch", "delete"]
    {{- else }}
      verbs: ["get", "list", "watch"]
 @@ -44,7 +44,7 @@ rules:
@@ -41,10 +41,10 @@ index b3add81..c92bb1e 100644
    {{- if hasKey .Values "podmon" }}
 -  {{- if eq .Values.podmon.enabled true }}
 +  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
-     verbs: ["get", "list", "watch", "update", "patch", "delete"]
+     verbs: ["get", "list", "watch", "patch", "delete"]
    {{- else }}
-     verbs: ["get", "list", "watch", "update", "patch"]
-@@ -185,7 +185,7 @@ spec:
+     verbs: ["get", "list", "watch", "patch"]
+@@ -204,7 +204,7 @@ spec:
          {{- $csiSidecarSuffix := "" }}
          {{- $driverSockPath := printf "/var/run/csi/%s" $driverSock }}
          {{- if hasKey .Values "podmon" }}
@@ -53,7 +53,7 @@ index b3add81..c92bb1e 100644
          - name: podmon
            image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
-@@ -428,10 +428,10 @@ spec:
+@@ -447,10 +447,10 @@ spec:
              - name: X_CSI_ISI_NO_PROBE_ON_START
                value: "{{ .Values.noProbeOnStart }}"
              - name: X_CSI_PODMON_ENABLED
@@ -67,23 +67,23 @@ index b3add81..c92bb1e 100644
                  {{- if contains "--arrayConnectivityPollRate" $value }}
              - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
 diff --git a/charts/csi-isilon/templates/driver-config-params.yaml b/charts/csi-isilon/templates/driver-config-params.yaml
-index 98671fe..317726b 100644
+index d5b3cd7..1b42eb4 100644
 --- a/charts/csi-isilon/templates/driver-config-params.yaml
 +++ b/charts/csi-isilon/templates/driver-config-params.yaml
-@@ -6,7 +6,7 @@ metadata:
- data:
+@@ -7,7 +7,7 @@ data:
    driver-config-params.yaml: |
      CSI_LOG_LEVEL: "{{ .Values.logLevel }}"
+     AZ_RECONCILE_INTERVAL: "{{ .Values.azReconcileInterval }}"
 -    {{ if .Values.podmon.enabled }}
 +    {{ if or .Values.podmon.enabled .Values.csm.resiliency }}
      PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
      PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
      PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
 diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
-index fb5a1e7..46e3276 100644
+index 14fd4a5..429a433 100644
 --- a/charts/csi-isilon/templates/node.yaml
 +++ b/charts/csi-isilon/templates/node.yaml
-@@ -37,7 +37,7 @@ rules:
+@@ -31,7 +31,7 @@ rules:
      resources: [ "securitycontextconstraints" ]
      verbs: [ "use" ]
    {{- if hasKey .Values "podmon" }}
@@ -91,8 +91,17 @@ index fb5a1e7..46e3276 100644
 +  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
    - apiGroups: [""]
      resources: ["pods"]
-     verbs: ["get", "list", "watch", "update", "delete"]
-@@ -81,7 +81,7 @@ spec:
+     verbs: ["get", "list", "watch"]
+@@ -53,7 +53,7 @@ roleRef:
+ ---
+
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+ # RoleBinding for Driver-specific Role
+ kind: RoleBinding
+ apiVersion: rbac.authorization.k8s.io/v1
+@@ -104,7 +104,7 @@ spec:
          kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
@@ -101,7 +110,7 @@ index fb5a1e7..46e3276 100644
          driver.dellemc.com: dell-storage
  {{- end }}
      spec:
-@@ -100,7 +100,7 @@ spec:
+@@ -123,7 +123,7 @@ spec:
          {{- $driverSock := "csi_sock" }}
          {{- $csiSidecarSuffix := "" }}
        {{- if hasKey .Values "podmon" }}
@@ -110,7 +119,7 @@ index fb5a1e7..46e3276 100644
          - name: podmon
            securityContext:
              privileged: true
-@@ -206,10 +206,10 @@ spec:
+@@ -229,10 +229,10 @@ spec:
              - name: X_CSI_HEALTH_MONITOR_ENABLED
                value: "{{ .Values.node.healthMonitor.enabled }}"
              - name: X_CSI_PODMON_ENABLED
@@ -123,7 +132,7 @@ index fb5a1e7..46e3276 100644
                {{- range $key, $value := .Values.podmon.node.args }}
                  {{- if contains "--arrayConnectivityPollRate" $value }}
              - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
-@@ -333,7 +333,7 @@ spec:
+@@ -356,7 +356,7 @@ spec:
          {{ end }}
          {{ end }}
          {{- if hasKey .Values "podmon" }}
@@ -132,5 +141,5 @@ index fb5a1e7..46e3276 100644
          - name: usr-bin
            hostPath:
              path: /usr/bin
--- 
+--
 2.34.1
