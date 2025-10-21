@@ -1,6 +1,6 @@
-From 8157a57bb8ba8f326d09a482cb45f1d480cab231 Mon Sep 17 00:00:00 2001
-From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Wed, 11 Dec 2024 11:27:14 -0300
+From c5b550b991362c04d3f519aecc654968fce1dc88 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Mon, 20 Oct 2025 10:28:10 -0300
 Subject: [PATCH] csi-powerflex: fix pull image error
 
 This patch consists of adding imagePullSecrets with name
@@ -8,14 +8,14 @@ default-registry-key only in ServiceAccounts.
 It's necessary because without it the system can't use the
 images from the registry local.
 
-Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../charts/csi-vxflexos/templates/controller.yaml               | 2 ++
- .../charts/csi-vxflexos/templates/node.yaml                     | 2 ++
+ charts/csi-vxflexos/templates/controller.yaml | 2 ++
+ charts/csi-vxflexos/templates/node.yaml       | 2 ++
  2 files changed, 4 insertions(+)
 
 diff --git a/charts/csi-vxflexos/templates/controller.yaml b/charts/csi-vxflexos/templates/controller.yaml
-index 25cd4c7..881d1b4 100644
+index 163bb8c..f63cad8 100644
 --- a/charts/csi-vxflexos/templates/controller.yaml
 +++ b/charts/csi-vxflexos/templates/controller.yaml
 @@ -3,6 +3,8 @@ kind: ServiceAccount
@@ -25,13 +25,13 @@ index 25cd4c7..881d1b4 100644
 +imagePullSecrets:
 +  - name: default-registry-key
  ---
+ # ClusterRole for Cluster-specific Permissions
  kind: ClusterRole
- apiVersion: rbac.authorization.k8s.io/v1
 diff --git a/charts/csi-vxflexos/templates/node.yaml b/charts/csi-vxflexos/templates/node.yaml
-index 410c250..f2135ca 100644
+index 3ed5608..ad00f1b 100644
 --- a/charts/csi-vxflexos/templates/node.yaml
 +++ b/charts/csi-vxflexos/templates/node.yaml
-@@ -3,6 +3,8 @@ kind: ServiceAccount
+@@ -5,6 +5,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-node
    namespace: {{ .Release.Namespace }}

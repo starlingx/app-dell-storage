@@ -1,22 +1,22 @@
-From 0dae3b343b724835e1a7bf314cc5625b6fc491ac Mon Sep 17 00:00:00 2001
-From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Wed, 11 Dec 2024 11:24:02 -0300
+From 32aeb243d2cd8d1a99cfe2e9c6c5fd2b83bdbff7 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Mon, 20 Oct 2025 10:27:24 -0300
 Subject: [PATCH] csi-powerflex: fix image path for templates
 
 This patch consists of changing the format to use the image path directly
 following the expected format used by kube_app.
 
-Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../csi-vxflexos/templates/controller.yaml    | 20 +++++++++----------
- .../charts/csi-vxflexos/templates/node.yaml   | 12 +++++------
+ charts/csi-vxflexos/templates/controller.yaml | 20 +++++++++----------
+ charts/csi-vxflexos/templates/node.yaml       | 12 +++++------
  2 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/charts/csi-vxflexos/templates/controller.yaml b/charts/csi-vxflexos/templates/controller.yaml
-index b4a69fe..25cd4c7 100644
+index 8c7bf85..163bb8c 100644
 --- a/charts/csi-vxflexos/templates/controller.yaml
 +++ b/charts/csi-vxflexos/templates/controller.yaml
-@@ -196,7 +196,7 @@ spec:
+@@ -220,7 +220,7 @@ spec:
  {{- if hasKey .Values "podmon" }}
  {{- if eq .Values.podmon.enabled true }}
          - name: podmon
@@ -25,7 +25,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              {{- toYaml .Values.podmon.controller.args | nindent 12 }}
-@@ -221,7 +221,7 @@ spec:
+@@ -245,7 +245,7 @@ spec:
  {{- end }}
  {{- end }}
          - name: attacher
@@ -34,7 +34,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -236,7 +236,7 @@ spec:
+@@ -260,7 +260,7 @@ spec:
          {{- if hasKey .Values.controller "replication" }}
          {{- if eq .Values.controller.replication.enabled true}}
          - name: dell-csi-replicator
@@ -43,7 +43,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -262,7 +262,7 @@ spec:
+@@ -286,7 +286,7 @@ spec:
          {{- end }}
          {{- end }}
          - name: provisioner
@@ -52,7 +52,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -294,7 +294,7 @@ spec:
+@@ -318,7 +318,7 @@ spec:
          {{- if hasKey .Values.controller "healthMonitor" }}
          {{- if eq .Values.controller.healthMonitor.enabled true}}
          - name: csi-external-health-monitor-controller
@@ -61,7 +61,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -315,7 +315,7 @@ spec:
+@@ -339,7 +339,7 @@ spec:
  {{- if hasKey .Values "vgsnapshotter" }}
  {{- if eq .Values.vgsnapshotter.enabled true }}
          - name: vg-snapshotter
@@ -70,7 +70,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
              - name: ADDRESS
-@@ -328,7 +328,7 @@ spec:
+@@ -352,7 +352,7 @@ spec:
  {{- if hasKey .Values.controller "snapshot" }}
  {{- if eq .Values.controller.snapshot.enabled true }}
          - name: snapshotter
@@ -79,7 +79,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -346,7 +346,7 @@ spec:
+@@ -370,7 +370,7 @@ spec:
  {{- if hasKey .Values.controller "resizer" }}
  {{- if eq .Values.controller.resizer.enabled true }}
          - name: resizer
@@ -88,7 +88,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -363,7 +363,7 @@ spec:
+@@ -387,7 +387,7 @@ spec:
  {{- if hasKey .Values "authorization" }}
  {{- if eq .Values.authorization.enabled true }}
          - name: karavi-authorization-proxy
@@ -97,7 +97,7 @@ index b4a69fe..25cd4c7 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
              - name: PROXY_HOST
-@@ -392,7 +392,7 @@ spec:
+@@ -416,7 +416,7 @@ spec:
  {{- end }}
  {{- end }}
          - name: driver
@@ -107,19 +107,19 @@ index b4a69fe..25cd4c7 100644
            command: [ "/csi-vxflexos.sh" ]
            args:
 diff --git a/charts/csi-vxflexos/templates/node.yaml b/charts/csi-vxflexos/templates/node.yaml
-index 5751860..410c250 100644
+index 4af3fd2..3ed5608 100644
 --- a/charts/csi-vxflexos/templates/node.yaml
 +++ b/charts/csi-vxflexos/templates/node.yaml
-@@ -111,7 +111,7 @@ spec:
+@@ -141,7 +141,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
 -          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
-+          image: {{ required "Must provide the podmon container image." .Values.podmon.image}}
++          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              {{- toYaml .Values.podmon.node.args | nindent 12 }}
-@@ -153,7 +153,7 @@ spec:
+@@ -183,7 +183,7 @@ spec:
  {{- if hasKey .Values "authorization" }}
  {{- if eq .Values.authorization.enabled true }}
          - name: karavi-authorization-proxy
@@ -128,7 +128,7 @@ index 5751860..410c250 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
              - name: PROXY_HOST
-@@ -187,7 +187,7 @@ spec:
+@@ -217,7 +217,7 @@ spec:
              allowPrivilegeEscalation: true
              capabilities:
                add: ["SYS_ADMIN"]
@@ -137,7 +137,7 @@ index 5751860..410c250 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-vxflexos.sh" ]
            args:
-@@ -253,7 +253,7 @@ spec:
+@@ -291,7 +291,7 @@ spec:
                readOnly: true
  {{- end}}
          - name: registrar
@@ -146,7 +146,7 @@ index 5751860..410c250 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--v=5"
-@@ -276,7 +276,7 @@ spec:
+@@ -314,7 +314,7 @@ spec:
          - name: sdc-monitor
            securityContext:
              privileged: true
@@ -155,7 +155,7 @@ index 5751860..410c250 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
              {{ if eq .Values.monitor.hostPID true }}
-@@ -316,7 +316,7 @@ spec:
+@@ -354,7 +354,7 @@ spec:
          - name: sdc
            securityContext:
              privileged: true
@@ -163,7 +163,6 @@ index 5751860..410c250 100644
 +          image: {{ required "Must provide the PowerFlex SDC container image." .Values.node.powerflexSdc.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
-             - name: NODENAME
+             {{- if eq .Values.node.sdc.sdcSFTPRepo.enabled true }}
 --
 2.34.1
-

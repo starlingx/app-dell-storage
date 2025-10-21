@@ -11,6 +11,5 @@
 0011-csi-powerflex-add-proxy-secret-in-templates.patch
 0012-csi-powerflex-add-proxy-authz-token-template.patch
 0013-csi-powerflex-removing-leases-from-k8s.patch
-0014-csi-powerflex-adding-list-permissions-to-csinodes.patch
-0015-csi-powerflex-duplicate-driver-config-map.patch
-0016-csi-powerflex-make-sure-opt-emc-is-created.patch
+0014-csi-powerflex-duplicate-driver-config-map.patch
+0015-csi-powerflex-make-sure-opt-emc-is-created.patch

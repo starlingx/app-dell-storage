@@ -1,31 +1,31 @@
-From 591bddc1a97e44e83fa884b725628076a002b691 Mon Sep 17 00:00:00 2001
-From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Wed, 11 Dec 2024 11:33:54 -0300
+From c2af64495fadff2e7db6a152248ac94b4a8f84f8 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Mon, 20 Oct 2025 10:39:22 -0300
 Subject: [PATCH] csi-powerflex: enabling csm-replication
 
 This patch consists of changing the format of the values in templates and
 changing the values.yaml for the user be able to enable csm-replication.
 
-Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../charts/csi-vxflexos/templates/controller.yaml           | 6 +++---
- .../charts/csi-vxflexos/values.yaml                         | 1 +
+ charts/csi-vxflexos/templates/controller.yaml | 6 +++---
+ charts/csi-vxflexos/values.yaml               | 1 +
  2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/charts/csi-vxflexos/templates/controller.yaml b/charts/csi-vxflexos/templates/controller.yaml
-index eed7898..a6331e4 100644
+index 95408e6..4c97e91 100644
 --- a/charts/csi-vxflexos/templates/controller.yaml
 +++ b/charts/csi-vxflexos/templates/controller.yaml
-@@ -101,7 +101,7 @@ rules:
-     resources: ["customresourcedefinitions"]
-     verbs: ["create", "list", "watch", "delete", "update"]
+@@ -93,7 +93,7 @@ rules:
+     verbs: ["create", "list", "watch", "delete"]
+ # below for dell-csi-replicator
  {{- if hasKey .Values.controller "replication" }}
 -{{- if eq .Values.controller.replication.enabled true}}
 +{{- if or .Values.controller.replication.enabled  .Values.csm.replication }}
    - apiGroups: ["replication.storage.dell.com"]
      resources: ["dellcsireplicationgroups"]
      verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-@@ -236,7 +236,7 @@ spec:
+@@ -260,7 +260,7 @@ spec:
              - name: socket-dir
                mountPath: /var/run/csi
          {{- if hasKey .Values.controller "replication" }}
@@ -34,7 +34,7 @@ index eed7898..a6331e4 100644
          - name: dell-csi-replicator
            image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
-@@ -412,7 +412,7 @@ spec:
+@@ -436,7 +436,7 @@ spec:
              - name: SSL_CERT_DIR
                value: /certs
              {{- if hasKey .Values.controller "replication" }}
@@ -44,7 +44,7 @@ index eed7898..a6331e4 100644
                value: {{ .Values.controller.replication.replicationContextPrefix | default "powerflex"}}
              - name: X_CSI_REPLICATION_PREFIX
 diff --git a/charts/csi-vxflexos/values.yaml b/charts/csi-vxflexos/values.yaml
-index 61669a7..d1f4135 100644
+index f766786..7a8482d 100644
 --- a/charts/csi-vxflexos/values.yaml
 +++ b/charts/csi-vxflexos/values.yaml
 @@ -1,6 +1,7 @@
