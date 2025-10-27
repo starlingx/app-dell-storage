@@ -1,6 +1,6 @@
-From 2bed1688eaa77ae115d9a67e8c21a73797c9746f Mon Sep 17 00:00:00 2001
+From 7c5cf816a6df3bd99fcbb0ff2018ac20a6055cb1 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Wed, 12 Mar 2025 09:06:20 -0300
+Date: Fri, 24 Oct 2025 08:56:16 -0300
 Subject: [PATCH] csi-powermax: add snapshotclass in templates
 
 This patch consists of adding a snapshot class in the helm chart
@@ -28,10 +28,10 @@ index 0000000..f1a0ed6
 +driver: {{ .Values.driverName | default "csi-powermax.dellemc.com" }}
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
 diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
-index 28e05a6..5876a05 100644
+index 200e4de..ff109f8 100644
 --- a/charts/csi-powermax/values.yaml
 +++ b/charts/csi-powermax/values.yaml
-@@ -92,6 +92,8 @@ csm:
+@@ -106,6 +106,8 @@ csm:
    replication: false
    authorization: false
 
@@ -40,9 +40,9 @@ index 28e05a6..5876a05 100644
  driver:
    # image: Image used for driver container. This shouldn't be changed
    # Allowed values: string
-@@ -197,6 +199,8 @@ controller:
-     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
-     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
+@@ -211,6 +213,8 @@ controller:
+     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
 
 +    deletionPolicy: Delete
 +
