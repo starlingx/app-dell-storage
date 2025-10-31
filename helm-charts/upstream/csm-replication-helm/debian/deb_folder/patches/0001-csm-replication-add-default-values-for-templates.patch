@@ -1,6 +1,6 @@
-From a3c56a97ecca5e201fcd1c36b9a8d43ce2e71146 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 13 Dec 2024 11:56:43 +0000
+From 22412e651125bbec2200ff37055e5f739b57b9ff Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 30 Oct 2025 11:52:01 -0300
 Subject: [PATCH] csm-replication: add default values for templates
 
 This patch consists of adding the default values in the values.yaml of
@@ -8,16 +8,16 @@ the helm chart.
 It's necessary because templates need default values to be able
 to build the package.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  charts/csm-replication/values.yaml | 9 +++++++++
  1 file changed, 9 insertions(+)
 
 diff --git a/charts/csm-replication/values.yaml b/charts/csm-replication/values.yaml
-index 4329d04..9172cfd 100644
+index 9061208..8ca02de 100644
 --- a/charts/csm-replication/values.yaml
 +++ b/charts/csm-replication/values.yaml
-@@ -35,3 +35,12 @@ retryIntervalMax: 5m
+@@ -47,3 +47,12 @@ allowPvcCreationOnTarget: "false"
  #  - ip: "10.10.10.11"
  #    hostnames:
  #      - "foo.baz"
@@ -29,7 +29,7 @@ index 4329d04..9172cfd 100644
 +  create: false
 +
 +kubectl:
-+  image: docker.io/bitnamilegacy/kubectl:1.29
--- 
++  image: docker.io/bitnamilegacy/kubectl:1.33.4
+--
 2.34.1
 
