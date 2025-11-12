@@ -1,3 +1,9 @@
+csi-powerscale-helm (2.15-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>  Mon, 20 Oct 2025 08:32:14 -0300
+
 csi-powerscale-helm (2.13-0) unstable; urgency=medium
 
   * New upstream release.
