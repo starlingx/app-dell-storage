@@ -1,6 +1,6 @@
-From 73b9e885ef5ee42e82d1985644e6ecc7da32fcda Mon Sep 17 00:00:00 2001
+From d90b50fbac44614dc13a3c288d8b610d72f9b317 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Mon, 17 Mar 2025 13:57:00 -0300
+Date: Wed, 8 Oct 2025 14:24:28 -0300
 Subject: [PATCH] csi-powerstore: add default values for templates
 
 This patch consists of adding the default values in the values.yaml of
@@ -11,127 +11,137 @@ to build the package.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- charts/csi-powerstore/values.yaml | 52 +++++++++++++++++++++++-----------------------------
- 1 file changed, 23 insertions(+), 29 deletions(-)
+ charts/csi-powerstore/values.yaml | 55 ++++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 31 deletions(-)
 
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index 68a2ba4..11d0ee3 100644
+index 3ce1925..326b05f 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
-@@ -25,35 +25,9 @@ driverName: "csi-powerstore.dellemc.com"
+@@ -25,37 +25,8 @@ driverName: "csi-powerstore.dellemc.com"
  # Not recommend to change
- version: v2.13.0
+ version: v2.15.0
 
 -# "images" defines every container images used for the driver and its sidecars.
 -#  To use your own images, or a private registry, change the values here.
 -images:
 -  # "driver" defines the container image, used for the driver container.
 -  driver:
--    image: quay.io/dell/container-storage-modules/csi-powerstore:v2.13.0
+-    image: quay.io/dell/container-storage-modules/csi-powerstore:v2.15.0
 -  # CSI sidecars
 -  attacher:
--    image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
+-    image: registry.k8s.io/sig-storage/csi-attacher:v4.9.0
 -  provisioner:
--    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+-    image: registry.k8s.io/sig-storage/csi-provisioner:v5.3.0
 -  snapshotter:
--    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
+-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
 -  resizer:
--    image: registry.k8s.io/sig-storage/csi-resizer:v1.13.1
+-    image: registry.k8s.io/sig-storage/csi-resizer:v1.14.0
 -  registrar:
--    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
+-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.14.0
 -  healthmonitor:
--    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
+-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.15.0
 -
 -  # CSM sidecars
 -  replication:
--    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
+-    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.13.0
 -  vgsnapshotter:
 -    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
 -  podmon:
--    image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+-    image: quay.io/dell/container-storage-modules/podmon:v1.14.0
 -  metadataretriever:
--    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.10.0
-+# "driver" defines the container image, used for the driver container.
+-    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.12.0
+-  authorization:
+-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
 +driver:
-+  image: quay.io/dell/container-storage-modules/csi-powerstore:v2.13.0
++  image: quay.io/dell/container-storage-modules/csi-powerstore:v2.15.0
 
- # Specify kubelet config dir path.
- # Ensure that the config.yaml file is present at this path.
-@@ -125,6 +99,15 @@ controller:
+ # Represents number of certificate secrets, which user is going to create for ssl authentication. (powerstore-cert-0..powerstore-cert-n)
+ # If user does not use certificate, set to 0
+@@ -137,6 +108,15 @@ controller:
    # Examples: "k8s", "app1"
    volumeNamePrefix: csivol
 
 +  attacher:
-+    image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
++    image: registry.k8s.io/sig-storage/csi-attacher:v4.9.0
 +
 +  provisioner:
-+    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
++    image: registry.k8s.io/sig-storage/csi-provisioner:v5.3.0
 +
 +  metadataretriever:
-+    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.10.0
++    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.12.0
 +
    # vgsnapshot: allows to configure volume-group-snapshot
    # volume-group-snapshot CRDs must be installed before installing driver
    vgsnapshot:
-@@ -134,6 +117,8 @@ controller:
+@@ -146,6 +126,9 @@ controller:
      #   false: disable volume-group-snapshot feature(do not install vg-snapshotter sidecar)
      # Default value: false
      enabled: false
 +    vgsnapshotter:
 +      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
++
 
    # snapshot: allows to enable/disable snapshot feature
    # snapshot CRDs needs to be installed before enabling this feature
-@@ -144,6 +129,8 @@ controller:
+@@ -156,6 +139,8 @@ controller:
      #   false: disable volume snapshot feature(do not install snapshotter sidecar)
      # Default value: None
      enabled: true
 +    snapshotter:
-+      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
++      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
 
      # snapNamePrefix: Prefix to apply to the names of a created snapshots
      # Allowed values: string
-@@ -158,6 +145,7 @@ controller:
+@@ -170,6 +155,7 @@ controller:
      #   false: disable volume expansion feature(do not install resizer sidecar)
      # Default value: true
      enabled: true
-+    image: registry.k8s.io/sig-storage/csi-resizer:v1.13.1
++    image: registry.k8s.io/sig-storage/csi-resizer:v1.14.0
 
    healthMonitor:
      # enabled: Enable/Disable health monitor of CSI volumes
-@@ -166,6 +154,7 @@ controller:
+@@ -178,6 +164,7 @@ controller:
      #   false: disable checking of health condition of CSI volumes
      # Default value: false
      enabled: false
-+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
++    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.15.0
 
      # interval: Interval of monitoring volume health condition
      # Allowed values: Number followed by unit (s,m,h)
-@@ -182,6 +171,7 @@ controller:
+@@ -194,6 +181,7 @@ controller:
      #   false: disable replication feature(do not install dell-csi-replicator sidecar)
      # Default value: false
      enabled: false
-+    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
++    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.13.0
 
      # replicationContextPrefix: prefix to use for naming of resources created by replication feature
      # Allowed values: string
-@@ -231,6 +221,9 @@ node:
+@@ -243,6 +231,9 @@ node:
    # Default value: None
    nodeIDPath: /etc/machine-id
 
 +  registrar:
-+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
++    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.14.0
 +
    healthMonitor:
      # enabled: Enable/Disable health monitor of CSI volumes- volume usage, volume condition
      # Allowed values:
-@@ -338,6 +331,7 @@ storageCapacity:
+@@ -350,6 +341,7 @@ storageCapacity:
  # Enable this feature only after contact support for additional information
  podmon:
    enabled: false
-+  image: quay.io/dell/container-storage-modules/podmon:v1.12.0
++  image: quay.io/dell/container-storage-modules/podmon:v1.14.0
    controller:
      args:
        - "--csisock=unix:/var/run/csi/csi.sock"
+@@ -402,6 +394,7 @@ multiNas:
+ # Default value: "false"
+ authorization:
+   enabled: false
++  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+   # proxyHost: hostname of the csm-authorization server
+   # Default value: None
+   proxyHost:
 --
 2.34.1

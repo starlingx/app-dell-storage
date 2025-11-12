@@ -1,6 +1,6 @@
-From da5fc73ca032be8c4faac6322feacc9daebdff88 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Mon, 26 Feb 2024 11:37:21 -0300
+From 85e36efa9e6f3bb202561b3ce063438756109ba8 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybyszgoncalvesjunior@windriver.com>
+Date: Wed, 8 Oct 2025 09:17:02 -0300
 Subject: [PATCH] csi-powerstore: fix pull image error
 
 This patch consists of adding imagePullSecrets with name
@@ -8,37 +8,39 @@ default-registry-key only in ServiceAccounts.
 It's necessary because without it the system can't use the
 images from the registry local.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- charts/csi-powerstore/templates/controller.yaml | 2 ++
- charts/csi-powerstore/templates/node.yaml       | 2 ++
- 2 files changed, 4 insertions(+)
+ charts/csi-powerstore/templates/controller.yaml | 3 ++-
+ charts/csi-powerstore/templates/node.yaml       | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index ef63533..5652c17 100644
+index 62b3a7a..085efd3 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -19,6 +19,8 @@ kind: ServiceAccount
+@@ -19,7 +19,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-controller
    namespace: {{ .Release.Namespace }}
+-
 +imagePullSecrets:
 +  - name: default-registry-key
- 
  ---
- 
+ # ClusterRole for Cluster-specific Permissions
+ kind: ClusterRole
 diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
-index 7696198..19124aa 100644
+index db30a30..9e73094 100644
 --- a/charts/csi-powerstore/templates/node.yaml
 +++ b/charts/csi-powerstore/templates/node.yaml
-@@ -19,6 +19,8 @@ kind: ServiceAccount
+@@ -19,7 +19,8 @@ kind: ServiceAccount
  metadata:
    name: {{ .Release.Name }}-node
    namespace: {{ .Release.Namespace }}
+-
 +imagePullSecrets:
 +  - name: default-registry-key
- 
  ---
- 
--- 
+ # ClusterRole for Cluster-specific Permissions
+ kind: ClusterRole
+--
 2.34.1
