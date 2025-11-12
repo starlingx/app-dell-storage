@@ -1,6 +1,6 @@
-From 61ad64e2228fb1c07fc759f2b28ca90245783ee0 Mon Sep 17 00:00:00 2001
+From 162aa3f21f957b89718d946ae4723835e4c5c118 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Wed, 12 Mar 2025 09:02:20 -0300
+Date: Fri, 24 Oct 2025 08:33:16 -0300
 Subject: [PATCH] csi-powermax: fix image path for templates
 
 This patch consists of changing the format to use the image path directly
@@ -9,14 +9,14 @@ following the expected format used by kube_app.
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  charts/csi-powermax/templates/controller.yaml | 22 +++++++++----------
- charts/csi-powermax/templates/node.yaml       |  8 +++----
- 2 files changed, 15 insertions(+), 15 deletions(-)
+ charts/csi-powermax/templates/node.yaml       | 10 ++++-----
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/charts/csi-powermax/templates/controller.yaml b/charts/csi-powermax/templates/controller.yaml
-index fc96b1b..cf70c2f 100644
+index 3b40072..fdfb813 100644
 --- a/charts/csi-powermax/templates/controller.yaml
 +++ b/charts/csi-powermax/templates/controller.yaml
-@@ -183,7 +183,7 @@ spec:
+@@ -209,7 +209,7 @@ spec:
          {{- if hasKey .Values "podmon" }}
          {{- if eq .Values.podmon.enabled true }}
          - name: podmon
@@ -25,7 +25,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              {{- toYaml .Values.podmon.controller.args | nindent 12 }}
-@@ -208,7 +208,7 @@ spec:
+@@ -234,7 +234,7 @@ spec:
                  {{- end }}
                  {{- end }}
          - name: attacher
@@ -34,7 +34,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -223,7 +223,7 @@ spec:
+@@ -249,7 +249,7 @@ spec:
              - name: socket-dir
                mountPath: /var/run/csi
          - name: provisioner
@@ -43,7 +43,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -256,7 +256,7 @@ spec:
+@@ -282,7 +282,7 @@ spec:
          {{- if hasKey .Values.controller "snapshot" }}
          {{- if eq .Values.controller.snapshot.enabled true }}
          - name: snapshotter
@@ -52,7 +52,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -275,7 +275,7 @@ spec:
+@@ -301,7 +301,7 @@ spec:
          {{- end }}
          {{- if eq .Values.replication.enabled true}}
          - name: dell-csi-replicator
@@ -61,7 +61,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -301,7 +301,7 @@ spec:
+@@ -327,7 +327,7 @@ spec:
          {{- end }}
          {{- if eq .Values.migration.enabled true}}
          - name: dell-csi-migrator
@@ -70,7 +70,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -327,7 +327,7 @@ spec:
+@@ -353,7 +353,7 @@ spec:
          {{- if hasKey .Values.controller "resizer" }}
          {{- if eq .Values.controller.resizer.enabled true }}
          - name: resizer
@@ -79,7 +79,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--csi-address=$(ADDRESS)"
-@@ -346,7 +346,7 @@ spec:
+@@ -372,7 +372,7 @@ spec:
          {{- if eq .Values.authorization.enabled true }}
          - name: karavi-authorization-proxy
            imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -88,7 +88,7 @@ index fc96b1b..cf70c2f 100644
            env:
              - name: PROXY_HOST
                value: "{{ .Values.authorization.proxyHost }}"
-@@ -377,7 +377,7 @@ spec:
+@@ -403,7 +403,7 @@ spec:
          {{- if eq .Values.controller.healthMonitor.enabled true }}
          - name: csi-external-health-monitor-controller
            imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -97,7 +97,7 @@ index fc96b1b..cf70c2f 100644
            args:
              - "--v=5"
              - "--csi-address=$(ADDRESS)"
-@@ -395,7 +395,7 @@ spec:
+@@ -421,7 +421,7 @@ spec:
          {{- end }}
          {{- end }}
          - name: driver
@@ -106,7 +106,7 @@ index fc96b1b..cf70c2f 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-powermax.sh" ]
            env:
-@@ -513,7 +513,7 @@ spec:
+@@ -558,7 +558,7 @@ spec:
                mountPath: /app/tls
          {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
          - name: reverseproxy
@@ -114,12 +114,21 @@ index fc96b1b..cf70c2f 100644
 +          image: {{ required "Must provided an image for reverseproxy container." .Values.csireverseproxy.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
-             - name: X_CSI_REVPROXY_CONFIG_DIR
+               {{- $useRevProxySecret := and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
 diff --git a/charts/csi-powermax/templates/node.yaml b/charts/csi-powermax/templates/node.yaml
-index f753aec..e8f4bda 100644
+index 1d47955..d130061 100644
 --- a/charts/csi-powermax/templates/node.yaml
 +++ b/charts/csi-powermax/templates/node.yaml
-@@ -135,7 +135,7 @@ spec:
+@@ -167,7 +167,7 @@ spec:
+             capabilities:
+               add: [ "SYS_ADMIN" ]
+             allowPrivilegeEscalation: true
+-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
++          image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           args:
+             {{- toYaml .Values.podmon.node.args | nindent 12 }}
+@@ -217,7 +217,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
@@ -128,7 +137,7 @@ index f753aec..e8f4bda 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            command: [ "/csi-powermax.sh" ]
            env:
-@@ -290,7 +290,7 @@ spec:
+@@ -389,7 +389,7 @@ spec:
              - name: tls-secret
                mountPath: /app/tls
          - name: registrar
@@ -137,7 +146,7 @@ index f753aec..e8f4bda 100644
            args:
              - "--v=5"
              - "--csi-address=$(ADDRESS)"
-@@ -320,7 +320,7 @@ spec:
+@@ -419,7 +419,7 @@ spec:
                add: [ "SYS_ADMIN" ]
              allowPrivilegeEscalation: true
            imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -146,7 +155,7 @@ index f753aec..e8f4bda 100644
            args:
              - "--csi-address=$(ADDRESS)"
              - "--retry-interval-start=1s"
-@@ -358,7 +358,7 @@ spec:
+@@ -457,7 +457,7 @@ spec:
          {{- if eq .Values.authorization.enabled true }}
          - name: karavi-authorization-proxy
            imagePullPolicy: {{ .Values.imagePullPolicy }}

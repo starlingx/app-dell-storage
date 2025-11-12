@@ -1,6 +1,6 @@
-From 5c0f523811f44022373771d4aa176aa7599f2ecf Mon Sep 17 00:00:00 2001
-From: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
-Date: Thu, 26 Dec 2024 14:22:49 -0300
+From c1602fd637fea6ff1fc6a8ff36e186f574add875 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 24 Oct 2025 08:56:16 -0300
 Subject: [PATCH] csi-powermax: add storageclass in templates
 
 This patch consists of adding a storage classes in the helm chart
@@ -8,11 +8,11 @@ templates directory.
 It's needed because this helm chart needs a storage classes that should
 be created manually.
 
-Signed-off-by: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  .../csi-powermax/templates/storageclass.yaml  | 84 +++++++++++++++++++
- charts/csi-powermax/values.yaml               |  2 +
- 2 files changed, 86 insertions(+)
+ charts/csi-powermax/values.yaml               |  1 +
+ 2 files changed, 85 insertions(+)
  create mode 100644 charts/csi-powermax/templates/storageclass.yaml
 
 diff --git a/charts/csi-powermax/templates/storageclass.yaml b/charts/csi-powermax/templates/storageclass.yaml
@@ -106,17 +106,16 @@ index 0000000..766bff9
 +---
 +{{- end }}
 diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
-index ac53e36..28e05a6 100644
+index 575ac89..200e4de 100644
 --- a/charts/csi-powermax/values.yaml
 +++ b/charts/csi-powermax/values.yaml
-@@ -530,6 +530,8 @@ proxyAuthzTokens:
+@@ -543,6 +543,7 @@ proxyAuthzTokens:
+   access:
    refresh:
- 
  certSecret:
-+
 +storageClasses:
  # Enable this feature only after contact support for additional information
  podmon:
-
--- 
+   image: quay.io/dell/container-storage-modules/podmon:v1.14.0
+--
 2.34.1
