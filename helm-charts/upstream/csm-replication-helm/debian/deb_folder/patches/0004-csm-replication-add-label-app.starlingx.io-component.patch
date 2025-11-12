@@ -1,21 +1,21 @@
-From 5106c12e73158c9d013bc7f9b6b9d4d49fa1ee2a Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 13 Dec 2024 11:57:25 +0000
+From 43185f98234be1ce1738b04f93b9228a2c0ecdfe Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 30 Oct 2025 11:55:41 -0300
 Subject: [PATCH] csm-replication: add label app.starlingx.io/component
 
 This patch consists of adding the app.starlingx.io/component label in all pods.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  charts/csm-replication/templates/controller.yaml | 3 +++
  charts/csm-replication/values.yaml               | 3 +++
  2 files changed, 6 insertions(+)
 
 diff --git a/charts/csm-replication/templates/controller.yaml b/charts/csm-replication/templates/controller.yaml
-index 931b0fd..d986d26 100644
+index ac9ccdb..af77ed6 100644
 --- a/charts/csm-replication/templates/controller.yaml
 +++ b/charts/csm-replication/templates/controller.yaml
-@@ -263,10 +263,13 @@ spec:
+@@ -287,10 +287,13 @@ spec:
    selector:
      matchLabels:
        control-plane: controller-manager
@@ -30,16 +30,15 @@ index 931b0fd..d986d26 100644
        {{- if hasKey .Values "hostAliases" }}
        hostAliases:
 diff --git a/charts/csm-replication/values.yaml b/charts/csm-replication/values.yaml
-index 9172cfd..99d661e 100644
+index 8ca02de..43b1af9 100644
 --- a/charts/csm-replication/values.yaml
 +++ b/charts/csm-replication/values.yaml
-@@ -44,3 +44,6 @@ replicationGroup:
- 
+@@ -56,3 +56,6 @@ replicationGroup:
+
  kubectl:
-   image: docker.io/bitnamilegacy/kubectl:1.29
+   image: docker.io/bitnamilegacy/kubectl:1.33.4
 +
 +labels:
 +  isApplication: false
--- 
+--
 2.34.1
-
