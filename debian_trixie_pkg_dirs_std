@@ -1,0 +1,9 @@
+helm-charts/upstream/csi-powerflex-helm
+helm-charts/upstream/csi-powermax-helm
+helm-charts/upstream/csi-powerscale-helm
+helm-charts/upstream/csi-powerstore-helm
+helm-charts/upstream/csi-unity-helm
+helm-charts/upstream/csm-observability-helm
+helm-charts/upstream/csm-replication-helm
+python3-k8sapp-dell-storage
+stx-dell-storage-helm
