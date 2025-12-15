@@ -6,7 +6,7 @@
 
 karaviMetricsPowerstore:
   enabled: true
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.13.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.12.0
 karaviMetricsPowerflex:
   enabled: false
   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.13.0
