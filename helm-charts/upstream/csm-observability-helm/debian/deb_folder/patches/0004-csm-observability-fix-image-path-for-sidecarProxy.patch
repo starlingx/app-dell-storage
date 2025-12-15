@@ -1,6 +1,6 @@
-From b565660028c64483ecf8382656caaba049c665b3 Mon Sep 17 00:00:00 2001
+From 2a5632fd3c26a7352c6be27fc51121215f4a4c8d Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Thu, 15 Oct 2025 08:11:06 -0300
+Date: Thu, 12 Dec 2025 10:11:06 -0300
 Subject: [PATCH] csm-observability: fix all image paths
 
 This patch consists of changing the format to use the image path
@@ -9,11 +9,11 @@ docker.io prefix in image path to prevent future issues.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../templates/karavi-metrics-powerflex.yaml                | 2 +-
- .../templates/karavi-metrics-powermax.yaml                 | 2 +-
- .../templates/karavi-metrics-powerscale.yaml               | 2 +-
- charts/karavi-observability/values.yaml                    | 7 ++++++-
- 4 files changed, 9 insertions(+), 4 deletions(-)
+ .../templates/karavi-metrics-powerflex.yaml              | 2 +-
+ .../templates/karavi-metrics-powermax.yaml               | 2 +-
+ .../templates/karavi-metrics-powerscale.yaml             | 2 +-
+ charts/karavi-observability/values.yaml                  | 9 +++++++--
+ 4 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml b/charts/karavi-observability/templates/karavi-metrics-powerflex.yaml
 index 9b82d7b..bd8206b 100644
@@ -55,9 +55,18 @@ index 83b6680..6ece94d 100644
            - name: PROXY_HOST
              value: "{{ .Values.karaviMetricsPowerscale.authorization.proxyHost }}"
 diff --git a/charts/karavi-observability/values.yaml b/charts/karavi-observability/values.yaml
-index 64f69d3..e671d73 100644
+index 64f69d3..82ca5b6 100644
 --- a/charts/karavi-observability/values.yaml
 +++ b/charts/karavi-observability/values.yaml
+@@ -44,7 +44,7 @@ karaviMetricsPowerflex:
+     skipCertificateValidation: true
+
+ karaviMetricsPowerstore:
+-  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.13.0
++  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.12.0
+   enabled: true
+   collectorAddr: otel-collector:55680
+   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
 @@ -73,6 +73,11 @@ karaviMetricsPowerstore:
      serviceName: metrics-powerstore
      probability: 0.0
