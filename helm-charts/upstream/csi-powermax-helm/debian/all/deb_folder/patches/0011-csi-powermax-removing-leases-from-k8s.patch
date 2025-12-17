@@ -1,24 +1,24 @@
-From 4ee748d4341d0e5e5624e5c7bfc82b8db3ca82c3 Mon Sep 17 00:00:00 2001
-From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Wed, 19 Feb 2025 10:09:19 -0300
+From 10b181a179a3661c047c3d5fc63ed6d09c7c21a4 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Mon, 15 Dec 2025 11:19:19 -0300
 Subject: [PATCH] csi-powermax: removing leases from k8s
 
 This patch consists of removing leases created on application-apply
 command.
 
-Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../templates/job_post_delete.yaml            | 131 ++++++++++++++++++
+ .../templates/job_post_delete.yaml            | 127 ++++++++++++++++++
  charts/csi-powermax/values.yaml               |   3 +
- 2 files changed, 134 insertions(+)
+ 2 files changed, 130 insertions(+)
  create mode 100644 charts/csi-powermax/templates/job_post_delete.yaml
 
 diff --git a/charts/csi-powermax/templates/job_post_delete.yaml b/charts/csi-powermax/templates/job_post_delete.yaml
 new file mode 100644
-index 0000000..21f0f01
+index 0000000..0f6e520
 --- /dev/null
 +++ b/charts/csi-powermax/templates/job_post_delete.yaml
-@@ -0,0 +1,131 @@
+@@ -0,0 +1,127 @@
 +apiVersion: v1
 +kind: ServiceAccount
 +metadata:
@@ -29,7 +29,6 @@ index 0000000..21f0f01
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
-+    "helm.sh/hook-weight": "-5"
 +imagePullSecrets:
 +  - name: default-registry-key
 +
@@ -43,7 +42,6 @@ index 0000000..21f0f01
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
-+    "helm.sh/hook-weight": "-5"
 +rules:
 +  - apiGroups: ["coordination.k8s.io"]
 +    resources: ["leases"]
@@ -59,7 +57,6 @@ index 0000000..21f0f01
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
-+    "helm.sh/hook-weight": "-5"
 +subjects:
 +  - kind: ServiceAccount
 +    name: {{ .Release.Name }}-clear-sa
@@ -80,7 +77,6 @@ index 0000000..21f0f01
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
-+    "helm.sh/hook-weight": "-5"
 +data:
 +  clear_script.sh: |-
 +    #!/bin/bash
@@ -151,16 +147,15 @@ index 0000000..21f0f01
 +            - name: {{ .Release.Name }}-clear-bin
 +              mountPath: /tmp/mount/
 diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
-index a6ad8b5..11b492c 100644
+index be2535c..230d619 100644
 --- a/charts/csi-powermax/values.yaml
 +++ b/charts/csi-powermax/values.yaml
-@@ -572,3 +572,6 @@ podmon:
- 
+@@ -583,3 +583,6 @@ podmon:
+
  labels:
    isApplication: false
 +
 +kubectl:
-+  image: docker.io/bitnamilegacy/kubectl:1.29
--- 
++  image: docker.io/bitnamilegacy/kubectl:1.33.4
+--
 2.34.1
-
