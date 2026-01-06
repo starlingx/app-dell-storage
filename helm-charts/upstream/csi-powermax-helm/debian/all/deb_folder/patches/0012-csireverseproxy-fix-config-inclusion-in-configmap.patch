@@ -1,0 +1,27 @@
+From f4d417b6fe25283eb158f2a7b04f68dfefae8de9 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 24 Oct 2025 08:59:16 -0300
+Subject: [PATCH] csireverseproxy: fix config inclusion in configmap
+
+This patch consists of changing the configmap
+template to pass by helm lint.
+
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+---
+ .../charts/csireverseproxy/templates/configmap.yaml             | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/charts/csi-powermax/charts/csireverseproxy/templates/configmap.yaml b/charts/csi-powermax/charts/csireverseproxy/templates/configmap.yaml
+index f938138..1db65a9 100644
+--- a/charts/csi-powermax/charts/csireverseproxy/templates/configmap.yaml
++++ b/charts/csi-powermax/charts/csireverseproxy/templates/configmap.yaml
+@@ -13,5 +13,5 @@ metadata:
+   name: {{ .Release.Name }}-reverseproxy-config
+   namespace: {{ .Release.Namespace }}
+ data:
+-{{ tpl (.Files.Glob "conf/config.yaml").AsConfig . | indent 2 }}
++{{- tpl (.Files.Glob "conf/config.yaml").AsConfig . | nindent 2 }}
+ {{- end }}
+--
+2.34.1
+

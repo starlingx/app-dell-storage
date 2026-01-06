@@ -6,25 +6,25 @@
 
 karaviMetricsPowerstore:
   enabled: true
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.11.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.12.0
 karaviMetricsPowerflex:
   enabled: false
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.11.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.13.0
 karaviMetricsPowerscale:
   enabled: false
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.8.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.10.0
 karaviMetricsPowermax:
   enabled: false
-  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.6.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.8.0
 karaviTopology:
   enabled: true
   image: quay.io/dell/container-storage-modules/csm-topology:v1.11.0
 sidecarProxy:
-  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
 otelCollector:
-  image: docker.io/otel/opentelemetry-collector:0.42.0
+  image: docker.io/otel/opentelemetry-collector:0.135.0
   nginxProxy:
-    image: docker.io/nginxinc/nginx-unprivileged:1.27
+    image: docker.io/nginxinc/nginx-unprivileged:1.29
 cert-manager:
   enabled: false
 

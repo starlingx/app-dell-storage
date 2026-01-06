@@ -1,0 +1,44 @@
+From 57a1b11afca5856703d151fef0ae6a7990b3b0d2 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Tue, 14 Oct 2025 10:36:00 -0300
+Subject: [PATCH] csi-unity: fix pull image error
+
+This patch consists of adding imagePullSecrets with name
+default-registry-key only in ServiceAccounts.
+It's necessary because without it the system can't use the
+images from the registry local.
+
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+---
+ charts/csi-unity/templates/controller.yaml | 2 ++
+ charts/csi-unity/templates/node.yaml       | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
+index 4aeff8b..438a122 100644
+--- a/charts/csi-unity/templates/controller.yaml
++++ b/charts/csi-unity/templates/controller.yaml
+@@ -3,6 +3,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-controller
+   namespace: {{ .Release.Namespace }}
++imagePullSecrets:
++  - name: default-registry-key
+ ---
+ # ClusterRole for Cluster-specific Permissions
+ kind: ClusterRole
+diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
+index 59f3d58..7298c6f 100644
+--- a/charts/csi-unity/templates/node.yaml
++++ b/charts/csi-unity/templates/node.yaml
+@@ -3,6 +3,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-node
+   namespace: {{ .Release.Namespace }}
++imagePullSecrets:
++  - name: default-registry-key
+ ---
+ # ClusterRole for Cluster-specific Permissions
+ kind: ClusterRole
+--
+2.34.1

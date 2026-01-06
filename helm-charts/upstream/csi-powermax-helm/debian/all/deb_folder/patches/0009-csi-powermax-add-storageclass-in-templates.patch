@@ -1,0 +1,121 @@
+From c1602fd637fea6ff1fc6a8ff36e186f574add875 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 24 Oct 2025 08:56:16 -0300
+Subject: [PATCH] csi-powermax: add storageclass in templates
+
+This patch consists of adding a storage classes in the helm chart
+templates directory.
+It's needed because this helm chart needs a storage classes that should
+be created manually.
+
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+---
+ .../csi-powermax/templates/storageclass.yaml  | 84 +++++++++++++++++++
+ charts/csi-powermax/values.yaml               |  1 +
+ 2 files changed, 85 insertions(+)
+ create mode 100644 charts/csi-powermax/templates/storageclass.yaml
+
+diff --git a/charts/csi-powermax/templates/storageclass.yaml b/charts/csi-powermax/templates/storageclass.yaml
+new file mode 100644
+index 0000000..766bff9
+--- /dev/null
++++ b/charts/csi-powermax/templates/storageclass.yaml
+@@ -0,0 +1,84 @@
++{{- range $i, $sc := $.Values.storageClasses }}
++apiVersion: storage.k8s.io/v1
++kind: StorageClass
++metadata:
++  name: {{ $sc.name | lower }}
++  annotations:
++    {{- if eq $i 0 }}
++    storageclass.kubernetes.io/is-default-class: "true"
++    {{- else }}
++    storageclass.kubernetes.io/is-default-class: "false"
++    {{- end }}
++provisioner: {{ $sc.provisioner | default "csi-powermax.dellemc.com" }}
++reclaimPolicy: {{ $sc.reclaimPolicy | default "Delete" }}
++allowVolumeExpansion: {{ $sc.allowVolumeExpansion | default true }}
++volumeBindingMode: {{ $sc.volumeBindingMode | default "Immediate" | quote }}
++{{- if $sc.allowedTopologies }}
++allowedTopologies: {{ $sc.allowedTopologies | toYaml | nindent 2 }}
++{{- end }}
++{{- if $sc.mountOptions }}
++mountOptions: {{ $sc.mountOptions }}
++{{- end }}
++parameters:
++  csi.storage.k8s.io/fstype: {{ $sc.fstype | default $.Values.defaultFsType | quote }}
++  ServiceLevel: {{ $sc.ServiceLevel | default "Optimized" | quote }}
++  {{- if $sc.SRP }}
++  SRP: {{ $sc.SRP | quote }}
++  {{- end }}
++  {{- if $sc.SYMID }}
++  SYMID: {{ $sc.SYMID | quote }}
++  {{- end }}
++  {{- if $sc.ApplicationPrefix }}
++  ApplicationPrefix: {{ $sc.ApplicationPrefix | quote }}
++  {{- end }}
++  {{- if $sc.HostLimitName }}
++  HostLimitName: {{ $sc.HostLimitName | quote }}
++  {{- end }}
++  {{- if $sc.HostIOLimitMBSec }}
++  HostIOLimitMBSec: {{ $sc.HostIOLimitMBSec | quote }}
++  {{- end }}
++  {{- if $sc.HostIOLimitIOSec }}
++  HostIOLimitIOSec: {{ $sc.HostIOLimitIOSec | quote }}
++  {{- end }}
++  {{- if $sc.DynamicDistribution }}
++  DynamicDistribution: {{ $sc.DynamicDistribution | quote }}
++  {{- end }}
++  {{- if $sc.nasServer }}
++  nasServer: {{ $sc.nasServer | quote }}
++  {{- end }}
++  {{- if $sc.allowRoot }}
++  allowRoot: {{ $sc.allowRoot | quote }}
++  {{- end }}
++  {{- if and $sc.replication ( or $.Values.replication.enabled $.Values.csm.replication ) }}
++  {{ $prefix := $.Values.replication.replicationPrefix -}}
++  {{ printf "%s/isReplicationEnabled" $prefix }}: {{ $sc.replication.isReplicationEnabled | default true | quote }}
++  {{- if $sc.replication.RemoteSRP }}
++  {{ printf "%s/RemoteSRP" $prefix }}: {{ $sc.replication.RemoteSRP | quote }}
++  {{- end }}
++  {{- if $sc.replication.RemoteSYMID }}
++  {{ printf "%s/RemoteSYMID" $prefix }}: {{ $sc.replication.RemoteSYMID | quote }}
++  {{- end }}
++  {{- if $sc.replication.RemoteServiceLevel }}
++  {{ printf "%s/RemoteServiceLevel" $prefix }}: {{ $sc.replication.RemoteServiceLevel | quote }}
++  {{- end }}
++  {{- if $sc.replication.RdfMode }}
++  {{ printf "%s/RdfMode" $prefix }}: {{ $sc.replication.RdfMode | quote }}
++  {{- end }}
++  {{- if $sc.replication.Bias }}
++  {{ printf "%s/Bias" $prefix }}: {{ $sc.replication.Bias | quote }}
++  {{- end }}
++  {{- if $sc.replication.RdfGroup }}
++  {{ printf "%s/RdfGroup" $prefix }}: {{ $sc.replication.RdfGroup | quote }}
++  {{- end }}
++  {{- if $sc.replication.RemoteRDFGroup }}
++  {{ printf "%s/RemoteRDFGroup" $prefix }}: {{ $sc.replication.RemoteRDFGroup | quote }}
++  {{- end }}
++  {{- if $sc.replication.remoteStorageClassName }}
++  {{ printf "%s/remoteStorageClassName" $prefix }}: {{ $sc.replication.remoteStorageClassName | quote }}
++  {{- end }}
++  {{- if $sc.replication.remoteClusterID }}
++  {{ printf "%s/remoteClusterID" $prefix }}: {{ $sc.replication.remoteClusterID | quote }}
++  {{- end }}
++{{- end }}
++---
++{{- end }}
+diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
+index 575ac89..200e4de 100644
+--- a/charts/csi-powermax/values.yaml
++++ b/charts/csi-powermax/values.yaml
+@@ -543,6 +543,7 @@ proxyAuthzTokens:
+   access:
+   refresh:
+ certSecret:
++storageClasses:
+ # Enable this feature only after contact support for additional information
+ podmon:
+   image: quay.io/dell/container-storage-modules/podmon:v1.14.0
+--
+2.34.1

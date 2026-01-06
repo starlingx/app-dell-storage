@@ -1,0 +1,15 @@
+---
+debname: csi-powermax-helm
+debver: 2.15-0
+dl_path:
+  name: csi-powermax-2.15.0.tar.gz
+  url: https://github.com/dell/helm-charts/archive/csi-powermax-2.15.0.tar.gz
+  sha256sum: 559f4ff8d4e6a2f40d737541ae6ece4ac95cda559184641002984a9f3f32ed03
+src_files:
+  - csi-powermax-helm/files/Makefile
+revision:
+  dist: $STX_DIST
+  stx_patch: 12
+  GITREVCOUNT:
+    BASE_SRCREV: 8f48b9723d2651ad603d78363262a6a9be5a397c
+    SRC_DIR: ${MY_REPO}/stx/app-dell-storage/helm-charts/upstream/csi-powermax-helm

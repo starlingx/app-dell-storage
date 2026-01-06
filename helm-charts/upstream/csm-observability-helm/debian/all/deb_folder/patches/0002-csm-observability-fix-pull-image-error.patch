@@ -1,0 +1,102 @@
+From 26d3fb0e825cadbabc77da0fe33bfa4365998a2f Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Thu, 15 Oct 2025 08:00:51 -0300
+Subject: [PATCH] csm-observability: fix pull image error
+
+This patch consists of adding imagePullSecrets with name
+default-registry-key only in ServiceAccounts.
+It's necessary because without it the system can't use the
+images from the registry local.
+
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+---
+ .../karavi-metrics-powerflex-service-account.yaml     |  2 ++
+ .../karavi-metrics-powermax-service-account.yaml      |  2 ++
+ .../karavi-metrics-powerscale-service-account.yaml    |  2 ++
+ .../karavi-metrics-powerstore-service-account.yaml    |  2 ++
+ .../templates/otel-collector.yaml                     | 11 +++++++++++
+ 5 files changed, 19 insertions(+)
+
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml
+index cb102cb..7f530ef 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powerflex-service-account.yaml
+@@ -5,6 +5,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-metrics-powerflex-controller
+   namespace: {{ include "custom.namespace" . }}
++imagePullSecrets:
++  - name: default-registry-key
+
+ ---
+
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml
+index 04705c9..8edc00d 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powermax-service-account.yaml
+@@ -5,6 +5,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-metrics-powermax-controller
+   namespace: {{ include "custom.namespace" . }}
++imagePullSecrets:
++  - name: default-registry-key
+
+ ---
+
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml
+index 2a2b7b3..3ed77fa 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powerscale-service-account.yaml
+@@ -5,6 +5,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-metrics-powerscale-controller
+   namespace: {{ include "custom.namespace" . }}
++imagePullSecrets:
++  - name: default-registry-key
+
+ ---
+
+diff --git a/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml b/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml
+index d5a7fe2..469583a 100644
+--- a/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml
++++ b/charts/karavi-observability/templates/karavi-metrics-powerstore-service-account.yaml
+@@ -5,6 +5,8 @@ kind: ServiceAccount
+ metadata:
+   name: {{ .Release.Name }}-metrics-powerstore-controller
+   namespace: {{ include "custom.namespace" . }}
++imagePullSecrets:
++  - name: default-registry-key
+
+ ---
+
+diff --git a/charts/karavi-observability/templates/otel-collector.yaml b/charts/karavi-observability/templates/otel-collector.yaml
+index ca10c01..fadfb5b 100644
+--- a/charts/karavi-observability/templates/otel-collector.yaml
++++ b/charts/karavi-observability/templates/otel-collector.yaml
+@@ -9,6 +9,16 @@ metadata:
+
+ ---
+
++apiVersion: v1
++kind: ServiceAccount
++metadata:
++  name: otel-collector
++  namespace: {{ include "custom.namespace" . }}
++imagePullSecrets:
++  - name: default-registry-key
++
++---
++
+ apiVersion: v1
+ data:
+   nginx.conf: |-
+@@ -64,6 +74,7 @@ spec:
+         app.kubernetes.io/name: otel-collector
+         app.kubernetes.io/instance: {{ .Release.Name }}
+     spec:
++      serviceAccount: otel-collector
+       volumes:
+       - name: tls-secret
+         secret:
+--
+2.34.1

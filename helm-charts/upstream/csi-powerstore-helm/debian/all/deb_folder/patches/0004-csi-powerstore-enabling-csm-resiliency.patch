@@ -1,0 +1,148 @@
+From de9c022b41141e8caf184f1297526ff5315c27ff Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Wed, 8 Oct 2025 15:31:42 -0300
+Subject: [PATCH] csi-powerstore: enabling csm-resiliency
+
+This patch consists of changing the format of the values in templates and
+changing the values.yaml for the user be able to enable csm-resiliency.
+
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+---
+ charts/csi-powerstore/templates/controller.yaml    | 10 +++++-----
+ .../templates/driver-config-params.yaml            |  2 +-
+ charts/csi-powerstore/templates/node.yaml          | 14 +++++++-------
+ charts/csi-powerstore/values.yaml                  |  4 ++++
+ 4 files changed, 17 insertions(+), 13 deletions(-)
+
+diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
+index a84cdbb..2892092 100644
+--- a/charts/csi-powerstore/templates/controller.yaml
++++ b/charts/csi-powerstore/templates/controller.yaml
+@@ -33,7 +33,7 @@ rules:
+   - apiGroups: [""]
+     resources: ["nodes"]
+   {{- if hasKey .Values "podmon" }}
+-  {{- if eq .Values.podmon.enabled true }}
++  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "patch"]
+   {{- else }}
+     verbs: ["get", "list", "watch"]
+@@ -51,7 +51,7 @@ rules:
+   - apiGroups: [ "storage.k8s.io" ]
+     resources: [ "volumeattachments" ]
+   {{- if hasKey .Values "podmon" }}
+-  {{- if eq .Values.podmon.enabled true }}
++  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+     verbs: ["get", "list", "watch", "patch", "delete"]
+   {{- else }}
+     verbs: ["get", "list", "watch", "patch"]
+@@ -226,7 +226,7 @@ spec:
+               topologyKey: "kubernetes.io/hostname"
+       containers:
+         {{- if hasKey .Values "podmon" }}
+-        {{- if eq .Values.podmon.enabled true }}
++        {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: podmon
+           image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+@@ -462,8 +462,8 @@ spec:
+               value: {{ .Values.multiNas.cooldownPeriod | default "5m" }}
+             {{- if hasKey .Values "podmon" }}
+             - name: X_CSI_PODMON_ENABLED
+-              value: "{{ .Values.podmon.enabled }}"
+-            {{- if eq .Values.podmon.enabled true }}
++              value: "{{ or .Values.podmon.enabled .Values.csm.resiliency }}"
++            {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+               {{- range $key, $value := .Values.podmon.controller.args }}
+                 {{- if contains "--arrayConnectivityPollRate" $value }}
+             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
+diff --git a/charts/csi-powerstore/templates/driver-config-params.yaml b/charts/csi-powerstore/templates/driver-config-params.yaml
+index ce5349d..6622abf 100644
+--- a/charts/csi-powerstore/templates/driver-config-params.yaml
++++ b/charts/csi-powerstore/templates/driver-config-params.yaml
+@@ -23,7 +23,7 @@ data:
+   driver-config-params.yaml: |
+     CSI_LOG_LEVEL: "{{ .Values.logLevel }}"
+     CSI_LOG_FORMAT: "{{ .Values.logFormat }}"
+-    {{ if .Values.podmon.enabled }}
++    {{ if or .Values.podmon.enabled .Values.csm.resiliency }}
+     PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
+     PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
+     PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
+diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
+index 7cba1e0..eda642d 100644
+--- a/charts/csi-powerstore/templates/node.yaml
++++ b/charts/csi-powerstore/templates/node.yaml
+@@ -54,7 +54,7 @@ rules:
+     resources: ["services"]
+     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+   {{- if hasKey .Values "podmon" }}
+-  {{- if eq .Values.podmon.enabled true }}
++  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+   - apiGroups: [""]
+     resources: ["pods"]
+     verbs: ["get", "list", "watch"]
+@@ -77,7 +77,7 @@ roleRef:
+
+ ---
+ {{- if hasKey .Values "podmon" }}
+-{{- if eq .Values.podmon.enabled true }}
++{{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+ # RoleBinding for Driver-specific Role
+ kind: RoleBinding
+ apiVersion: rbac.authorization.k8s.io/v1
+@@ -119,7 +119,7 @@ spec:
+     metadata:
+       labels:
+         app: {{ .Release.Name }}-node
+-      {{- if .Values.podmon.enabled }}
++      {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         driver.dellemc.com: dell-storage
+       {{- end }}
+       annotations:
+@@ -170,7 +170,7 @@ spec:
+         {{ end }}
+         {{ end }}
+       {{- if hasKey .Values "podmon" }}
+-      {{- if eq .Values.podmon.enabled true }}
++      {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: podmon
+           securityContext:
+             privileged: true
+@@ -299,8 +299,8 @@ spec:
+             {{- end }}
+             {{- if hasKey .Values "podmon" }}
+             - name: X_CSI_PODMON_ENABLED
+-              value: "{{ .Values.podmon.enabled }}"
+-            {{- if eq .Values.podmon.enabled true }}
++              value: "{{ or .Values.podmon.enabled .Values.csm.resiliency }}"
++            {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+               {{- range $key, $value := .Values.podmon.node.args }}
+                 {{- if contains "--arrayConnectivityPollRate" $value }}
+             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
+@@ -438,7 +438,7 @@ spec:
+           secret:
+             secretName: {{ .Release.Name }}-config
+         {{- if hasKey .Values "podmon" }}
+-        {{- if eq .Values.podmon.enabled true }}
++        {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+         - name: usr-bin
+           hostPath:
+             path: /usr/bin
+diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
+index a80a5be..dcc3eb5 100644
+--- a/charts/csi-powerstore/values.yaml
++++ b/charts/csi-powerstore/values.yaml
+@@ -17,6 +17,10 @@
+ ## K8S/DRIVER ATTRIBUTES
+ ########################
+
++# CSM Control
++csm:
++  resiliency: false
++
+ # driverName: defines the name of driver
+ # Allowed values: string
+ # Default value: None
+--
+2.34.1

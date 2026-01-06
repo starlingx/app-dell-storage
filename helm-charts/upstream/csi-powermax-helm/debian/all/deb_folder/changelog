@@ -1,0 +1,23 @@
+csi-powermax-helm (2.15-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com> Fri, 24 Oct 2025 09:02:16 -0300
+
+csi-powermax-helm (2.13-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com> Wed, 12 Mar 2025 09:23:00 -0300
+
+csi-powermax-helm (2.12-0) unstable; urgency=medium
+
+  * New upstream release.
+
+ --  Lorran Lucas Da Costa <lorran.dacosta@windriver.com>  Thu, 26 Dec 2024 17:30:00 +0000
+
+csi-powermax-helm (2.10-0) unstable; urgency=medium
+
+  * Initial release.
+
+ --  Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>  Mon, 22 Apr 2024 17:30:00 +0000

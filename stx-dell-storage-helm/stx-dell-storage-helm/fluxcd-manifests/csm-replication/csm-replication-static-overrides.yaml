@@ -4,10 +4,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-image: quay.io/dell/container-storage-modules/dell-replication-controller:v1.11.0
+image: quay.io/dell/container-storage-modules/dell-replication-controller:v1.13.0
 
 kubectl:
-  image: docker.io/bitnami/kubectl:1.29
+  image: docker.io/bitnamilegacy/kubectl:1.33.4
 
 labels:
   isApplication: false

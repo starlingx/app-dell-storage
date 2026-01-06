@@ -1,0 +1,230 @@
+From 3e6fa38a43ff473a1a268fb4d4ed7b8f14b6d633 Mon Sep 17 00:00:00 2001
+From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Date: Fri, 24 Oct 2025 08:35:16 -0300
+Subject: [PATCH] csi-powermax: enabling csm-authorization
+
+This patch consists of:
+  - change the format of the values in templates and changing the
+    values.yaml for the user be able to enable csm-authorization.
+  - Change some authorization secrets to use the release name as prefix.
+    It'is necessary because we can activate more than one CSIs that use
+    the same secret, so to avoid creating a conflict we add a prefix.
+  - Adds authorization-config template to create the secret used by
+    the csm-observability/csm-authorization
+  - Add template for proxy-server-root-certificate secret needed by the
+    csm-authorization sidecar.
+
+Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+---
+ .../templates/authorization-config.yaml       | 20 +++++++++++++++++++
+ charts/csi-powermax/templates/controller.yaml | 14 ++++++-------
+ charts/csi-powermax/templates/node.yaml       | 14 ++++++-------
+ .../templates/proxy-authz-tokens.yaml         | 10 ++++++++++
+ .../templates/proxy-server-secret.yaml        |  9 +++++++++
+ charts/csi-powermax/values.yaml               | 10 ++++++++++
+ 6 files changed, 63 insertions(+), 14 deletions(-)
+ create mode 100644 charts/csi-powermax/templates/authorization-config.yaml
+ create mode 100644 charts/csi-powermax/templates/proxy-authz-tokens.yaml
+ create mode 100644 charts/csi-powermax/templates/proxy-server-secret.yaml
+
+diff --git a/charts/csi-powermax/templates/authorization-config.yaml b/charts/csi-powermax/templates/authorization-config.yaml
+new file mode 100644
+index 0000000..2fc7b88
+--- /dev/null
++++ b/charts/csi-powermax/templates/authorization-config.yaml
+@@ -0,0 +1,20 @@
++{{- if or .Values.authorization.enabled .Values.csm.authorization }}
++{{- if .Values.authorization.configs }}
++apiVersion: v1
++kind: Secret
++metadata:
++  name: {{ .Release.Name }}-authorization-config
++  namespace: {{ .Release.Namespace }}
++stringData:
++  config: |
++    {{- range .Values.authorization.configs }}
++    - username: {{ .username }}
++      password: {{ .password }}
++      intendedEndpoint: {{ .intendedEndpoint }}
++      endpoint: {{ .endpoint | default "https://localhost:9400" }}
++      systemID: {{ .systemID }}
++      skipCertificateValidation: {{ .skipCertificateValidation | default true }}
++      isDefault: {{ .isDefault | default false }}
++    {{- end }}
++{{- end }}
++{{- end }}
+diff --git a/charts/csi-powermax/templates/controller.yaml b/charts/csi-powermax/templates/controller.yaml
+index 18e54f1..790384a 100644
+--- a/charts/csi-powermax/templates/controller.yaml
++++ b/charts/csi-powermax/templates/controller.yaml
+@@ -171,7 +171,7 @@ metadata:
+   name: {{ .Release.Name }}-controller
+   namespace: {{ .Release.Namespace }}
+   {{- if hasKey .Values "authorization" }}
+-  {{- if eq .Values.authorization.enabled true }}
++  {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+   annotations:
+       com.dell.karavi-authorization-proxy: "true"
+   {{ end }}
+@@ -371,7 +371,7 @@ spec:
+         {{- end }}
+         {{- end }}
+         {{- if hasKey .Values "authorization" }}
+-        {{- if eq .Values.authorization.enabled true }}
++        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-proxy
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
+@@ -385,12 +385,12 @@ spec:
+             - name: ACCESS_TOKEN
+               valueFrom:
+                 secretKeyRef:
+-                  name: proxy-authz-tokens
++                  name: {{ .Release.Name }}-proxy-authz-tokens
+                   key: access
+             - name: REFRESH_TOKEN
+               valueFrom:
+                 secretKeyRef:
+-                  name: proxy-authz-tokens
++                  name: {{ .Release.Name }}-proxy-authz-tokens
+                   key: refresh
+           volumeMounts:
+             - name: karavi-authorization-config
+@@ -628,12 +628,12 @@ spec:
+           configMap:
+             name: {{ .Release.Name }}-config-params
+         {{- if hasKey .Values "authorization" }}
+-        {{- if eq .Values.authorization.enabled true }}
++        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-config
+           secret:
+-            secretName: karavi-authorization-config
++            secretName: {{ .Release.Name }}-authorization-config
+         - name: proxy-server-root-certificate
+           secret:
+-            secretName: proxy-server-root-certificate
++            secretName: {{ .Release.Name }}-proxy-server-root-certificate
+         {{ end }}
+         {{ end }}
+diff --git a/charts/csi-powermax/templates/node.yaml b/charts/csi-powermax/templates/node.yaml
+index 7d63654..36b8b37 100644
+--- a/charts/csi-powermax/templates/node.yaml
++++ b/charts/csi-powermax/templates/node.yaml
+@@ -124,7 +124,7 @@ metadata:
+   name: {{ .Release.Name }}-node
+   namespace: {{ .Release.Namespace }}
+   {{- if hasKey .Values "authorization" }}
+-  {{- if eq .Values.authorization.enabled true }}
++  {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+   annotations:
+     com.dell.karavi-authorization-proxy: "true"
+   {{- end }}
+@@ -456,7 +456,7 @@ spec:
+         {{ end }}
+         {{ end }}
+         {{- if hasKey .Values "authorization" }}
+-        {{- if eq .Values.authorization.enabled true }}
++        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-proxy
+           imagePullPolicy: {{ .Values.imagePullPolicy }}
+           image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
+@@ -470,12 +470,12 @@ spec:
+             - name: ACCESS_TOKEN
+               valueFrom:
+                 secretKeyRef:
+-                  name: proxy-authz-tokens
++                  name: {{ .Release.Name }}-proxy-authz-tokens
+                   key: access
+             - name: REFRESH_TOKEN
+               valueFrom:
+                 secretKeyRef:
+-                  name: proxy-authz-tokens
++                  name: {{ .Release.Name }}-proxy-authz-tokens
+                   key: refresh
+           volumeMounts:
+             - name: karavi-authorization-config
+@@ -546,13 +546,13 @@ spec:
+       {{- end }}
+       {{- end }}
+       {{- if hasKey .Values "authorization" }}
+-      {{- if eq .Values.authorization.enabled true }}
++      {{- if or .Values.authorization.enabled .Values.csm.authorization }}
+         - name: karavi-authorization-config
+           secret:
+-            secretName: karavi-authorization-config
++            secretName: {{ .Release.Name }}-authorization-config
+         - name: proxy-server-root-certificate
+           secret:
+-            secretName: proxy-server-root-certificate
++            secretName: {{ .Release.Name }}-proxy-server-root-certificate
+       {{ end }}
+       {{ end }}
+         - name: usr-bin
+diff --git a/charts/csi-powermax/templates/proxy-authz-tokens.yaml b/charts/csi-powermax/templates/proxy-authz-tokens.yaml
+new file mode 100644
+index 0000000..159e0df
+--- /dev/null
++++ b/charts/csi-powermax/templates/proxy-authz-tokens.yaml
+@@ -0,0 +1,10 @@
++{{- if or .Values.authorization.enabled .Values.csm.authorization }}
++apiVersion: v1
++kind: Secret
++metadata:
++  name: {{ .Release.Name }}-proxy-authz-tokens
++type: Opaque
++stringData:
++  access: {{ .Values.proxyAuthzTokens.access | default " " | quote }}
++  refresh: {{ .Values.proxyAuthzTokens.refresh | default " " | quote }}
++{{- end }}
+diff --git a/charts/csi-powermax/templates/proxy-server-secret.yaml b/charts/csi-powermax/templates/proxy-server-secret.yaml
+new file mode 100644
+index 0000000..3286813
+--- /dev/null
++++ b/charts/csi-powermax/templates/proxy-server-secret.yaml
+@@ -0,0 +1,9 @@
++{{- if or .Values.authorization.enabled .Values.csm.authorization }}
++apiVersion: v1
++kind: Secret
++metadata:
++  name:  {{ .Release.Name }}-proxy-server-root-certificate
++  namespace: {{ .Release.Namespace }}
++stringData:
++    rootCertificate.pem: {{ .Values.authorization.rootCertificate | default "" | quote }}
++{{- end }}
+diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
+index f183134..1e660ed 100644
+--- a/charts/csi-powermax/values.yaml
++++ b/charts/csi-powermax/values.yaml
+@@ -100,6 +100,7 @@ version: "v2.14.0"
+ # CSM Control
+ csm:
+   replication: false
++  authorization: false
+
+ driver:
+   # image: Image used for driver container. This shouldn't be changed
+@@ -107,6 +108,11 @@ driver:
+   # Default value: quay.io/dell/container-storage-modules/csi-powermax:v2.15.0
+   image: quay.io/dell/container-storage-modules/csi-powermax:v2.15.0
+
++  configs:
++
++  # rootCertificate: certificate used to communicate with the csm-authorization server
++  # Default value: None
++  rootCertificate:
+
+ # e.g, namespace.csi-powermax
+ # Default value: None
+@@ -529,6 +535,10 @@ vSphere:
+   # vCenterCredSecret: secret name for the vCenter credentials
+   vCenterCredSecret: vcenter-creds
+
++proxyAuthzTokens:
++  access:
++  refresh:
++
+ # Enable this feature only after contact support for additional information
+ podmon:
+   image: quay.io/dell/container-storage-modules/podmon:v1.14.0
+--
+2.34.1
