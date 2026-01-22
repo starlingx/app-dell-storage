@@ -8,17 +8,17 @@ command.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../templates/job_post_delete.yaml            | 127 ++++++++++++++++++
+ .../templates/job_post_delete.yaml            | 131 ++++++++++++++++++
  charts/csi-powermax/values.yaml               |   3 +
- 2 files changed, 130 insertions(+)
+ 2 files changed, 134 insertions(+)
  create mode 100644 charts/csi-powermax/templates/job_post_delete.yaml
 
 diff --git a/charts/csi-powermax/templates/job_post_delete.yaml b/charts/csi-powermax/templates/job_post_delete.yaml
 new file mode 100644
-index 0000000..0f6e520
+index 0000000..21f0f01
 --- /dev/null
 +++ b/charts/csi-powermax/templates/job_post_delete.yaml
-@@ -0,0 +1,127 @@
+@@ -0,0 +1,131 @@
 +apiVersion: v1
 +kind: ServiceAccount
 +metadata:
@@ -29,6 +29,7 @@ index 0000000..0f6e520
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +imagePullSecrets:
 +  - name: default-registry-key
 +
@@ -42,6 +43,7 @@ index 0000000..0f6e520
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +rules:
 +  - apiGroups: ["coordination.k8s.io"]
 +    resources: ["leases"]
@@ -57,6 +59,7 @@ index 0000000..0f6e520
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +subjects:
 +  - kind: ServiceAccount
 +    name: {{ .Release.Name }}-clear-sa
@@ -77,6 +80,7 @@ index 0000000..0f6e520
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +data:
 +  clear_script.sh: |-
 +    #!/bin/bash

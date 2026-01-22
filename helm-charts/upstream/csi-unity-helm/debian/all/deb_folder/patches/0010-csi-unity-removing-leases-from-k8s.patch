@@ -1,6 +1,6 @@
-From f07c62fd48cf23f095e9cd6942917e6f42dca614 Mon Sep 17 00:00:00 2001
+From 58623ea7ad8a4c442857148af8e8b0f9f14a82ca Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Mon, 15 Dec 2025 11:21:20 -0300
+Date: Thu, 22 Jan 2026 11:21:35 -0300
 Subject: [PATCH] csi-unity: removing leases from k8s
 
 This patch consists of removing leases created on application-apply
@@ -8,17 +8,17 @@ command.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- .../csi-unity/templates/job_post_delete.yaml  | 128 ++++++++++++++++++
+ .../csi-unity/templates/job_post_delete.yaml  | 132 ++++++++++++++++++
  charts/csi-unity/values.yaml                  |   3 +
- 2 files changed, 131 insertions(+)
+ 2 files changed, 135 insertions(+)
  create mode 100644 charts/csi-unity/templates/job_post_delete.yaml
 
 diff --git a/charts/csi-unity/templates/job_post_delete.yaml b/charts/csi-unity/templates/job_post_delete.yaml
 new file mode 100644
-index 0000000..65a077c
+index 0000000..2d63b32
 --- /dev/null
 +++ b/charts/csi-unity/templates/job_post_delete.yaml
-@@ -0,0 +1,128 @@
+@@ -0,0 +1,132 @@
 +---
 +apiVersion: v1
 +kind: ServiceAccount
@@ -30,6 +30,7 @@ index 0000000..65a077c
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +imagePullSecrets:
 +  - name: default-registry-key
 +
@@ -43,6 +44,7 @@ index 0000000..65a077c
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +rules:
 +  - apiGroups: ["coordination.k8s.io"]
 +    resources: ["leases"]
@@ -58,6 +60,7 @@ index 0000000..65a077c
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +subjects:
 +  - kind: ServiceAccount
 +    name: {{ .Release.Name }}-clear-sa
@@ -78,6 +81,7 @@ index 0000000..65a077c
 +    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
 +    "helm.sh/hook": "post-delete"
 +    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
++    "helm.sh/hook-weight": "-5"
 +data:
 +  clear_script.sh: |-
 +    #!/bin/bash
