@@ -24,7 +24,7 @@ sidecarProxy:
 otelCollector:
   image: docker.io/otel/opentelemetry-collector:0.135.0
   nginxProxy:
-    image: docker.io/nginxinc/nginx-unprivileged:1.29
+    image: docker.io/nginxinc/nginx-unprivileged:1.29.3
 cert-manager:
   enabled: false
 
