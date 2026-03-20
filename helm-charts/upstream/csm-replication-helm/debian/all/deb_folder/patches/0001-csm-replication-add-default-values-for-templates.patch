@@ -29,7 +29,7 @@ index 9061208..8ca02de 100644
 +  create: false
 +
 +kubectl:
-+  image: docker.io/bitnamilegacy/kubectl:1.33.4
++  image: registry.k8s.io/kubectl:v1.35.3
 --
 2.34.1
 
