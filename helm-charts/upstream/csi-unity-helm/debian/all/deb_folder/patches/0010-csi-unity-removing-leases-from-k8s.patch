@@ -1,6 +1,6 @@
-From 58623ea7ad8a4c442857148af8e8b0f9f14a82ca Mon Sep 17 00:00:00 2001
+From 1bd3c9d283782bb985e8a313654a039a3317aeaf Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Thu, 22 Jan 2026 11:21:35 -0300
+Date: Fri, 20 Mar 2026 14:15:51 -0300
 Subject: [PATCH] csi-unity: removing leases from k8s
 
 This patch consists of removing leases created on application-apply
@@ -152,15 +152,15 @@ index 0000000..2d63b32
 +            - name: {{ .Release.Name }}-clear-bin
 +              mountPath: /tmp/mount/
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index aa0bb85..31f7c51 100644
+index 8f43091..a3f5b36 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
-@@ -313,3 +313,6 @@ storageClasses:
+@@ -310,3 +310,6 @@ storageClasses:
 
  labels:
    isApplication: false
 +
 +kubectl:
-+  image: docker.io/bitnamilegacy/kubectl:1.33.4
++  image: registry.k8s.io/kubectl:v1.35.3
 --
 2.34.1

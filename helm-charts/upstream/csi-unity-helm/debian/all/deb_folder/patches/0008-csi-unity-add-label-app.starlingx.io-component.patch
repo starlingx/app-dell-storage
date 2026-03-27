@@ -1,6 +1,6 @@
-From ed61a0be140bb6557b1d56d0a3f75176d83fc36c Mon Sep 17 00:00:00 2001
+From d80e5b9228120a8d6eb79087100ff0817b7bb427 Mon Sep 17 00:00:00 2001
 From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Tue, 3 Dec 2024 14:03:31 -0300
+Date: Fri, 20 Mar 2026 14:15:50 -0300
 Subject: [PATCH] csi-unity: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment
@@ -17,10 +17,10 @@ Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
  3 files changed, 7 insertions(+)
 
 diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
-index 65fbccf..c0a0601 100644
+index 570721e..d90c324 100644
 --- a/charts/csi-unity/templates/controller.yaml
 +++ b/charts/csi-unity/templates/controller.yaml
-@@ -126,12 +126,15 @@ spec:
+@@ -147,12 +147,15 @@ spec:
    selector:
      matchLabels:
        app: {{ .Release.Name }}-controller
@@ -37,10 +37,10 @@ index 65fbccf..c0a0601 100644
        serviceAccountName: {{ .Release.Name }}-controller
        affinity:
 diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
-index b5f9fcd..3e97680 100644
+index c6c62a8..cd1863f 100644
 --- a/charts/csi-unity/templates/node.yaml
 +++ b/charts/csi-unity/templates/node.yaml
-@@ -76,6 +76,7 @@ spec:
+@@ -97,6 +97,7 @@ spec:
          kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
@@ -49,10 +49,10 @@ index b5f9fcd..3e97680 100644
          driver.dellemc.com: dell-storage
  {{- end }}
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 20badb8..16ed878 100644
+index d396680..3317c92 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
-@@ -286,3 +286,6 @@ storageCapacity:
+@@ -304,3 +304,6 @@ storageCapacity:
  secret:
  
  storageClasses:

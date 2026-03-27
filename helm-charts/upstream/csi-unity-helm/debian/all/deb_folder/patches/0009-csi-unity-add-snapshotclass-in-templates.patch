@@ -1,6 +1,6 @@
-From dcb29f5ecc608a21b5d6b43821855eb2dc73a838 Mon Sep 17 00:00:00 2001
+From 32eb218657be9182de591c7944d75ab03d3d1c26 Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Tue, 14 Oct 2025 10:55:00 -0300
+Date: Fri, 20 Mar 2026 14:15:51 -0300
 Subject: [PATCH] csi-unity: add snapshotclass in templates
 
 This patch consists of adding a snapshot class in the helm chart
@@ -11,8 +11,8 @@ be created manually.
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
  charts/csi-unity/templates/snapshotclass.yaml | 14 ++++++++++++++
- charts/csi-unity/values.yaml                  |  4 ++++
- 2 files changed, 18 insertions(+)
+ charts/csi-unity/values.yaml                  |  3 +++
+ 2 files changed, 17 insertions(+)
  create mode 100644 charts/csi-unity/templates/snapshotclass.yaml
 
 diff --git a/charts/csi-unity/templates/snapshotclass.yaml b/charts/csi-unity/templates/snapshotclass.yaml
@@ -36,19 +36,18 @@ index 0000000..975c1eb
 +# Examples: Delete
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 2050fae..aa0bb85 100644
+index 3317c92..8f43091 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
-@@ -102,6 +102,8 @@ controller:
-     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
-     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
-
+@@ -101,6 +101,7 @@ controller:
+     # Allowed values: string
+     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
 +    deletionPolicy: Delete
-+
    resizer:
      # enabled: Enable/Disable volume expansion feature
      # Allowed values:
-@@ -303,6 +305,8 @@ storageCapacity:
+@@ -301,6 +302,8 @@ storageCapacity:
    # Default value: 5m
    pollInterval: 5m
 
