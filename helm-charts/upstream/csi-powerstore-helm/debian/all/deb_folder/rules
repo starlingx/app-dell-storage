@@ -15,6 +15,8 @@ export APP_FOLDER = $(ROOT)/usr/lib/helm
 override_dh_auto_build:
 
 	cp Makefile charts
+	mkdir charts/csi-powerstore/charts
+	cp -r charts/csm-disaster-recovery charts/csi-powerstore/charts/
 	cd charts && make CHART_VERSION=$(CHART_VERSION) csi-powerstore
 
 override_dh_auto_install:

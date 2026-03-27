@@ -1,6 +1,6 @@
-From 1a185ffb53cc6f61431df420062c61a26ff38337 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Thu, 5 Dec 2024 09:52:19 -0300
+From 9f90e487f0827c3e00052dcb2fd04229212ce520 Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Tue, 28 Apr 2026 09:34:39 -0300
 Subject: [PATCH] csi-powerstore: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment resource and
@@ -10,6 +10,7 @@ were not being deleted. The default value was rollingUpdate.
 In this case, it doesn't effect functionality.
 
 Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  charts/csi-powerstore/templates/controller.yaml | 3 +++
  charts/csi-powerstore/templates/node.yaml       | 1 +
@@ -17,10 +18,10 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  3 files changed, 7 insertions(+)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index 65b429a..f370de9 100644
+index aa3261e..ff071a4 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -169,10 +169,13 @@ spec:
+@@ -203,10 +203,13 @@ spec:
    {{- else }}
    replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
    {{- end }}
@@ -35,10 +36,10 @@ index 65b429a..f370de9 100644
          kubectl.kubernetes.io/default-container: driver
      spec:
 diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
-index 851372b..7c9fb7f 100644
+index a0fcb47..6dc6967 100644
 --- a/charts/csi-powerstore/templates/node.yaml
 +++ b/charts/csi-powerstore/templates/node.yaml
-@@ -95,6 +95,7 @@ spec:
+@@ -124,6 +124,7 @@ spec:
      metadata:
        labels:
          app: {{ .Release.Name }}-node
@@ -47,18 +48,18 @@ index 851372b..7c9fb7f 100644
          driver.dellemc.com: dell-storage
        {{- end }}
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index 2801443..649cf33 100644
+index 0b0d70c..659e886 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
 @@ -22,6 +22,9 @@ csm:
    replication: false
    resiliency: false
- 
+
 +labels:
 +  isApplication: false
 +
  # driverName: defines the name of driver
  # Allowed values: string
  # Default value: None
--- 
+--
 2.34.1

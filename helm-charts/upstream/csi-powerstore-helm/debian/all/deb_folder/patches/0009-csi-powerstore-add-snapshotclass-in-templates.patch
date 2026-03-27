@@ -1,6 +1,6 @@
-From b3d4e7c5a2f8196f49da1c03e7f5a28b0d6f42e8 Mon Sep 17 00:00:00 2001
-From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Wed, 8 Oct 2025 09:45:02 -0300
+From 1cfa360bb954abc46800b2634c4a2b8e95b4b8fd Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Fri, 20 Mar 2026 15:04:36 -0300
 Subject: [PATCH] csi-powerstore: add snapshotclass in templates
 
 This patch consists of adding a snapshot class in the helm chart
@@ -9,6 +9,7 @@ It's needed because this helm chart needs a snapshot class that should
 be created manually.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  charts/csi-powerstore/templates/snapshotclass.yaml | 6 ++++++
  charts/csi-powerstore/values.yaml                  | 1 +
@@ -28,13 +29,13 @@ index 0000000..e3ab58c
 +driver: {{ .Values.driverName | default ( print "csi-powerstore.dellemc.com" ) }}
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index a636e8f..694e0f0 100644
+index de58334..b74c567 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
-@@ -147,6 +147,7 @@ controller:
+@@ -150,6 +150,7 @@ controller:
      # Default value: None
      enabled: true
-     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.3.0
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
 +    deletionPolicy: Delete
 
      # snapNamePrefix: Prefix to apply to the names of a created snapshots

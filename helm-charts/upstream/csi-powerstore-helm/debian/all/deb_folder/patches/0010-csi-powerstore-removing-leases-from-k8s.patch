@@ -1,12 +1,13 @@
-From 935a9f94cf505480dd212d2f8ccb1c7b4ecb3be4 Mon Sep 17 00:00:00 2001
-From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Thu, 22 Jan 2026 11:18:11 -0300
+From ccb11939d004a36dab0929c34f79d02930ee5220 Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Fri, 20 Mar 2026 15:04:36 -0300
 Subject: [PATCH] csi-powerstore: removing leases from k8s
 
 This patch consists of removing leases created on application-apply
 command.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  .../templates/job-post-delete.yaml            | 132 ++++++++++++++++++
  charts/csi-powerstore/values.yaml             |   3 +
@@ -152,18 +153,19 @@ index 0000000..2d63b32
 +            - name: {{ .Release.Name }}-clear-bin
 +              mountPath: /tmp/mount/
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index 10c98d6..92d07e4 100644
+index b74c567..6d54d57 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
-@@ -36,6 +36,9 @@ version: v2.15.0
+@@ -36,6 +36,9 @@ version: v2.16.0
  driver:
-   image: quay.io/dell/container-storage-modules/csi-powerstore:v2.15.0
+   image: quay.io/dell/container-storage-modules/csi-powerstore:v2.16.0
 
 +kubectl:
-+  image: docker.io/bitnamilegacy/kubectl:1.33.4
++  image: registry.k8s.io/kubectl:v1.35.3
 +
  # Represents number of certificate secrets, which user is going to create for ssl authentication. (powerstore-cert-0..powerstore-cert-n)
  # If user does not use certificate, set to 0
  certSecretCount: 0
 --
 2.34.1
+
