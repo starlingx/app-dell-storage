@@ -1,6 +1,6 @@
-From dfda67b7ee0bba6338d8e9ec7dbedf01767cc2da Mon Sep 17 00:00:00 2001
+From bb5454227188c13e1e14d71c1189fea754869cc5 Mon Sep 17 00:00:00 2001
 From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Tue, 18 Feb 2025 12:25:55 -0300
+Date: Fri, 20 Mar 2026 14:16:06 -0300
 Subject: [PATCH] csi-powerscale: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment
@@ -17,10 +17,10 @@ Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
  3 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
-index 750cda5..7836587 100644
+index 8c3bffb..b3e676b 100644
 --- a/charts/csi-isilon/templates/controller.yaml
 +++ b/charts/csi-isilon/templates/controller.yaml
-@@ -151,15 +151,14 @@ spec:
+@@ -172,15 +172,14 @@ spec:
    replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
    {{- end }}
    strategy:
@@ -39,10 +39,10 @@ index 750cda5..7836587 100644
        serviceAccount: {{ .Release.Name }}-controller
        affinity:
 diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
-index c1d262f..0a72599 100644
+index 515c4bf..628019f 100644
 --- a/charts/csi-isilon/templates/node.yaml
 +++ b/charts/csi-isilon/templates/node.yaml
-@@ -81,6 +81,7 @@ spec:
+@@ -106,6 +106,7 @@ spec:
          kubectl.kubernetes.io/default-container: "driver"
        labels:
          app: {{ .Release.Name }}-node
@@ -54,13 +54,13 @@ diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
 index 92029ab..2a8bcf9 100644
 --- a/charts/csi-isilon/values.yaml
 +++ b/charts/csi-isilon/values.yaml
-@@ -448,3 +448,6 @@ storageClasses:
+@@ -457,3 +457,6 @@ storageClasses:
  snapshotClasses:
- 
+
  proxyAuthzTokens:
 +
 +labels:
 +  isApplication: false
--- 
+--
 2.34.1
 

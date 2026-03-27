@@ -1,6 +1,6 @@
-From eed02850cede664cb4ccaf3c3e5e3f098ac17480 Mon Sep 17 00:00:00 2001
+From 5347573a6e3664be2666f2870d9ac5457f47ff20 Mon Sep 17 00:00:00 2001
 From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Fri, 20 Dec 2024 13:27:08 -0300
+Date: Fri, 20 Mar 2026 14:16:07 -0300
 Subject: [PATCH] csi-powerscale: add proxy-authz-token template
 
 This patch consists of adding proxy-authz-token in the helm chart
@@ -16,10 +16,10 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  create mode 100644 charts/csi-isilon/templates/proxy-authz-tokens.yaml
 
 diff --git a/charts/csi-isilon/templates/controller.yaml b/charts/csi-isilon/templates/controller.yaml
-index 4dd50dd..df23f2e 100644
+index 0a16220..1f4137e 100644
 --- a/charts/csi-isilon/templates/controller.yaml
 +++ b/charts/csi-isilon/templates/controller.yaml
-@@ -487,12 +487,12 @@ spec:
+@@ -508,12 +508,12 @@ spec:
              - name: ACCESS_TOKEN
                valueFrom:
                  secretKeyRef:
@@ -33,12 +33,12 @@ index 4dd50dd..df23f2e 100644
 +                  name: {{ .Release.Name }}-proxy-authz-tokens
                    key: refresh
            volumeMounts:
-             - name: karavi-authorization-config
+             {{- if $authorizationConfigSecret }}
 diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
-index 86f0f50..766efdc 100644
+index caca236..b56da5c 100644
 --- a/charts/csi-isilon/templates/node.yaml
 +++ b/charts/csi-isilon/templates/node.yaml
-@@ -270,12 +270,12 @@ spec:
+@@ -295,12 +295,12 @@ spec:
              - name: ACCESS_TOKEN
                valueFrom:
                  secretKeyRef:
@@ -52,7 +52,7 @@ index 86f0f50..766efdc 100644
 +                  name: {{ .Release.Name }}-proxy-authz-tokens
                    key: refresh
            volumeMounts:
-             - name: karavi-authorization-config
+             {{- if $authorizationConfigSecret }}
 diff --git a/charts/csi-isilon/templates/proxy-authz-tokens.yaml b/charts/csi-isilon/templates/proxy-authz-tokens.yaml
 new file mode 100644
 index 0000000..38f35cf

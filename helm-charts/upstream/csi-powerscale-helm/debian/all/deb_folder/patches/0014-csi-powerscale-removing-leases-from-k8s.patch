@@ -1,6 +1,6 @@
-From 9f425b8d8379acdf12b3317646754c6f8e416050 Mon Sep 17 00:00:00 2001
+From 087f2c960f710f619191cf40f69fbc17d6cf5dad Mon Sep 17 00:00:00 2001
 From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Thu, 22 Jan 2026 11:24:35 -0300
+Date: Fri, 20 Mar 2026 14:16:07 -0300
 Subject: [PATCH] csi-powerscale: removing leases from k8s
 
 This patch consists of removing leases created on application-apply
@@ -152,7 +152,7 @@ index 0000000..2d63b32
 +            - name: {{ .Release.Name }}-clear-bin
 +              mountPath: /tmp/mount/
 diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
-index a5412d6..79baf14 100644
+index e1452d4..e76f4c9 100644
 --- a/charts/csi-isilon/values.yaml
 +++ b/charts/csi-isilon/values.yaml
 @@ -460,3 +460,6 @@ proxyAuthzTokens:
@@ -161,6 +161,6 @@ index a5412d6..79baf14 100644
    isApplication: false
 +
 +kubectl:
-+  image: docker.io/bitnamilegacy/kubectl:1.33.4
++  image: registry.k8s.io/kubectl:v1.35.3
 --
 2.34.1
