@@ -1,6 +1,6 @@
-From 1891f02717ab1537190bb362b58a40144bc2d0c8 Mon Sep 17 00:00:00 2001
-From: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
-Date: Wed, 24 Apr 2024 16:56:47 -0300
+From 5c196fcd4c8e1e27a39501e3df37061182b7ef7b Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Wed, 22 Apr 2026 08:23:47 -0300
 Subject: [PATCH] csireverseproxy: add default values for templates
 
 This patch consists of adding the default values in the values.yaml of
@@ -8,13 +8,13 @@ the helm chart.
 It's necessary because templates need default values to be able
 to build the package.
 
-Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  charts/csi-powermax/charts/csireverseproxy/values.yaml | 8 ++++++++
  1 file changed, 8 insertions(+)
 
 diff --git a/charts/csi-powermax/charts/csireverseproxy/values.yaml b/charts/csi-powermax/charts/csireverseproxy/values.yaml
-index 7f04946..d10e32e 100644
+index c8f57b5..778f834 100644
 --- a/charts/csi-powermax/charts/csireverseproxy/values.yaml
 +++ b/charts/csi-powermax/charts/csireverseproxy/values.yaml
 @@ -5,3 +5,11 @@ port: 2222

@@ -1,3 +1,9 @@
+csi-powermax-helm (2.16-2) unstable; urgency=medium
+
+  * New upstream release 2.16-2
+
+ -- gdinizcr <gabriel.DinizCremel@windriver.com>  Fri, 20 Mar 2026 18:04:23 +0000
+
 csi-powermax-helm (2.15-0) unstable; urgency=medium
 
   * New upstream release.
