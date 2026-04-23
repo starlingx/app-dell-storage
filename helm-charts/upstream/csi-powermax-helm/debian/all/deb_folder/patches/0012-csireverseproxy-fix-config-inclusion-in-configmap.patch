@@ -1,12 +1,12 @@
-From f4d417b6fe25283eb158f2a7b04f68dfefae8de9 Mon Sep 17 00:00:00 2001
-From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Fri, 24 Oct 2025 08:59:16 -0300
+From 04f5387a36150fa8f3a6417c7c26fc2431a9de0e Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Wed, 22 Apr 2026 08:23:40 -0300
 Subject: [PATCH] csireverseproxy: fix config inclusion in configmap
 
 This patch consists of changing the configmap
 template to pass by helm lint.
 
-Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  .../charts/csireverseproxy/templates/configmap.yaml             | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

@@ -1,6 +1,6 @@
-From 66dcae57491917915ff9a384eaec5448da9757be Mon Sep 17 00:00:00 2001
-From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Fri, 24 Oct 2025 08:33:16 -0300
+From a7e4d1128801ed5aed0eba7f682b8d31dc26b916 Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Wed, 22 Apr 2026 08:13:10 -0300
 Subject: [PATCH] csi-powermax: fix pull image error
 
 This patch consists of adding imagePullSecrets with name
@@ -8,17 +8,17 @@ default-registry-key only in ServiceAccounts.
 It's necessary because without it the system can't use the
 images from the registry local
 
-Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  charts/csi-powermax/templates/controller.yaml | 2 ++
  charts/csi-powermax/templates/node.yaml       | 2 ++
  2 files changed, 4 insertions(+)
 
 diff --git a/charts/csi-powermax/templates/controller.yaml b/charts/csi-powermax/templates/controller.yaml
-index fdfb813..097eca1 100644
+index 70c1e1d..fc446c8 100644
 --- a/charts/csi-powermax/templates/controller.yaml
 +++ b/charts/csi-powermax/templates/controller.yaml
-@@ -12,6 +12,8 @@ metadata:
+@@ -14,6 +14,8 @@ metadata:
    {{- else }}
    name: {{ .Release.Name }}-controller
    {{- end }}
@@ -28,10 +28,10 @@ index fdfb813..097eca1 100644
    - apiGroups: [""]
      resources: ["events"]
 diff --git a/charts/csi-powermax/templates/node.yaml b/charts/csi-powermax/templates/node.yaml
-index d130061..7d63654 100644
+index 9c68d74..51fdbc0 100644
 --- a/charts/csi-powermax/templates/node.yaml
 +++ b/charts/csi-powermax/templates/node.yaml
-@@ -13,6 +13,8 @@ metadata:
+@@ -14,6 +14,8 @@ metadata:
    {{- else }}
    name: {{ .Release.Name }}-node
    {{- end }}

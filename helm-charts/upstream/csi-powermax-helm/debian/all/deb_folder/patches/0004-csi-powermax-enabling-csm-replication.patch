@@ -1,22 +1,22 @@
-From a20c0714d7cccc975b136b1b26d4485cdaa9429c Mon Sep 17 00:00:00 2001
-From: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
-Date: Thu, 26 Dec 2024 12:36:43 -0300
+From 527e23ff52b65228fe04c7184ef10417f0425836 Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Wed, 22 Apr 2026 08:14:24 -0300
 Subject: [PATCH] csi-powermax: enabling csm-replication
 
 This patch consists of changing the format of the values in templates and
 changing the values.yaml for the user be able to enable csm-replication.
 
-Signed-off-by: Lorran Lucas Da Costa <lorran.dacosta@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  charts/csi-powermax/templates/controller.yaml | 4 ++--
  charts/csi-powermax/values.yaml               | 4 ++++
  2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/charts/csi-powermax/templates/controller.yaml b/charts/csi-powermax/templates/controller.yaml
-index 11f01f3..7cc1426 100644
+index fc446c8..748ed1a 100644
 --- a/charts/csi-powermax/templates/controller.yaml
 +++ b/charts/csi-powermax/templates/controller.yaml
-@@ -85,7 +85,7 @@ rules:
+@@ -81,7 +81,7 @@ rules:
      resources: ["customresourcedefinitions"]
      verbs: ["create", "list", "watch", "delete"]
  # below for dell-csi-replicator
@@ -25,7 +25,7 @@ index 11f01f3..7cc1426 100644
    - apiGroups: ["replication.storage.dell.com"]
      resources: ["dellcsireplicationgroups"]
      verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-@@ -275,7 +275,7 @@ spec:
+@@ -303,7 +303,7 @@ spec:
                mountPath: /var/run/csi
          {{- end }}
          {{- end }}
@@ -35,13 +35,13 @@ index 11f01f3..7cc1426 100644
            image: {{ required "Must provide the Dell CSI Replicator Resizer image." .Values.replication.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
 diff --git a/charts/csi-powermax/values.yaml b/charts/csi-powermax/values.yaml
-index 1db2fa5..d4f134a 100644
+index 52be649..de88802 100644
 --- a/charts/csi-powermax/values.yaml
 +++ b/charts/csi-powermax/values.yaml
-@@ -82,6 +82,10 @@ version: "v2.12.0"
+@@ -97,6 +97,10 @@ version: "v2.16.2"
  # customDriverName: If enabled, sets the driver name to the
  # value provided to its value field with namespace prefixed to it.
- 
+
 +# CSM Control
 +csm:
 +  replication: false
@@ -49,5 +49,5 @@ index 1db2fa5..d4f134a 100644
  driver:
    # image: Image used for driver container. This shouldn't be changed
    # Allowed values: string
--- 
+--
 2.34.1
