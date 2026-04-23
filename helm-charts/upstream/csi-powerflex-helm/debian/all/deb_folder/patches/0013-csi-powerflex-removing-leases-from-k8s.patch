@@ -1,12 +1,12 @@
-From b224053e1a12d7fcbde944829dae885cec749908 Mon Sep 17 00:00:00 2001
-From: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
-Date: Thu, 22 Jan 2026 11:31:57 -0300
+From eb6856b3627a34fc688807fb37ebe9c295e790bb Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Wed, 22 Apr 2026 06:04:11 -0300
 Subject: [PATCH] csi-powerflex: removing leases from k8s
 
 This patch consists of removing leases created on application-apply
 command.
 
-Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
  .../templates/job-post-delete.yaml            | 132 ++++++++++++++++++
  charts/csi-vxflexos/values.yaml               |   3 +
@@ -152,15 +152,18 @@ index 0000000..2d63b32
 +            - name: {{ .Release.Name }}-clear-bin
 +              mountPath: /tmp/mount/
 diff --git a/charts/csi-vxflexos/values.yaml b/charts/csi-vxflexos/values.yaml
-index 8615832..4cb9280 100644
+index 7e47470..085f319 100644
 --- a/charts/csi-vxflexos/values.yaml
 +++ b/charts/csi-vxflexos/values.yaml
-@@ -452,3 +452,6 @@ secret:
+@@ -459,6 +459,9 @@ labels:
 
- labels:
-   isApplication: false
-+
+ proxyAuthzTokens:
+
 +kubectl:
-+  image: docker.io/bitnamilegacy/kubectl:1.33.4
++  image: registry.k8s.io/kubectl:v1.35.3
++
+ storageClasses:
+
+ secret:
 --
 2.34.1

@@ -1,6 +1,6 @@
-From 5e2316f9c80ffca8d78c03b50d0934eda63fd2cf Mon Sep 17 00:00:00 2001
-From: Heitor Farhat <heitor.farhat@windriver.com>
-Date: Wed, 11 Dec 2024 11:51:20 -0300
+From 20a35b30789cb3149ef090fdc48a77183a351099 Mon Sep 17 00:00:00 2001
+From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
+Date: Wed, 22 Apr 2026 5:54:34 -0300
 Subject: [PATCH] csi-powerflex: add label app.starlingx.io/component
 
 This patch consists of changing the strategy from the Deployment resource and
@@ -9,18 +9,18 @@ The strategy was needed changing because in the reapply the old replicasets
 were not being deleted. The default value was rollingUpdate.
 In this case, it doesn't effect functionality.
 
-Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
+Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
- .../charts/csi-vxflexos/templates/controller.yaml             | 4 ++--
- .../charts/csi-vxflexos/templates/node.yaml                   | 1 +
- .../charts/csi-vxflexos/values.yaml                           | 3 +++
+ charts/csi-vxflexos/templates/controller.yaml | 4 ++--
+ charts/csi-vxflexos/templates/node.yaml       | 1 +
+ charts/csi-vxflexos/values.yaml               | 3 +++
  3 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/charts/csi-vxflexos/templates/controller.yaml b/charts/csi-vxflexos/templates/controller.yaml
-index a6331e4..3bcfe84 100644
+index 196fc68..40f0b87 100644
 --- a/charts/csi-vxflexos/templates/controller.yaml
 +++ b/charts/csi-vxflexos/templates/controller.yaml
-@@ -156,8 +156,7 @@ metadata:
+@@ -182,8 +182,7 @@ metadata:
  spec:
  {{- if gt (int .Values.controller.controllerCount) 1 }}
    strategy:
@@ -30,7 +30,7 @@ index a6331e4..3bcfe84 100644
  {{- end }}
    selector:
      matchLabels:
-@@ -172,6 +171,7 @@ spec:
+@@ -198,6 +197,7 @@ spec:
          vg-snapshotter-enabled: "false"
        {{- end }}
          name: {{ .Release.Name }}-controller
@@ -39,10 +39,10 @@ index a6331e4..3bcfe84 100644
          kubectl.kubernetes.io/default-container: "driver"
      spec:
 diff --git a/charts/csi-vxflexos/templates/node.yaml b/charts/csi-vxflexos/templates/node.yaml
-index d512746..2e53324 100644
+index 198285a..da48789 100644
 --- a/charts/csi-vxflexos/templates/node.yaml
 +++ b/charts/csi-vxflexos/templates/node.yaml
-@@ -82,6 +82,7 @@ spec:
+@@ -119,6 +119,7 @@ spec:
      metadata:
        labels:
          app: {{ .Release.Name }}-node
@@ -51,15 +51,18 @@ index d512746..2e53324 100644
          driver.dellemc.com: dell-storage
  {{- end }}
 diff --git a/charts/csi-vxflexos/values.yaml b/charts/csi-vxflexos/values.yaml
-index cdf6557..749d518 100644
+index e7e4b9b..48e2308 100644
 --- a/charts/csi-vxflexos/values.yaml
 +++ b/charts/csi-vxflexos/values.yaml
-@@ -422,3 +422,6 @@ interfaceNames:
+@@ -452,6 +452,9 @@ csm:
+   replication: false
+   authorization: false
+
++labels:
++  isApplication: false
++
  storageClasses:
 
  secret:
-+
-+labels:
-+  isApplication: false
 --
 2.34.1
