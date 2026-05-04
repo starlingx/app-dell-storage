@@ -1,7 +1,7 @@
 #
 # Copyright 2017 The Openstack-Helm Authors.
 #
-# Copyright (c) 2023-2024 Wind River Systems, Inc.
+# Copyright (c) 2023-2024,2026 Wind River Systems, Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -26,7 +26,10 @@ $(CHARTS):
 init-%:
 	if [ -f $*/Makefile ]; then make -C $*; fi
 
-lint-%: init-%
+dep-%: init-%
+	if [ -d $* ]; then helm dependency build $*; fi
+
+lint-%: dep-%
 	if [ -d $* ]; then helm lint $*; fi
 
 build-%: lint-%
