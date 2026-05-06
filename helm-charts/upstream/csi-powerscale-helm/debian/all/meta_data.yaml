@@ -4,7 +4,7 @@ debver: 2.16-0
 dl_path:
   name: csi-isilon-2.16.0.tar.gz
   url: https://github.com/dell/helm-charts/archive/csi-isilon-2.16.0.tar.gz
-  sha256sum: e7bf378e505fc17f647dd4f75d330cb982a4f16773b9db29c2536502ce233a58
+  sha256sum: 6fecba11e05cc3eae5fb9c1fb9a703a3eb5f88d91f5b13b6ec9fc918e5d5dab9
 src_files:
   - csi-powerscale-helm/files/Makefile
 revision:
