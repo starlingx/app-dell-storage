@@ -4,7 +4,7 @@ debver: 2.16-1
 dl_path:
   name: csi-vxflexos-2.16.1.tar.gz
   url: https://github.com/dell/helm-charts/archive/csi-vxflexos-2.16.1.tar.gz
-  sha256sum: d83f595eb62053bb69faa82921ee4d6ae0918ebea6e7e897d519e0b92bd12e44
+  sha256sum: 07acbc1320215acb33d5c56ec697e804d232f8c06959c394c252f1e6a8947b53
 src_files:
   - csi-powerflex-helm/files/Makefile
 revision:

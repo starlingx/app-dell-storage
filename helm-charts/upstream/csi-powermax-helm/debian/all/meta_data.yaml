@@ -4,7 +4,7 @@ debver: 2.16-2
 dl_path:
   name: csi-powermax-2.16.2.tar.gz
   url: https://github.com/dell/helm-charts/archive/csi-powermax-2.16.2.tar.gz
-  sha256sum: 58f857aff8ea5522779ea0c52c62cb3f31058c6b07dd5b7d645b2d46ffce726b
+  sha256sum: 8ac21957c8cf1b7d8b75baa0bc8a1010383ff0b2005f8a76832e8e41c5013633
 src_files:
   - csi-powermax-helm/files/Makefile
 revision:
