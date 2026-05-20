@@ -1,3 +1,9 @@
+csm-replication-helm (1.14-0) unstable; urgency=medium
+
+  * New upstream release 1.14-0
+
+ -- gdinizcr <gabriel.DinizCremel@windriver.com>  Fri, 20 Mar 2026 17:16:41 +0000
+
 csm-replication-helm (1.13-0) unstable; urgency=medium
 
   * New upstream release.
