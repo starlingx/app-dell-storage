@@ -1,4 +1,4 @@
-From f3fdd610a89b4c3bea323421df685c2bef2e9629 Mon Sep 17 00:00:00 2001
+From 5dd7eefd17b73a20edbcf137927b0366e4446cc9 Mon Sep 17 00:00:00 2001
 From: Heitor Farhat <heitor.farhat@windriver.com>
 Date: Wed, 4 Dec 2024 16:46:56 -0300
 Subject: [PATCH] csi-unity: fix image path for templates
@@ -13,10 +13,10 @@ Signed-off-by: Heitor Farhat <heitor.farhat@windriver.com>
  2 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/charts/csi-unity/templates/controller.yaml b/charts/csi-unity/templates/controller.yaml
-index 80ecbca..8141aba 100644
+index 61ed896..4aeff8b 100644
 --- a/charts/csi-unity/templates/controller.yaml
 +++ b/charts/csi-unity/templates/controller.yaml
-@@ -154,7 +154,7 @@ spec:
+@@ -175,7 +175,7 @@ spec:
  {{- if .Values.podmon.enabled }}
          - name: podmon
            imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -25,7 +25,7 @@ index 80ecbca..8141aba 100644
            args:
              {{- toYaml .Values.podmon.controller.args | nindent 12 }}
            env:
-@@ -177,7 +177,7 @@ spec:
+@@ -198,7 +198,7 @@ spec:
                mountPath: /unity-config
  {{- end }}
          - name: attacher
@@ -34,7 +34,7 @@ index 80ecbca..8141aba 100644
            args:
              - "--csi-address=$(ADDRESS)"
              - "--v=5"
-@@ -189,7 +189,7 @@ spec:
+@@ -210,7 +210,7 @@ spec:
              - name: socket-dir
                mountPath: /var/run/csi
          - name: provisioner
@@ -43,7 +43,7 @@ index 80ecbca..8141aba 100644
            args:
              - "--csi-address=$(ADDRESS)"
              - "--volume-name-prefix={{ required "Must provide a Volume Name Prefix." .Values.controller.volumeNamePrefix }}"
-@@ -222,7 +222,7 @@ spec:
+@@ -243,7 +243,7 @@ spec:
          {{- if hasKey .Values.controller "snapshot" }}
          {{- if eq .Values.controller.snapshot.enabled true }}
          - name: snapshotter
@@ -52,7 +52,7 @@ index 80ecbca..8141aba 100644
            args:
              - "--csi-address=$(ADDRESS)"
              - "--snapshot-name-prefix={{ required "Must privided a Snapshot Name Prefix" .Values.controller.snapshot.snapNamePrefix }}"
-@@ -241,7 +241,7 @@ spec:
+@@ -262,7 +262,7 @@ spec:
          {{- if hasKey .Values.controller "resizer" }}
          {{- if eq .Values.controller.resizer.enabled true }}
          - name: resizer
@@ -61,7 +61,7 @@ index 80ecbca..8141aba 100644
            args:
              - "--csi-address=$(ADDRESS)"
              - "--v=5"
-@@ -257,7 +257,7 @@ spec:
+@@ -278,7 +278,7 @@ spec:
          {{- if hasKey .Values.controller "healthMonitor" }}
          {{- if eq .Values.controller.healthMonitor.enabled true }}
          - name: csi-external-health-monitor-controller
@@ -70,7 +70,7 @@ index 80ecbca..8141aba 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            args:
              - "--v=5"
-@@ -276,7 +276,7 @@ spec:
+@@ -297,7 +297,7 @@ spec:
          {{- end }}
          {{- end }}
          - name: driver
@@ -80,10 +80,10 @@ index 80ecbca..8141aba 100644
              - "--driver-name=csi-unity.dellemc.com"
              - "--driver-config=/unity-config/driver-config-params.yaml"
 diff --git a/charts/csi-unity/templates/node.yaml b/charts/csi-unity/templates/node.yaml
-index a724f8f..5eb6d7c 100644
+index 244cf91..59f3d58 100644
 --- a/charts/csi-unity/templates/node.yaml
 +++ b/charts/csi-unity/templates/node.yaml
-@@ -99,7 +99,7 @@ spec:
+@@ -120,7 +120,7 @@ spec:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
            imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -92,7 +92,7 @@ index a724f8f..5eb6d7c 100644
            args:
            {{- toYaml .Values.podmon.node.args | nindent 12 }}
            env:
-@@ -147,7 +147,7 @@ spec:
+@@ -168,7 +168,7 @@ spec:
              capabilities:
                add: ["SYS_ADMIN"]
              allowPrivilegeEscalation: true
@@ -101,7 +101,7 @@ index a724f8f..5eb6d7c 100644
            args:
              - "--driver-name=csi-unity.dellemc.com"
              - "--driver-config=/unity-config/driver-config-params.yaml"
-@@ -208,7 +208,7 @@ spec:
+@@ -229,7 +229,7 @@ spec:
              - name: unity-secret
                mountPath: /unity-secret
          - name: registrar

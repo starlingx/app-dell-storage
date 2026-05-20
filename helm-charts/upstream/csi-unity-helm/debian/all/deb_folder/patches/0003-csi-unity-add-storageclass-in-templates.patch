@@ -1,4 +1,4 @@
-From b961fab6441d0b7c92778b188005171b71ec2121 Mon Sep 17 00:00:00 2001
+From 7677031ffedcec211e13e8746cff1a1284a1283a Mon Sep 17 00:00:00 2001
 From: Guilherme Costa <guilherme.costa@windriver.com>
 Date: Fri, 1 Mar 2024 12:54:34 -0300
 Subject: [PATCH] csi-unity: add storageclass in templates
@@ -73,10 +73,10 @@ index 0000000..52ee79c
 +---
 +{{- end }}
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 900f4d4..a22c480 100644
+index d8f74a3..afd4216 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
-@@ -266,3 +266,5 @@ storageCapacity:
+@@ -283,3 +283,5 @@ storageCapacity:
    pollInterval: 5m
  
  secret:
