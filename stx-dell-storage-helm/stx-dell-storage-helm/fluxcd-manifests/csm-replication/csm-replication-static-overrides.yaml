@@ -7,7 +7,7 @@
 image: quay.io/dell/container-storage-modules/dell-replication-controller:v1.14.0
 
 kubectl:
-  image: registry.k8s.io/kubectl:v1.35.3
+  image: docker.io/alpine/kubectl:1.35.3
 
 labels:
   isApplication: false

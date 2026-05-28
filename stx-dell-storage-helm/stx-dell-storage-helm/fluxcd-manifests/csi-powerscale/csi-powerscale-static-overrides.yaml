@@ -67,4 +67,4 @@ snapshotClasses:
   - name: csi-powerscale-snapshotclass
 
 kubectl:
-  image: registry.k8s.io/kubectl:v1.35.3
+  image: docker.io/alpine/kubectl:1.35.3

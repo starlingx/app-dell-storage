@@ -85,7 +85,7 @@ index 0000000..2d63b32
 +    "helm.sh/hook-weight": "-5"
 +data:
 +  clear_script.sh: |-
-+    #!/bin/bash
++    #!/bin/sh
 +
 +    echo "Checking for leases in ${NAMESPACE} namespace..."
 +
@@ -143,7 +143,7 @@ index 0000000..2d63b32
 +      containers:
 +        - name: clear-script
 +          image: {{ .Values.kubectl.image | quote }}
-+          command: [ "/bin/bash", "/tmp/mount/clear_script.sh" ]
++          command: [ "/bin/sh", "/tmp/mount/clear_script.sh" ]
 +          env:
 +            - name: DRIVER_NAME
 +              value: {{ .Values.driverName }}
@@ -161,7 +161,7 @@ index b74c567..6d54d57 100644
    image: quay.io/dell/container-storage-modules/csi-powerstore:v2.16.0
 
 +kubectl:
-+  image: registry.k8s.io/kubectl:v1.35.3
++  image: docker.io/alpine/kubectl:1.35.3
 +
  # Represents number of certificate secrets, which user is going to create for ssl authentication. (powerstore-cert-0..powerstore-cert-n)
  # If user does not use certificate, set to 0

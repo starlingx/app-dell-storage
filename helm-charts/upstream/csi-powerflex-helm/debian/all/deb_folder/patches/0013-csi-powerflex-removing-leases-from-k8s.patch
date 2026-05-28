@@ -84,7 +84,7 @@ index 0000000..2d63b32
 +    "helm.sh/hook-weight": "-5"
 +data:
 +  clear_script.sh: |-
-+    #!/bin/bash
++    #!/bin/sh
 +
 +    echo "Checking for leases in ${NAMESPACE} namespace..."
 +
@@ -142,7 +142,7 @@ index 0000000..2d63b32
 +      containers:
 +        - name: clear-script
 +          image: {{ .Values.kubectl.image | quote }}
-+          command: [ "/bin/bash", "/tmp/mount/clear_script.sh" ]
++          command: [ "/bin/sh", "/tmp/mount/clear_script.sh" ]
 +          env:
 +            - name: DRIVER_NAME
 +              value: {{ .Values.driverName }}
@@ -160,7 +160,7 @@ index 7e47470..085f319 100644
  proxyAuthzTokens:
 
 +kubectl:
-+  image: registry.k8s.io/kubectl:v1.35.3
++  image: docker.io/alpine/kubectl:1.35.3
 +
  storageClasses:
 

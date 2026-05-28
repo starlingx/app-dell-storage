@@ -36,7 +36,7 @@ index 8ca02de..43b1af9 100644
 @@ -56,3 +56,6 @@ replicationGroup:
 
  kubectl:
-   image: registry.k8s.io/kubectl:v1.35.3
+   image: docker.io/alpine/kubectl:1.35.3
 +
 +labels:
 +  isApplication: false

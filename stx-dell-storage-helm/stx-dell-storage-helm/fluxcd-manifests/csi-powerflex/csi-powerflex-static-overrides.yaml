@@ -58,7 +58,7 @@ authorization:
   image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
 
 kubectl:
-  image: registry.k8s.io/kubectl:v1.35.3
+  image: docker.io/alpine/kubectl:1.35.3
 
 secret:
 
