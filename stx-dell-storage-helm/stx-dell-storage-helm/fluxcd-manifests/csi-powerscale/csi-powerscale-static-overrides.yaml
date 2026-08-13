@@ -65,6 +65,3 @@ storageClasses:
 
 snapshotClasses:
   - name: csi-powerscale-snapshotclass
-
-kubectl:
-  image: docker.io/alpine/kubectl:1.35.3

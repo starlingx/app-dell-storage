@@ -79,8 +79,5 @@ certSecret:
 
 storageClasses:
 
-kubectl:
-  image: docker.io/alpine/kubectl:1.35.3
-
 podmon:
   image: quay.io/dell/container-storage-modules/podmon:v1.15.0

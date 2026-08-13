@@ -8,6 +8,5 @@
 0008-csi-powermax-add-secretcert-in-templates.patch
 0009-csi-powermax-add-storageclass-in-templates.patch
 0010-csi-powermax-add-snapshotclass-in-templates.patch
-0011-csi-powermax-removing-leases-from-k8s.patch
-0012-csireverseproxy-fix-config-inclusion-in-configmap.patch
-0013-csireverseproxy-add-default-values-for-templates.patch
+0011-csireverseproxy-fix-config-inclusion-in-configmap.patch
+0012-csireverseproxy-add-default-values-for-templates.patch

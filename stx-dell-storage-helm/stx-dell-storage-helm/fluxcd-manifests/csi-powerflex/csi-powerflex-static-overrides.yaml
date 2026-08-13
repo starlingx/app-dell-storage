@@ -57,9 +57,6 @@ podmon:
 authorization:
   image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
 
-kubectl:
-  image: docker.io/alpine/kubectl:1.35.3
-
 secret:
 
 storageClasses:

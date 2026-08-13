@@ -8,9 +8,6 @@ csm:
   replication: false
   resiliency: false
 
-kubectl:
-  image: docker.io/alpine/kubectl:1.35.3
-
 controller:
   metadataretriever:
     image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.13.0

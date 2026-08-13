@@ -7,4 +7,3 @@
 0007-csi-unity-enabling-csm-resiliency.patch
 0008-csi-unity-add-label-app.starlingx.io-component.patch
 0009-csi-unity-add-snapshotclass-in-templates.patch
-0010-csi-unity-removing-leases-from-k8s.patch

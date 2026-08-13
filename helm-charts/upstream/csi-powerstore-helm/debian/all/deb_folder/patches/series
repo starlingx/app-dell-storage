@@ -7,4 +7,3 @@
 0007-csi-powerstore-add-secret-in-templates.patch
 0008-csi-powerstore-add-storageclass-in-templates.patch
 0009-csi-powerstore-add-snapshotclass-in-templates.patch
-0010-csi-powerstore-removing-leases-from-k8s.patch

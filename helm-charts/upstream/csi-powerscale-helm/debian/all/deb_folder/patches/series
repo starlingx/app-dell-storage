@@ -11,4 +11,3 @@
 0011-csi-powerscale-add-snapshotclass-in-templates.patch
 0012-csi-powerscale-enabling-csm-authorization.patch
 0013-csi-powerscale-add-proxy-authz-token-template.patch
-0014-csi-powerscale-removing-leases-from-k8s.patch
