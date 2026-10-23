@@ -18,10 +18,10 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 
 diff --git a/charts/csi-unity/templates/storageclass.yaml b/charts/csi-unity/templates/storageclass.yaml
 new file mode 100644
-index 0000000..52ee79c
+index 0000000..c911b7f
 --- /dev/null
 +++ b/charts/csi-unity/templates/storageclass.yaml
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,56 @@
 +{{- range $sc := .Values.storageClasses }}
 +---
 +apiVersion: storage.k8s.io/v1
@@ -34,7 +34,7 @@ index 0000000..52ee79c
 +{{- end }}
 +provisioner: {{ $sc.provisioner | default ( print "csi-unity.dellemc.com" ) }}
 +reclaimPolicy: {{ $sc.reclaimPolicy | default "Delete" }}
-+allowVolumeExpansion: {{ $sc.allowVolumeExpansion | default "true" }}
++allowVolumeExpansion: {{ if kindIs "bool" $sc.allowVolumeExpansion }}{{ $sc.allowVolumeExpansion }}{{ else }}{{ $sc.allowVolumeExpansion | default "true" }}{{ end }}
 +volumeBindingMode: {{ $sc.volumeBindingMode | default "Immediate" }}
 +{{- if $sc.allowedTopologies }}
 +allowedTopologies:
@@ -49,6 +49,12 @@ index 0000000..52ee79c
 +{{- end }}
 +parameters:
 +  protocol: {{ $sc.protocol | default "NFS" }}
++{{- /*
++NOTE: thinProvisioned and isDataReductionEnabled intentionally keep
++default true, so an explicit false is rendered as "true".
++StorageClass parameters are immutable; honouring false would change
++the rendered value and fail the upgrade on existing deployments.
++*/}}
 +  thinProvisioned: "{{- $sc.thinProvisioned | default true }}"
 +  isDataReductionEnabled: "{{- $sc.isDataReductionEnabled | default true }}"
 +  hostIoSize: "{{ $sc.hostIoSize | default 8192 }}"
@@ -73,7 +79,7 @@ index 0000000..52ee79c
 +---
 +{{- end }}
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index d8f74a3..afd4216 100644
+index 9915799..7b63276 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -283,3 +283,5 @@ storageCapacity:

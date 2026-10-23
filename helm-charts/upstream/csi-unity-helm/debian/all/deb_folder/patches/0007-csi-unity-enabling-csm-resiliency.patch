@@ -118,7 +118,7 @@ index 7298c6f..c6c62a8 100644
            hostPath:
              path: /usr/bin
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index c56b259..d396680 100644
+index eb359f1..9b37fbb 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -1,6 +1,9 @@
@@ -130,6 +130,6 @@ index c56b259..d396680 100644
 +
  # version: version of this values file
  # Note: Do not change this value
- # Examples : "v2.16.0" , "nightly"
+ # Examples : "v2.17.0" , "nightly"
 --
 2.34.1

@@ -49,7 +49,7 @@ index c6c62a8..cd1863f 100644
          driver.dellemc.com: dell-storage
  {{- end }}
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index d396680..3317c92 100644
+index 9b37fbb..2937f8a 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -304,3 +304,6 @@ storageCapacity:

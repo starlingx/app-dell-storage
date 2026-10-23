@@ -36,13 +36,13 @@ index 0000000..975c1eb
 +# Examples: Delete
 +deletionPolicy: {{ .Values.controller.snapshot.deletionPolicy }}
 diff --git a/charts/csi-unity/values.yaml b/charts/csi-unity/values.yaml
-index 3317c92..8f43091 100644
+index 2937f8a..513f55a 100644
 --- a/charts/csi-unity/values.yaml
 +++ b/charts/csi-unity/values.yaml
 @@ -101,6 +101,7 @@ controller:
      # Allowed values: string
-     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
-     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+     # Default value: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
+     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
 +    deletionPolicy: Delete
    resizer:
      # enabled: Enable/Disable volume expansion feature
