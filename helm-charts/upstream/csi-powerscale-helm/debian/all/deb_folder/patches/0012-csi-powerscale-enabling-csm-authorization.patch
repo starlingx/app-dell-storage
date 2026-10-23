@@ -57,29 +57,33 @@ index 017c082..0a16220 100644
    annotations:
      com.dell.karavi-authorization-proxy: "true"
    {{ end }}
-@@ -494,7 +494,7 @@ spec:
-             - name: csi-isilon-config-params
-               mountPath: /csi-isilon-config-params
+@@ -643,7 +643,7 @@ spec:
+ {{- end }}
+ {{- end }}
          {{- if hasKey .Values "authorization" }}
 -        {{- if eq .Values.authorization.enabled true }}
 +        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
          - name: karavi-authorization-proxy
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
-@@ -549,11 +549,11 @@ spec:
-           configMap:
-              name: {{ .Release.Name }}-config-params
+@@ -719,7 +719,7 @@ spec:
+         {{- end }}
+         {{- end }}
          {{- if hasKey .Values "authorization" }}
 -        {{- if eq .Values.authorization.enabled true }}
 +        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
          {{- if $authorizationConfigSecret }}
          - name: karavi-authorization-config
            secret:
+@@ -723,7 +723,7 @@ spec:
+         {{- if $authorizationConfigSecret }}
+         - name: karavi-authorization-config
+           secret:
 -            secretName: karavi-authorization-config
 +            secretName: {{ .Release.Name }}-authorization-config
          {{- end }}
+         {{- if not .Values.authorization.skipCertificateValidation }}
          - name: proxy-server-root-certificate
-           secret:
 diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates/node.yaml
 index 75a5b4b..caca236 100644
 --- a/charts/csi-isilon/templates/node.yaml
@@ -102,19 +106,23 @@ index 75a5b4b..caca236 100644
          - name: karavi-authorization-proxy
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.image }}
-@@ -354,11 +354,11 @@ spec:
-           configMap:
-              name: {{ .Release.Name }}-config-params
+@@ -472,7 +472,7 @@ spec:
+             secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
+         {{- end }}
          {{- if hasKey .Values "authorization" }}
 -        {{- if eq .Values.authorization.enabled true }}
 +        {{- if or .Values.authorization.enabled .Values.csm.authorization }}
          {{- if $authorizationConfigSecret }}
          - name: karavi-authorization-config
            secret:
+@@ -476,7 +476,7 @@ spec:
+         {{- if $authorizationConfigSecret }}
+         - name: karavi-authorization-config
+           secret:
 -            secretName: karavi-authorization-config
 +            secretName: {{ .Release.Name }}-authorization-config
          {{- end }}
+         {{- if not .Values.authorization.skipCertificateValidation }}
          - name: proxy-server-root-certificate
-           secret:
 -- 
 2.34.1

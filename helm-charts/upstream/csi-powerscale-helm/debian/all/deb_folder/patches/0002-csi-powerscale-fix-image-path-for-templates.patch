@@ -128,9 +128,9 @@ index 932f9a2..7070c51 100644
            imagePullPolicy: {{ .Values.imagePullPolicy }}
            env:
              - name: CSI_ENDPOINT
-@@ -235,7 +235,7 @@ spec:
-             - name: csi-isilon-config-params
-               mountPath: /csi-isilon-config-params
+@@ -360,7 +360,7 @@ spec:
+ {{- end }}
+ {{- end }}
          - name: registrar{{ $csiSidecarSuffix }}
 -          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
 +          image: {{ required "Must provide the CSI node registrar container image." .Values.node.registrar.image }}

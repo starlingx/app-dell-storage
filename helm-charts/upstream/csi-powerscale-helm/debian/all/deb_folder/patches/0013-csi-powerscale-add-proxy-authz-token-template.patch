@@ -65,7 +65,7 @@ index 0000000..38f35cf
 +metadata:
 +  name: {{ .Release.Name}}-proxy-authz-tokens
 +type: Opaque
-+data:
++stringData:
 +  access: {{ .Values.proxyAuthzTokens.access |  default " " | quote}}
 +  refresh: {{ .Values.proxyAuthzTokens.refresh | default " " | quote }}
 +{{- end }}

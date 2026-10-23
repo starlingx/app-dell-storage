@@ -53,7 +53,7 @@ index fcbf23e..34bb793 100644
          - name: podmon
            image: {{ required "Must provide the podmon container image." .Values.podmon.image }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
-@@ -447,10 +447,10 @@ spec:
+@@ -539,7 +539,7 @@ spec:
              - name: X_CSI_ISI_NO_PROBE_ON_START
                value: "{{ .Values.noProbeOnStart }}"
              - name: X_CSI_PODMON_ENABLED
@@ -61,6 +61,11 @@ index fcbf23e..34bb793 100644
 +              value: "{{ or .Values.podmon.enabled .Values.csm.resiliency }}"
              - name: X_CSI_PODMON_API_PORT
                value: "{{ .Values.podmonAPIPort }}"
+             {{- if .Values.podmonAPITokenSecret }}
+@@ -552,7 +552,7 @@ spec:
+             - name: X_CSI_PODMON_API_TOKEN
+               value: "{{ .Values.podmonAPIToken }}"
+             {{- end }}
 -            {{- if eq .Values.podmon.enabled true }}
 +            {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
                {{- range $key, $value := .Values.podmon.controller.args }}
@@ -83,12 +88,12 @@ diff --git a/charts/csi-isilon/templates/node.yaml b/charts/csi-isilon/templates
 index 14fd4a5..429a433 100644
 --- a/charts/csi-isilon/templates/node.yaml
 +++ b/charts/csi-isilon/templates/node.yaml
-@@ -31,7 +31,7 @@ rules:
+@@ -32,7 +32,7 @@ rules:
+     resourceNames: [ "privileged" ]
      resources: [ "securitycontextconstraints" ]
      verbs: [ "use" ]
-   {{- if hasKey .Values "podmon" }}
--  {{- if eq .Values.podmon.enabled true }}
-+  {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
+-  {{- if or (eq (include "csi-isilon.isMetricsEnabled" .) "true") (and (hasKey .Values "podmon") (eq .Values.podmon.enabled true)) }}
++  {{- if or (eq (include "csi-isilon.isMetricsEnabled" .) "true") (and (hasKey .Values "podmon") (eq .Values.podmon.enabled true)) .Values.csm.resiliency }}
    - apiGroups: [""]
      resources: ["pods"]
      verbs: ["get", "list", "watch"]
@@ -119,7 +124,7 @@ index 14fd4a5..429a433 100644
          - name: podmon
            securityContext:
              privileged: true
-@@ -229,10 +229,10 @@ spec:
+@@ -271,7 +271,7 @@ spec:
              - name: X_CSI_HEALTH_MONITOR_ENABLED
                value: "{{ .Values.node.healthMonitor.enabled }}"
              - name: X_CSI_PODMON_ENABLED
@@ -127,14 +132,19 @@ index 14fd4a5..429a433 100644
 +              value: "{{ or .Values.podmon.enabled .Values.csm.resiliency }}"
              - name: X_CSI_PODMON_API_PORT
                value: "{{ .Values.podmonAPIPort }}"
+             {{- if .Values.podmonAPITokenSecret }}
+@@ -284,7 +284,7 @@ spec:
+             - name: X_CSI_PODMON_API_TOKEN
+               value: "{{ .Values.podmonAPIToken }}"
+             {{- end }}
 -            {{- if eq .Values.podmon.enabled true }}
 +            {{- if or .Values.podmon.enabled .Values.csm.resiliency }}
                {{- range $key, $value := .Values.podmon.node.args }}
                  {{- if contains "--arrayConnectivityPollRate" $value }}
              - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
-@@ -356,7 +356,7 @@ spec:
-         {{ end }}
-         {{ end }}
+@@ -485,7 +485,7 @@ spec:
+         {{- end }}
+         {{- end }}
          {{- if hasKey .Values "podmon" }}
 -        {{- if eq .Values.podmon.enabled true }}
 +        {{- if or .Values.podmon.enabled .Values.csm.resiliency }}

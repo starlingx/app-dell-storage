@@ -11,125 +11,125 @@ to build the package.
 
 Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjunior@windriver.com>
 ---
- charts/csi-isilon/values.yaml | 71 ++++++++++++++++++++++-------------
- 1 file changed, 45 insertions(+), 26 deletions(-)
+ charts/csi-isilon/values.yaml | 73 ++++++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 26 deletions(-)
 
 diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
-index 2b612e0..438afc8 100644
+index af3b02f..a3296dd 100644
 --- a/charts/csi-isilon/values.yaml
 +++ b/charts/csi-isilon/values.yaml
 @@ -4,33 +4,16 @@
  # Note: Do not change this value
- version: "v2.16.0"
-
+ version: "v2.18.0"
+ 
 -images:
 -  # "driver" defines the container image, used for the driver container.
 -  driver:
--    image: quay.io/dell/container-storage-modules/csi-isilon:v2.16.0
+-    image: quay.io/dell/container-storage-modules/csi-isilon:v2.18.0
 -  # CSI sidecars
 -  attacher:
--    image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
+-    image: registry.k8s.io/sig-storage/csi-attacher:v4.13.0
 -  provisioner:
--    image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+-    image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
 -  snapshotter:
--    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
 -  resizer:
--    image: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+-    image: registry.k8s.io/sig-storage/csi-resizer:v2.2.1
 -  registrar:
--    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
+-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.18.0
 -  healthmonitor:
--    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.18.0
 +csm:
 +  authorization: false
 +  resiliency: false
 +  replication: false
-
+ 
 -  # CSM sidecars
 -  replication:
--    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.14.0
+-    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.16.0
 -  podmon:
--    image: quay.io/dell/container-storage-modules/podmon:v1.15.0
+-    image: quay.io/dell/container-storage-modules/podmon:v1.17.0
 -  authorization:
--    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
+-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
 -  metadataretriever:
--    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.13.0
+-    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.15.0
 +driverName: "csi-isilon.dellemc.com"
 +
 +# "driver" defines the container image, used for the driver container.
 +driver:
-+  image: quay.io/dell/container-storage-modules/csi-isilon:v2.16.0
-
++  image: quay.io/dell/container-storage-modules/csi-isilon:v2.18.0
+ 
  # CSI driver log level
  # Allowed values: "error", "warn"/"warning", "info", "debug"
-@@ -127,6 +110,16 @@ controller:
+@@ -157,6 +140,16 @@ controller:
    # Examples: "k8s", "app1"
    volumeNamePrefix: csivol
-
+ 
 +  attacher:
-+    image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
++    image: registry.k8s.io/sig-storage/csi-attacher:v4.13.0
 +
 +  provisioner:
-+    image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
++    image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
 +
 +  metadataretriever:
-+    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.13.0
++    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.15.0
 +
 +
    # leaderElection: configure leader election parameters
    leaderElection:
      # Duration, that non-leader candidates will wait to force acquire leadership
-@@ -154,6 +147,8 @@ controller:
+@@ -184,6 +177,8 @@ controller:
      # Default value: false
      enabled: false
-
-+    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.14.0
+ 
++    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.16.0
 +
      # replicationContextPrefix: prefix to use for naming of resources created by replication feature
      # Allowed values: string
      # Default value: powerscale
-@@ -172,6 +167,8 @@ controller:
+@@ -215,6 +210,8 @@ controller:
      # Default value: None
      enabled: true
-
-+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+ 
++    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
 +
      # snapNamePrefix: Prefix to apply to the names of a created snapshots
      # Allowed values: string
      # Default value: csi-snap
-@@ -186,6 +183,8 @@ controller:
+@@ -229,6 +226,8 @@ controller:
      # Default value: None
      enabled: true
-
-+    image: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+ 
++    image: registry.k8s.io/sig-storage/csi-resizer:v2.2.1
 +
    healthMonitor:
      # enabled: Enable/Disable health monitor of CSI volumes- volume status, volume condition
      # Allowed values:
-@@ -194,6 +193,8 @@ controller:
+@@ -237,6 +236,8 @@ controller:
      # Default value: None
      enabled: false
-
-+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+ 
++    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.18.0
 +
      # interval: Interval of monitoring volume health condition
      # Allowed values: Number followed by unit of time (s,m,h)
      # Default value: 60s
-@@ -295,6 +296,9 @@ node:
+@@ -338,6 +339,9 @@ node:
    # In certain scenarios, users might need to change the default dnsPolicy.
    dnsPolicy: ClusterFirstWithHostNet
-
+ 
 +  registrar:
-+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
++    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.18.0
 +
    healthMonitor:
      # enabled: Enable/Disable health monitor of CSI volumes- volume usage, volume condition
      # Allowed values:
-@@ -385,9 +389,15 @@ autoProbe: true
-
+@@ -442,9 +446,15 @@ tlsHandshakeTimeoutSeconds: "30"
+ 
  authorization:
    enabled: false
 +
-+  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
++  image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
 +
    # proxyHost: hostname of the csm-authorization server
    # Default value: None
@@ -140,18 +140,18 @@ index 2b612e0..438afc8 100644
    # skipCertificateValidation: certificate validation of the csm-authorization server
    # Allowed Values:
    #   "true" - TLS certificate verification will be skipped
-@@ -412,6 +422,7 @@ storageCapacity:
+@@ -469,6 +479,7 @@ storageCapacity:
  # Enable this feature only after contact support for additional information
  podmon:
    enabled: false
-+  image: quay.io/dell/container-storage-modules/podmon:v1.15.0
++  image: quay.io/dell/container-storage-modules/podmon:v1.17.0
    controller:
      args:
        - "--csisock=unix:/var/run/csi/csi.sock"
-@@ -435,3 +446,11 @@ podmon:
-       - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
-       - "--driverPodLabelValue=dell-storage"
-       - "--ignoreVolumelessPods=false"
+@@ -720,3 +731,13 @@ fsGroupChown:
+   # timeoutSeconds: Per-NodeStageVolume/NodePublishVolume timeout for recursive chown in seconds.
+   # Default value: 30
+   timeoutSeconds: 30
 +
 +secret:
 +
@@ -160,5 +160,7 @@ index 2b612e0..438afc8 100644
 +snapshotClasses:
 +
 +proxyAuthzTokens:
++  access:
++  refresh:
 --
 2.34.1

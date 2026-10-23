@@ -24,8 +24,8 @@ index 34bb793..95bcf79 100644
    - apiGroups: ["replication.storage.dell.com"]
      resources: ["dellcsireplicationgroups"]
      verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-@@ -230,7 +230,7 @@ spec:
-               mountPath: /csi-isilon-config-params
+@@ -272,7 +272,7 @@ spec:
+             {{- end }}
          {{- end }}
          {{- if hasKey .Values.controller "replication" }}
 -        {{- if eq .Values.controller.replication.enabled true}}

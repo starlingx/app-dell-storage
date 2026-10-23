@@ -54,10 +54,10 @@ diff --git a/charts/csi-isilon/values.yaml b/charts/csi-isilon/values.yaml
 index 92029ab..2a8bcf9 100644
 --- a/charts/csi-isilon/values.yaml
 +++ b/charts/csi-isilon/values.yaml
-@@ -457,3 +457,6 @@ storageClasses:
- snapshotClasses:
-
+@@ -741,3 +741,6 @@ storageClasses:
  proxyAuthzTokens:
+   access:
+   refresh:
 +
 +labels:
 +  isApplication: false
