@@ -1,10 +1,10 @@
 ---
 debname: csi-powerstore-helm
-debver: 2.16-0
+debver: 2.18-0
 dl_path:
-  name: csi-powerstore-2.16.0.tar.gz
-  url: https://github.com/dell/helm-charts/archive/csi-powerstore-2.16.0.tar.gz
-  sha256sum: 44b08f10c1e8db9a58d89105fce5e349daaef30821f39600aee5ce9dd86c625c
+  name: csi-powerstore-2.18.0.tar.gz
+  url: https://github.com/dell/helm-charts/archive/csi-powerstore-2.18.0.tar.gz
+  sha256sum: 641e70e11d4c852190fc39860b2e8f939f4fbb7dd0738df68acc03af46dfaf2a
 src_files:
   - csi-powerstore-helm/files/Makefile
 revision:

@@ -1,4 +1,4 @@
-From 9f90e487f0827c3e00052dcb2fd04229212ce520 Mon Sep 17 00:00:00 2001
+From 7371c27458a35c648a0bbf04789e0ca80f3d85e1 Mon Sep 17 00:00:00 2001
 From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 Date: Tue, 28 Apr 2026 09:34:39 -0300
 Subject: [PATCH] csi-powerstore: add label app.starlingx.io/component
@@ -12,21 +12,27 @@ In this case, it doesn't effect functionality.
 Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
 Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 ---
- charts/csi-powerstore/templates/controller.yaml | 3 +++
+ charts/csi-powerstore/templates/controller.yaml | 8 ++------
  charts/csi-powerstore/templates/node.yaml       | 1 +
  charts/csi-powerstore/values.yaml               | 3 +++
- 3 files changed, 7 insertions(+)
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index aa3261e..ff071a4 100644
+index 7f39936..50e88c1 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -203,10 +203,13 @@ spec:
+@@ -228,17 +228,13 @@ spec:
    {{- else }}
    replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
-   {{- end }}
-+  strategy:
+   strategy:
+-    type: RollingUpdate
+-    rollingUpdate:
+-      {{- /* calculate maxSurge and maxUnavailable to allow at least one controller to be available during upgrade */ -}}
+-      {{- $updateAllowance := max 1 (int (ceil (mulf .Values.controller.controllerCount 0.25))) }}
+-      maxSurge: {{ min 10 $updateAllowance }}
+-      maxUnavailable: {{ min 5 $updateAllowance }}
 +    type: Recreate
+   {{- end }}
    template:
      metadata:
        labels:
@@ -36,10 +42,10 @@ index aa3261e..ff071a4 100644
          kubectl.kubernetes.io/default-container: driver
      spec:
 diff --git a/charts/csi-powerstore/templates/node.yaml b/charts/csi-powerstore/templates/node.yaml
-index a0fcb47..6dc6967 100644
+index 6afee47..f4be7fe 100644
 --- a/charts/csi-powerstore/templates/node.yaml
 +++ b/charts/csi-powerstore/templates/node.yaml
-@@ -124,6 +124,7 @@ spec:
+@@ -132,6 +132,7 @@ spec:
      metadata:
        labels:
          app: {{ .Release.Name }}-node
@@ -48,18 +54,18 @@ index a0fcb47..6dc6967 100644
          driver.dellemc.com: dell-storage
        {{- end }}
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index 0b0d70c..659e886 100644
+index 61a877a..612f722 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
-@@ -22,6 +22,9 @@ csm:
+@@ -20,6 +20,9 @@
+ csm:
    replication: false
    resiliency: false
-
 +labels:
 +  isApplication: false
 +
+ 
  # driverName: defines the name of driver
  # Allowed values: string
- # Default value: None
---
-2.34.1
+-- 
+2.43.0

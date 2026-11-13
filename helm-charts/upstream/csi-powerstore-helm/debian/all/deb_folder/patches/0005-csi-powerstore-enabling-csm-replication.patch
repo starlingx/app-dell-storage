@@ -1,4 +1,4 @@
-From eb63c864f5b76e449f99ea97bd099c11edb33856 Mon Sep 17 00:00:00 2001
+From 1c41631ceb030352f7a10dcd06446070f3240ba1 Mon Sep 17 00:00:00 2001
 From: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
 Date: Tue, 28 Apr 2026 09:31:08 -0300
 Subject: [PATCH] csi-powerstore: enabling csm-replication
@@ -14,10 +14,10 @@ Signed-off-by: Alyson Deives Pereira <alyson.deivespereira@windriver.com>
  2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/charts/csi-powerstore/templates/controller.yaml b/charts/csi-powerstore/templates/controller.yaml
-index 0e99223..aa3261e 100644
+index 284c9ec..7f39936 100644
 --- a/charts/csi-powerstore/templates/controller.yaml
 +++ b/charts/csi-powerstore/templates/controller.yaml
-@@ -109,7 +109,7 @@ rules:
+@@ -112,7 +112,7 @@ rules:
      verbs: ["patch"]
    # below for dell-csi-replicator
    {{- if hasKey .Values.controller "replication" }}
@@ -26,16 +26,16 @@ index 0e99223..aa3261e 100644
    - apiGroups: ["replication.storage.dell.com"]
      resources: ["dellcsireplicationgroups"]
      verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-@@ -355,7 +355,7 @@ spec:
-         {{- end }}
-         {{- end }}
-         {{- if hasKey .Values.controller "replication" }}
+@@ -401,7 +401,7 @@ spec:
+         {{end}}
+         {{end}}
+         {{- if hasKey .Values.controller "replication"}}
 -        {{- if eq .Values.controller.replication.enabled true}}
 +        {{- if or .Values.controller.replication.enabled .Values.csm.replication }}
          - name: dell-csi-replicator
-           image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image }}
+           image: {{ required "Must provide the Dell CSI Replicator image." .Values.controller.replication.image | quote }}
            imagePullPolicy: {{ .Values.imagePullPolicy }}
-@@ -492,7 +492,7 @@ spec:
+@@ -611,7 +611,7 @@ spec:
              - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
                value: {{ .Values.podmon.arrayConnectivityTimeout | default "10s" | quote}}
              {{- if hasKey .Values.controller "replication" }}
@@ -45,16 +45,16 @@ index 0e99223..aa3261e 100644
                value: {{ .Values.controller.replication.replicationContextPrefix | default "powerstore"}}
              - name: X_CSI_REPLICATION_PREFIX
 diff --git a/charts/csi-powerstore/values.yaml b/charts/csi-powerstore/values.yaml
-index 1b15815..0b0d70c 100644
+index 7b7acc9..61a877a 100644
 --- a/charts/csi-powerstore/values.yaml
 +++ b/charts/csi-powerstore/values.yaml
-@@ -19,6 +19,7 @@
-
+@@ -18,6 +18,7 @@
+ ########################
  # CSM Control
  csm:
 +  replication: false
    resiliency: false
-
+ 
  # driverName: defines the name of driver
---
-2.34.1
+-- 
+2.43.0
