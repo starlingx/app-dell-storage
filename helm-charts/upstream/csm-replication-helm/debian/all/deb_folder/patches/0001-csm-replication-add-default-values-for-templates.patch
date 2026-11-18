@@ -14,10 +14,10 @@ Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjun
  1 file changed, 9 insertions(+)
 
 diff --git a/charts/csm-replication/values.yaml b/charts/csm-replication/values.yaml
-index 9061208..8ca02de 100644
+index 81e56df..5707bbf 100644
 --- a/charts/csm-replication/values.yaml
 +++ b/charts/csm-replication/values.yaml
-@@ -47,3 +47,12 @@ allowPvcCreationOnTarget: "false"
+@@ -89,3 +89,12 @@ metrics:
  #  - ip: "10.10.10.11"
  #    hostnames:
  #      - "foo.baz"

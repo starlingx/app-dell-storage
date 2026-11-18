@@ -14,7 +14,7 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/charts/csm-replication/templates/controller.yaml b/charts/csm-replication/templates/controller.yaml
-index e6169db..80cd001 100644
+index 08000f5..7ac46eb 100644
 --- a/charts/csm-replication/templates/controller.yaml
 +++ b/charts/csm-replication/templates/controller.yaml
 @@ -4,6 +4,8 @@ kind: ServiceAccount

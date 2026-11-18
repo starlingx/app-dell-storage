@@ -12,10 +12,10 @@ Signed-off-by: Gabriel Przybysz Gonçalves Júnior <gabriel.przybsyzgoncalvesjun
  2 files changed, 6 insertions(+)
 
 diff --git a/charts/csm-replication/templates/controller.yaml b/charts/csm-replication/templates/controller.yaml
-index ac9ccdb..af77ed6 100644
+index 698ce49..7f6c08c 100644
 --- a/charts/csm-replication/templates/controller.yaml
 +++ b/charts/csm-replication/templates/controller.yaml
-@@ -287,10 +287,13 @@ spec:
+@@ -309,10 +309,13 @@ spec:
    selector:
      matchLabels:
        control-plane: controller-manager
@@ -30,11 +30,11 @@ index ac9ccdb..af77ed6 100644
        {{- if hasKey .Values "hostAliases" }}
        hostAliases:
 diff --git a/charts/csm-replication/values.yaml b/charts/csm-replication/values.yaml
-index 8ca02de..43b1af9 100644
+index 5707bbf..5113a50 100644
 --- a/charts/csm-replication/values.yaml
 +++ b/charts/csm-replication/values.yaml
-@@ -56,3 +56,6 @@ replicationGroup:
-
+@@ -98,3 +98,6 @@ replicationGroup:
+ 
  kubectl:
    image: docker.io/alpine/kubectl:1.35.3
 +
