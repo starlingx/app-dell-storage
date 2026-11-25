@@ -13,10 +13,10 @@ Signed-off-by: Gustavo Ornaghi Antunes <gustavo.ornaghiantunes@windriver.com>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/charts/csm-replication/templates/controller.yaml b/charts/csm-replication/templates/controller.yaml
-index 80cd001..931b0fd 100644
+index 7ac46eb..698ce49 100644
 --- a/charts/csm-replication/templates/controller.yaml
 +++ b/charts/csm-replication/templates/controller.yaml
-@@ -227,8 +227,12 @@ data:
+@@ -267,8 +267,12 @@ data:
  {{ else -}}
  data:
    config.yaml: |
